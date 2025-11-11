@@ -25,7 +25,7 @@
       font-size: 14px; cursor: pointer;
     }
     .card {
-      position: fixed; left: 50%; top: 14px; transform: translateX(-50%);
+      position: fixed; left: 0%; top: 14px;
       width: min(560px, 90%); background: rgba(255,255,255,0.98);
       border: 1px solid #ddd; border-radius: 14px; padding: 14px;
       display: none; box-shadow: 0 8px 18px rgba(0,0,0,0.15);
@@ -74,6 +74,7 @@
     </p>
     <div class="row">
       <a id="reflect-link" class="link" href="#" target="_blank">Leave a reflection</a>
+      <button class="btn" onclick="scrollToMap()">View Ripple Map</button>
       <button class="btn close" onclick="hideCard()">Close</button>
     </div>
   </div>
@@ -88,6 +89,14 @@
   </div>
 
   <script>
+    function scrollToMap() {
+    const el = document.getElementById('ripple-map');
+    if (!el) return;
+    // Close the card so it doesn't cover the map header
+    hideCard();
+    // Smooth scroll to the map
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
     // Paste your reflection form URL here:
     const FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE"; // Typeform/Google/Airtable link
 
@@ -114,6 +123,31 @@
   <!-- Spacer so the fixed bottom buttons don't overlap the embed -->
   <div class="spacer"></div>
 
+  <div id="scroll-hint" style="
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 84px; z-index: 9;
+    background: rgba(0,0,0,0.6); color: #fff;
+    padding: 6px 10px; border-radius: 999px; font-size: 12px;">
+    Scroll for Ripple Map ↓
+  </div>
+
+  <script>
+  // Hide the hint after 4s or on first scroll
+  setTimeout(() => {
+    const h = document.getElementById('scroll-hint');
+    if (h) h.style.display = 'none';
+  }, 4000);
+
+  let hinted = false;
+  window.addEventListener('scroll', () => {
+    if (hinted) return;
+    const h = document.getElementById('scroll-hint');
+    if (h) h.style.display = 'none';
+    hinted = true;
+  }, { passive: true });
+</script>
+
+  
   <!-- Ripple Map embed (Airtable 'Embed this view' URL) -->
   <div id="ripple-map" class="container">
     <h2 style="font-weight:600; font-size:20px; margin: 12px 0;">Ripple Map</h2>
