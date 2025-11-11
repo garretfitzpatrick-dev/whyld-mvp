@@ -8,6 +8,7 @@
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
   <style>
+    html, body { max-width: 100vw; overflow-x: hidden; }
     body { margin:0; overflow:auto; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
     /* NEW: wrap the AR scene so it doesn't take the whole page */
     .scene-wrap { width: 100%; height: 70vh; position: relative; }
@@ -40,7 +41,8 @@
     /* NEW: spacer so the fixed bottom buttons don't cover the iframe */
     .spacer { height: 80px; }
     /* Optional: container for ripple map */
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 12px; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 12px; box-sizing: border-box; }
+
   </style>
 </head>
 <body>
@@ -147,16 +149,23 @@
   }, { passive: true });
 </script>
 
-  
-  <!-- Ripple Map embed (Airtable 'Embed this view' URL) -->
-  <div id="ripple-map" class="container">
+
+
+  <!-- Ripple Map embed (responsive) -->
+  <div id="ripple-map" class="container" style="max-width: 1100px; margin: 0 auto 32px; padding: 0 12px;">
     <h2 style="font-weight:600; font-size:20px; margin: 12px 0;">Ripple Map</h2>
-    <iframe class="airtable-embed" 
-      src="https://airtable.com/embed/appXPj1T4lTXjx1kD/shrbHO75qu9JoaB37?viewControls=on" 
-      frameborder="0" width="100%" height="533" 
-      style="background: transparent; border: 1px solid #ccc; border-radius:8px;">
+
+    <iframe class="airtable-embed"
+      src="https://airtable.com/embed/appXPj1T4lTXjx1kD/shrbHO75qu9JoaB37?viewControls=on&backgroundColor=gray"
+      frameborder="0"
+      width="100%"
+      height="800"
+      style="display:block; margin:0 auto; background: transparent; border: 1px solid #ccc; border-radius:8px;">
     </iframe>
+  
+    <script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script>
   </div>
+
 
 </body>
 </html>
