@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Whyld World MVP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- A-Frame & AR.js -->
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  <style>
+    body { margin:0; overflow:hidden; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    .ui {
+      position: fixed; left: 0; right: 0; bottom: 12px;
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding: 8px 12px; pointer-events: none;
+    }
+    .btn {
+      pointer-events: auto;
+      background: rgba(255,255,255,0.9);
+      border-radius: 999px; padding: 8px 14px; border: 1px solid #ddd;
+      font-size: 14px; cursor: pointer;
+    }
+    .card {
+      position: fixed; left: 50%; top: 14px; transform: translateX(-50%);
+      width: min(560px, 90%); background: rgba(255,255,255,0.98);
+      border: 1px solid #ddd; border-radius: 14px; padding: 14px;
+      display: none; box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
+    .card h3 { margin: 0 0 6px 0; font-size: 18px; }
+    .card p  { margin: 8px 0;  font-size: 15px; line-height: 1.35; }
+    .card .row { display:flex; gap:10px; margin-top: 10px; }
+    .link { color: #0b65c2; text-decoration: underline; cursor:pointer; }
+    .close { margin-left:auto; background:#f4f4f4; }
+  </style>
+</head>
+<body>
+  <!-- AR Scene -->
+  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+    <!-- Marker (use printed HIRO marker) -->
+    <a-marker preset="hiro">
+      <!-- A simple floating text anchor in 3D space -->
+      <a-entity position="0 0.5 0" rotation="-90 0 0">
+        <a-text value="Point at the marker to reveal layers →" align="center" color="#222"
+                width="2.5"></a-text>
+      </a-entity>
+      <!-- A subtle ring as a 'presence' cue -->
+      <a-entity geometry="primitive: torus; radius: 0.35; tube: 0.02"
+                material="color: #3a86ff; opacity: 0.85"
+                position="0 0 0"></a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <!-- Lens content card -->
+  <div id="card" class="card">
+    <h3 id="card-title">Explore</h3>
+    <p id="card-text">
+      <!-- Replace these with your own 50–80 word stories for each lens -->
+      That old motorcycle by the window has crossed more miles than most of us will.
+      Look closer at the worn grips and the patched saddle—each mark is a waypoint.
+      What did this machine witness, and what did its rider learn along the way?
+    </p>
+    <div class="row">
+      <a id="reflect-link" class="link" href="#" target="_blank">Leave a reflection</a>
+      <button class="btn close" onclick="hideCard()">Close</button>
+    </div>
+  </div>
+
+  <!-- Bottom UI: lens buttons -->
+  <div class="ui">
+    <button class="btn" onclick="showLens('Explore')">Explore</button>
+    <button class="btn" onclick="showLens('Serve')">Serve</button>
+    <button class="btn" onclick="showLens('Create')">Create</button>
+    <button class="btn" onclick="showLens('Inspire')">Inspire</button>
+    <button class="btn" onclick="showLens('Reflect')">Reflect</button>
+  </div>
+
+  <script>
+    // Paste your reflection form URL here:
+    const FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE"; // Typeform/Google/Airtable link
+
+    const STORIES = {
+      "Explore": "Replace with your Explore story (50–80 words).",
+      "Serve":   "Replace with your Serve story (50–80 words).",
+      "Create":  "Replace with your Create story (50–80 words).",
+      "Inspire": "Replace with your Inspire story (50–80 words).",
+      "Reflect": "Replace with your Reflect prompt or question."
+    };
+
+    function showLens(lens) {
+      document.getElementById("card-title").innerText = lens;
+      document.getElementById("card-text").innerText = STORIES[lens];
+      // Pre-fill a query param so your form knows the selected lens
+      const link = FORM_URL_BASE.includes("?") ? `${FORM_URL_BASE}&lens=${encodeURIComponent(lens)}` :
+                                                 `${FORM_URL_BASE}?lens=${encodeURIComponent(lens)}`;
+      document.getElementById("reflect-link").href = link;
+      document.getElementById("card").style.display = "block";
+    }
+    function hideCard(){ document.getElementById("card").style.display = "none"; }
+  </script>
+</body>
+</html>
