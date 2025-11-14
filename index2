@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Whyld World AR MVP — Ripple Field</title>
+
+  <!-- A-Frame + AR.js -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#000; color:#0f172a; }
+    .app { position: relative; width: 100%; height: 100svh; overflow: hidden; }
+    #ar-scene { position: absolute; inset: 0; }
+    .ui { position: absolute; inset: 0; pointer-events: none; }
+
+    /* Tiny legend and filters — peripheral first */
+    .legend { position: absolute; left: 12px; bottom: calc(env(safe-area-inset-bottom) + 12px); background: rgba(255,255,255,.88); border: 1px solid rgba(15,23,42,.12); border-radius: 12px; padding: 8px 10px; display: grid; gap: 6px; pointer-events: auto; backdrop-filter: blur(6px); }
+    .legend h4 { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing:.2px; }
+    .chips { display: grid; grid-template-columns: repeat(5, auto); gap: 6px; }
+    .chip { display: inline-grid; grid-auto-flow: column; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 999px; border: 1px solid rgba(0,0,0,.12); font-size: 12px; background: white; cursor: pointer; }
+    .dot { width: 10px; height: 10px; border-radius: 999px; }
+    .chip[aria-pressed="true"] { outline: 2px solid rgba(0,0,0,.25); }
+
+    /* Minimal detail popover */
+    .popover { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 90px); transform: translateX(-50%); background: rgba(255,255,255,.96); border: 1px solid rgba(15,23,42,.12); box-shadow: 0 20px 50px rgba(0,0,0,.45); border-radius: 14px; padding: 10px 12px; max-width: min(92vw, 420px); display: none; pointer-events: auto; }
+    .popover.open { display: block; }
+    .popover .title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .popover .meta { font-size: 12px; opacity: .8; display: grid; grid-auto-flow: column; gap: 8px; }
+    .popover .actions { margin-top: 6px; display: grid; grid-auto-flow: column; gap: 8px; }
+    .btn { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(15,23,42,.12); background: white; cursor: pointer; }
+    .btn.primary { background: #0ea5e9; color: white; border-color: #0ea5e9; }
+
+    .crosshair { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 20px; height: 20px; border-radius: 999px; border: 2px solid rgba(255,255,255,.6); pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <a-scene id="ar-scene" embedded vr-mode-ui="enabled:false" renderer="antialias:true; colorManagement:true; physicallyCorrectLights:true" arjs="trackingMethod:best; sourceType:webcam; debugUIEnabled:false">
+      <a-entity light="type: ambient; intensity: 1.1"></a-entity>
+      <a-entity light="type: directional; intensity: 0.5" position="0 1 1"></a-entity>
+
+      <!-- Marker anchor -->
+      <a-marker id="anchor" preset="hiro">
+        <!-- Ripple glyphs will be injected here at runtime -->
+        <a-entity id="ripple-root" position="0 0 0"></a-entity>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <div class="ui">
+      <div class="crosshair" aria-hidden="true"></div>
+      <section class="legend" aria-label="Meaning lens filters">
+        <h4>Show lenses</h4>
+        <div class="chips">
+          <button class="chip" data-lens="Explore" aria-pressed="true"><span class="dot" style="background:#4F8BFF"></span>Explore</button>
+          <button class="chip" data-lens="Serve" aria-pressed="true"><span class="dot" style="background:#22C55E"></span>Serve</button>
+          <button class="chip" data-lens="Create" aria-pressed="true"><span class="dot" style="background:#FB923C"></span>Create</button>
+          <button class="chip" data-lens="Inspire" aria-pressed="true"><span class="dot" style="background:#7C3AED"></span>Inspire</button>
+          <button class="chip" data-lens="Reflect" aria-pressed="true"><span class="dot" style="background:#ffffff; border:1px solid #cbd5e1"></span>Reflect</button>
+        </div>
+      </section>
+
+      <div class="popover" id="popover">
+        <div class="title" id="pv-title">Ripple</div>
+        <div class="meta"><span id="pv-lens">Lens</span><span id="pv-res">Resonance</span></div>
+        <div style="font-size:13px; margin-top:6px" id="pv-text"></div>
+        <div class="actions">
+          <button class="btn" id="pv-close">Close</button>
+          <button class="btn primary" id="pv-open">Open details</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // Guard against double init
+  if (!window.__whyldRippleInit) {
+    window.__whyldRippleInit = true;
+
+    // Lens color map (Color Wheel of Meaning)
+    const LENS_COLORS = {
+      Explore: '#4F8BFF', // blue
+      Serve:   '#22C55E', // green
+      Create:  '#FB923C', // orange
+      Inspire: '#7C3AED', // violet
+      Reflect: '#FFFFFF'  // white
+    };
+
+    // Sample data. Replace with Airtable/API feed.
+    // resonance: 0..1 scaled; z lifts avoid z-fighting
+    const RIPPLES = [
+      { id:'r1', lens:'Explore',  resonance:0.85, note:'Awe at the mural's symmetry',    pos:[-0.2, 0.0, 0.0] },
+      { id:'r2', lens:'Serve',    resonance:0.45, note:'Helped a visitor find the gallery', pos:[ 0.25,0.0, 0.05] },
+      { id:'r3', lens:'Create',   resonance:0.70, note:'Sketching idea sparked from exhibit', pos:[ 0.05,0.0,-0.1] },
+      { id:'r4', lens:'Inspire',  resonance:0.35, note:'Quote reframed the day',             pos:[ 0.12,0.0, 0.12] },
+      { id:'r5', lens:'Reflect',  resonance:0.60, note:'Quiet pause shifted mood',           pos:[-0.08,0.0, 0.15] }
+    ];
+
+    const scene = document.querySelector('#ar-scene');
+    const root  = document.querySelector('#ripple-root');
+    const pop   = document.querySelector('#popover');
+    const pvTitle = document.querySelector('#pv-title');
+    const pvLens  = document.querySelector('#pv-lens');
+    const pvRes   = document.querySelector('#pv-res');
+    const pvText  = document.querySelector('#pv-text');
+
+    const openBtn = document.querySelector('#pv-open');
+    const closeBtn= document.querySelector('#pv-close');
+
+    // Filter state
+    const activeLenses = new Set(['Explore','Serve','Create','Inspire','Reflect']);
+    document.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lens = btn.dataset.lens;
+        const pressed = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', String(!pressed));
+        if (pressed) activeLenses.delete(lens); else activeLenses.add(lens);
+        updateVisibility();
+      });
+    });
+
+    closeBtn.addEventListener('click', () => pop.classList.remove('open'));
+    openBtn.addEventListener('click', () => {
+      // Replace with deep link to reflection card / map
+      window.open('https://airtable.com/your-form', '_blank');
+    });
+
+    function rToRadius(r) {
+      // Resonance → radius meters (bounded, non-linear)
+      // 0..1 → 0.06..0.32 using ease
+      const min = 0.06, max = 0.32;
+      const eased = Math.pow(r, 0.6); // emphasize medium values
+      return min + (max - min) * eased;
+    }
+
+    function makeRipple({id, lens, resonance, note, pos}) {
+      const color = LENS_COLORS[lens] || '#ffffff';
+      const radius = rToRadius(resonance);
+      const group = document.createElement('a-entity');
+      group.setAttribute('id', id);
+      group.setAttribute('position', pos.join(' '));
+
+      // Base ring (faces camera)
+      const ring = document.createElement('a-entity');
+      ring.setAttribute('geometry', `primitive: ring; radiusInner: ${Math.max(0.001, radius*0.7)}; radiusOuter: ${radius}`);
+      ring.setAttribute('material', `color: ${color}; opacity: 0.85; side: double; transparent: true`);
+      ring.setAttribute('look-at', '[camera]');
+
+      // Soft pulse
+      const pulse = document.createElement('a-entity');
+      pulse.setAttribute('geometry', `primitive: ring; radiusInner: ${Math.max(0.0001, radius*0.9)}; radiusOuter: ${radius*1.25}`);
+      pulse.setAttribute('material', `color: ${color}; opacity: 0.18; side: double; transparent: true`);
+      pulse.setAttribute('look-at', '[camera]');
+      pulse.setAttribute('animation__pulse', 'property=material.opacity; from:0.05; to:0.28; dur:1600; dir=alternate; loop:true; easing=easeInOutSine');
+
+      // Tiny pillar to hint Z placement (optional, very subtle)
+      const stem = document.createElement('a-cylinder');
+      stem.setAttribute('radius', 0.0025);
+      stem.setAttribute('height', 0.012 + resonance*0.02);
+      stem.setAttribute('position', '0 0.006 0');
+      stem.setAttribute('material', `color:${color}; opacity:0.4`);
+
+      group.appendChild(ring);
+      group.appendChild(pulse);
+      group.appendChild(stem);
+
+      // Hit area
+      const hit = document.createElement('a-entity');
+      hit.setAttribute('geometry', `primitive: circle; radius: ${radius*1.15}`);
+      hit.setAttribute('material', 'color:#ffffff; opacity:0; side: double; transparent:true');
+      hit.setAttribute('look-at', '[camera]');
+      hit.classList.add('ripple-hit');
+
+      hit.addEventListener('click', () => openPopover({ id, lens, resonance, note }));
+      group.appendChild(hit);
+
+      return group;
+    }
+
+    function openPopover({id, lens, resonance, note}) {
+      pvTitle.textContent = 'Ripple';
+      pvLens.textContent  = lens;
+      pvRes.textContent   = `Resonance: ${(resonance*100).toFixed(0)}%`;
+      pvText.textContent  = note || '';
+      pop.classList.add('open');
+    }
+
+    function updateVisibility() {
+      root.querySelectorAll('[id^="r"]').forEach(node => {
+        const data = node.__rdata;
+        const visible = activeLenses.has(data.lens);
+        node.setAttribute('visible', visible);
+      });
+    }
+
+    function mount() {
+      // Clear old
+      while (root.firstChild) root.removeChild(root.firstChild);
+      RIPPLES.forEach(r => {
+        const el = makeRipple(r);
+        el.__rdata = r;
+        root.appendChild(el);
+      });
+      updateVisibility();
+    }
+
+    // Clicking outside closes popover
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.popover') && !e.target.classList.contains('ripple-hit')) {
+        pop.classList.remove('open');
+      }
+    });
+
+    // Initialize on marker found so elements appear when relevant
+    const marker = document.querySelector('#anchor');
+    marker.addEventListener('markerFound', () => { mount(); });
+
+    window.addEventListener('orientationchange', () => {
+      // reflow safe height when mobile UI changes
+      requestAnimationFrame(() => {
+        document.getElementById('app').style.height = window.innerHeight + 'px';
+        setTimeout(() => { document.getElementById('app').style.height = ''; }, 250);
+      });
+    });
+  }
+  </script>
+</body>
+</html>
