@@ -38,19 +38,19 @@
   <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
     <!-- Marker (use printed HIRO marker) -->
     <a-marker preset="hiro">
-      <!-- A simple floating text anchor in 3D space -->
-       <a-entity id="caption" position="0 0.8 0" look-at="[camera]">
+  <!-- Text moved above and slightly toward the camera so it clears the printed marker -->
+  <a-entity position="0 0.4 -0.6" rotation="-90 0 0">
     <a-text
       value="Point at the marker to reveal layers →"
       align="center"
       color="#222"
-      width="3">
+      width="2.8">
     </a-text>
   </a-entity>
 
-  <!-- Smaller presence ring so it stays closer to the marker -->
+  <!-- Slightly smaller presence ring so it hugs the marker -->
   <a-entity
-    geometry="primitive: torus; radius: 0.2; tube: 0.015"
+    geometry="primitive: torus; radius: 0.25; tube: 0.02"
     material="color: #3a86ff; opacity: 0.85"
     position="0 0 0">
   </a-entity>
