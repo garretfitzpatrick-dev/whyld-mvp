@@ -39,15 +39,22 @@
     <!-- Marker (use printed HIRO marker) -->
     <a-marker preset="hiro">
       <!-- A simple floating text anchor in 3D space -->
-      <a-entity position="0 0.5 0" rotation="-90 0 0">
-        <a-text value="Point at the marker to reveal layers →" align="center" color="#222"
-                width="2.5"></a-text>
-      </a-entity>
-      <!-- A subtle ring as a 'presence' cue -->
-      <a-entity geometry="primitive: torus; radius: 0.35; tube: 0.02"
-                material="color: #3a86ff; opacity: 0.85"
-                position="0 0 0"></a-entity>
-    </a-marker>
+       <a-entity id="caption" position="0 0.8 0" look-at="[camera]">
+    <a-text
+      value="Point at the marker to reveal layers →"
+      align="center"
+      color="#222"
+      width="3">
+    </a-text>
+  </a-entity>
+
+  <!-- Smaller presence ring so it stays closer to the marker -->
+  <a-entity
+    geometry="primitive: torus; radius: 0.2; tube: 0.015"
+    material="color: #3a86ff; opacity: 0.85"
+    position="0 0 0">
+  </a-entity>
+</a-marker>
     <a-entity camera></a-entity>
   </a-scene>
 
