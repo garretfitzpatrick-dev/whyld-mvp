@@ -164,7 +164,7 @@
   <!-- AR Scene -->
   <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
     <!-- Marker (use printed HIRO marker) -->
-    <a-marker preset="hiro">
+    <a-marker preset="hiro" id="ww-marker">
       <!-- Text moved above and slightly toward the camera so it clears the printed marker -->
       <a-entity position="0 0.4 -0.6" rotation="-90 0 0">
         <a-text
@@ -187,9 +187,9 @@
   </a-scene>
 
   <!-- Lens Aura Overlay -->
-  <div id="lens-aura" class="lens-aura lens-explore"></div>
+  <div id="lens-aura" class="lens-aura"></div>
 
-  <!-- Lens content card -->
+  <!-- Lens content card (shown when marker visible) -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
     <p id="card-text">
@@ -230,7 +230,7 @@
     function setLens(lensLabel) {
       currentLensLabel = lensLabel;
 
-      // Update aura
+      // 1) Update aura immediately for visual feedback
       const lensKey = lensLabel.toLowerCase(); // "Explore" -> "explore"
       const aura = document.getElementById('lens-aura');
       aura.classList.remove(
@@ -242,7 +242,14 @@
       aura.classList.add('lens-' + lensKey);
     }
 
-    function updateCardForCurrentLens() {
+    // 2) If the card is currently visible, update its content right away
+      const cardEl = document.getElementById("card");
+      if (cardEl.style.display !== "none") {
+        updateCardForCurrentLens(false); // don't force show; just update content
+      }
+    }
+
+    function updateCardForCurrentLens(showIfHidden = true) {
       const titleEl = document.getElementById("card-title");
       const textEl  = document.getElementById("card-text");
       const linkEl  = document.getElementById("reflect-link");
@@ -260,8 +267,12 @@
         : `${FORM_URL_BASE}?lens=${encodeURIComponent(currentLensLabel)}`;
       linkEl.href = link;
 
-      cardEl.style.display = "block";
+      
+      if (showIfHidden) {
+        cardEl.style.display = "block";
+      }
     }
+      
 
     function hideCard() {
       document.getElementById("card").style.display = "none";
@@ -272,10 +283,10 @@
       // Initialize aura to default lens
       setLens(currentLensLabel);
 
-      const marker = document.querySelector('a-marker');
+      const marker = document.querySelector('ww-marker');
       if (marker) {
         marker.addEventListener('markerFound', () => {
-          updateCardForCurrentLens();
+          updateCardForCurrentLens(true);
         });
         marker.addEventListener('markerLost', () => {
           hideCard();
