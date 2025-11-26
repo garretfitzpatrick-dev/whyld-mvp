@@ -7,109 +7,111 @@
   <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    }
+  /* Bottom UI bar */
+  .ui {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    /* IMPORTANT: allow clicks */
+    pointer-events: auto;
+    z-index: 50;
+  }
 
-    /* Bottom UI bar */
-    .ui {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 12px;
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 8px 12px;
-      pointer-events: none;
-      z-index: 20;
-    }
+  .btn {
+    background: rgba(255,255,255,0.9);
+    border-radius: 999px;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    cursor: pointer;
+  }
 
-    .btn {
-      pointer-events: auto;
-      background: rgba(255,255,255,0.9);
-      border-radius: 999px;
-      padding: 8px 14px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-      cursor: pointer;
-    }
+  /* Lens content card */
+  .card {
+    position: fixed;
+    left: 50%;
+    top: 14px;
+    transform: translateX(-50%);
+    width: min(560px, 90%);
+    background: rgba(255,255,255,0.98);
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 14px;
+    display: none;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    z-index: 60;
+  }
 
-    /* Lens content card */
-    .card {
-      position: fixed;
-      left: 50%;
-      top: 14px;
-      transform: translateX(-50%);
-      width: min(560px, 90%);
-      background: rgba(255,255,255,0.98);
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 14px;
-      display: none;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-      z-index: 25;
-    }
+  .card h3 {
+    margin: 0 0 6px 0;
+    font-size: 18px;
+  }
 
-    .card h3 {
-      margin: 0 0 6px 0;
-      font-size: 18px;
-    }
+  .card p  {
+    margin: 8px 0;
+    font-size: 15px;
+    line-height: 1.35;
+  }
 
-    .card p  {
-      margin: 8px 0;
-      font-size: 15px;
-      line-height: 1.35;
-    }
+  .card .row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
 
-    .card .row {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+  .link {
+    color: #0b65c2;
+    text-decoration: underline;
+    cursor: pointer;
+  }
 
-    .link {
-      color: #0b65c2;
-      text-decoration: underline;
-      cursor: pointer;
-    }
+  .close {
+    margin-left: auto;
+    background: #f4f4f4;
+  }
 
-    .close {
-      margin-left: auto;
-      background: #f4f4f4;
-    }
+  /* Full-screen aura overlay */
+  .lens-aura {
+    position: fixed;
+    inset: 0;
+    pointer-events: none; /* IMPORTANT: this layer never blocks clicks */
+    z-index: 40;          /* Below UI and card */
+    transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
+    /* Stronger visible glow + subtle darkening */
+    background: radial-gradient(circle at center, transparent 55%, rgba(0,0,0,0.45) 100%);
+  }
 
-    /* Full-screen aura overlay */
-    .lens-aura {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 10; /* Above AR scene, below UI/card */
-      transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
-    }
+  /* Each lens uses a different inner glow */
+  .lens-explore {
+    box-shadow: 0 0 140px 50px rgba(80, 180, 255, 0.75) inset;
+  }
 
-    /* Each lens uses a different inner glow */
-    .lens-explore {
-      box-shadow: 0 0 120px 40px rgba(80, 180, 255, 0.45) inset;
-    }
+  .lens-serve {
+    box-shadow: 0 0 140px 50px rgba(100, 220, 160, 0.75) inset;
+  }
 
-    .lens-serve {
-      box-shadow: 0 0 120px 40px rgba(100, 220, 160, 0.45) inset;
-    }
+  .lens-create {
+    box-shadow: 0 0 140px 50px rgba(255, 180, 80, 0.75) inset;
+  }
 
-    .lens-create {
-      box-shadow: 0 0 120px 40px rgba(255, 180, 80, 0.45) inset;
-    }
-
-    .lens-inspire {
-      box-shadow: 0 0 120px 40px rgba(220, 120, 255, 0.45) inset;
-    }
-  </style>
+  .lens-inspire {
+    box-shadow: 0 0 140px 50px rgba(220, 120, 255, 0.75) inset;
+  }
+</style>
+  
 </head>
 <body>
   <!-- AR Scene -->
@@ -160,7 +162,7 @@
     <button class="btn" onclick="showLens('Serve')">Serve</button>
     <button class="btn" onclick="showLens('Create')">Create</button>
     <button class="btn" onclick="showLens('Inspire')">Inspire</button>
-    <!-- <button class="btn" onclick="showLens('Reflect')">Reflect</button> -->
+    <button class="btn" onclick="showLens('Reflect')">Reflect</button>
   </div>
 
   <script>
@@ -181,7 +183,8 @@
         'lens-explore',
         'lens-serve',
         'lens-create',
-        'lens-inspire'
+        'lens-inspire',
+        'lens-reflect'
       );
       aura.classList.add('lens-' + lensKey);
     }
