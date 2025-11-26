@@ -7,77 +7,108 @@
   <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
   <style>
-    body { margin:0; overflow:hidden; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-    .ui {
-      position: fixed; left: 0; right: 0; bottom: 12px;
-      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
-      padding: 8px 12px; pointer-events: none;
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
+
+    /* Bottom UI bar */
+    .ui {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 8px 12px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
     .btn {
       pointer-events: auto;
       background: rgba(255,255,255,0.9);
-      border-radius: 999px; padding: 8px 14px; border: 1px solid #ddd;
-      font-size: 14px; cursor: pointer;
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      cursor: pointer;
     }
+
+    /* Lens content card */
     .card {
-      position: fixed; left: 50%; top: 14px; transform: translateX(-50%);
-      width: min(560px, 90%); background: rgba(255,255,255,0.98);
-      border: 1px solid #ddd; border-radius: 14px; padding: 14px;
-      display: none; box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+      position: fixed;
+      left: 50%;
+      top: 14px;
+      transform: translateX(-50%);
+      width: min(560px, 90%);
+      background: rgba(255,255,255,0.98);
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 14px;
+      display: none;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+      z-index: 25;
     }
-    .card h3 { margin: 0 0 6px 0; font-size: 18px; }
-    .card p  { margin: 8px 0;  font-size: 15px; line-height: 1.35; }
-    .card .row { display:flex; gap:10px; margin-top: 10px; }
-    .link { color: #0b65c2; text-decoration: underline; cursor:pointer; }
-    .close { margin-left:auto; background:#f4f4f4; }
+
+    .card h3 {
+      margin: 0 0 6px 0;
+      font-size: 18px;
+    }
+
+    .card p  {
+      margin: 8px 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .card .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .link {
+      color: #0b65c2;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .close {
+      margin-left: auto;
+      background: #f4f4f4;
+    }
 
     /* Full-screen aura overlay */
-      .lens-aura {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 10; /* Above AR scene, below UI */
-        transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
-      }
-      
-      /* Each lens uses a different inner glow */
-      .lens-explore {
-        box-shadow: 0 0 120px 40px rgba(80, 180, 255, 0.35) inset;
-      }
-      
-      .lens-serve {
-        box-shadow: 0 0 120px 40px rgba(100, 220, 160, 0.35) inset;
-      }
-      
-      .lens-create {
-        box-shadow: 0 0 120px 40px rgba(255, 180, 80, 0.35) inset;
-      }
-      
-      .lens-inspire {
-        box-shadow: 0 0 120px 40px rgba(220, 120, 255, 0.35) inset;
-      }
-      
-      /* Example minimal UI styling */
-      .ui {
-        position: fixed;
-        bottom: 12px;
-        left: 0; right: 0;
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        z-index: 20;
-      }
-      
-      .ui button {
-        padding: 8px 14px;
-        border-radius: 8px;
-        border: none;
-        background: rgba(255,255,255,0.8);
-        font-size: 14px;
-      }
+    .lens-aura {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10; /* Above AR scene, below UI/card */
+      transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
+    }
 
-    
+    /* Each lens uses a different inner glow */
+    .lens-explore {
+      box-shadow: 0 0 120px 40px rgba(80, 180, 255, 0.45) inset;
+    }
+
+    .lens-serve {
+      box-shadow: 0 0 120px 40px rgba(100, 220, 160, 0.45) inset;
+    }
+
+    .lens-create {
+      box-shadow: 0 0 120px 40px rgba(255, 180, 80, 0.45) inset;
+    }
+
+    .lens-inspire {
+      box-shadow: 0 0 120px 40px rgba(220, 120, 255, 0.45) inset;
+    }
   </style>
 </head>
 <body>
@@ -85,36 +116,34 @@
   <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
     <!-- Marker (use printed HIRO marker) -->
     <a-marker preset="hiro">
-  <!-- Text moved above and slightly toward the camera so it clears the printed marker -->
-  <a-entity position="0 0.4 -0.6" rotation="-90 0 0">
-    <a-text
-      value="Point at the marker to reveal layers →"
-      align="center"
-      color="#222"
-      width="3.2">
-    </a-text>
-  </a-entity>
+      <!-- Text moved above and slightly toward the camera so it clears the printed marker -->
+      <a-entity position="0 0.4 -0.6" rotation="-90 0 0">
+        <a-text
+          value="Point at the marker to reveal layers →"
+          align="center"
+          color="#222"
+          width="3.2">
+        </a-text>
+      </a-entity>
 
-  <!-- Slightly smaller presence ring so it hugs the marker -->
-  <a-entity
-    geometry="primitive: torus; radius: 0.25; tube: 0.02"
-    material="color: #3a86ff; opacity: 0.85"
-    position="0 0 0">
-  </a-entity>
-</a-marker>
+      <!-- Slightly smaller presence ring so it hugs the marker -->
+      <a-entity
+        geometry="primitive: torus; radius: 0.25; tube: 0.02"
+        material="color: #3a86ff; opacity: 0.85"
+        position="0 0 0">
+      </a-entity>
+    </a-marker>
+
     <a-entity camera></a-entity>
   </a-scene>
 
-<!-- Lens Aura Overlay -->
+  <!-- Lens Aura Overlay -->
   <div id="lens-aura" class="lens-aura lens-explore"></div>
-  
 
-  
   <!-- Lens content card -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
     <p id="card-text">
-      <!-- Replace these with your own 50–80 word stories for each lens -->
       That old motorcycle by the window has crossed more miles than most of us will.
       Look closer at the worn grips and the patched saddle—each mark is a waypoint.
       What did this machine witness, and what did its rider learn along the way?
@@ -125,40 +154,18 @@
     </div>
   </div>
 
-<!-- UI Buttons (example) -->
-  <div class="ui">
-    <button onclick="setLens('explore')">Explore</button>
-    <button onclick="setLens('serve')">Serve</button>
-    <button onclick="setLens('create')">Create</button>
-    <button onclick="setLens('inspire')">Inspire</button>
-  </div>
-
-  <script>
-    function setLens(lensName) {
-      const aura = document.getElementById('lens-aura');
-      aura.classList.remove(
-        'lens-explore',
-        'lens-serve',
-        'lens-create',
-        'lens-inspire'
-      );
-      aura.classList.add(`lens-${lensName}`);
-    }
-  </script>
-  
-<!-- Bottom UI: lens buttons 
+  <!-- Bottom UI: lens buttons -->
   <div class="ui">
     <button class="btn" onclick="showLens('Explore')">Explore</button>
     <button class="btn" onclick="showLens('Serve')">Serve</button>
     <button class="btn" onclick="showLens('Create')">Create</button>
     <button class="btn" onclick="showLens('Inspire')">Inspire</button>
-    <button class="btn" onclick="showLens('Reflect')">Reflect</button>
+    <!-- <button class="btn" onclick="showLens('Reflect')">Reflect</button> -->
   </div>
-  -->
 
   <script>
-    // Paste your reflection form URL here:
-    const FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE"; // Typeform/Google/Airtable link
+    // TODO: replace with your real form URL
+    const FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE";
 
     const STORIES = {
       "Explore": "Replace with your Explore story (50–80 words).",
@@ -168,16 +175,46 @@
       "Reflect": "Replace with your Reflect prompt or question."
     };
 
-    function showLens(lens) {
-      document.getElementById("card-title").innerText = lens;
-      document.getElementById("card-text").innerText = STORIES[lens];
-      // Pre-fill a query param so your form knows the selected lens
-      const link = FORM_URL_BASE.includes("?") ? `${FORM_URL_BASE}&lens=${encodeURIComponent(lens)}` :
-                                                 `${FORM_URL_BASE}?lens=${encodeURIComponent(lens)}`;
-      document.getElementById("reflect-link").href = link;
-      document.getElementById("card").style.display = "block";
+    function setLensAura(lensKey) {
+      const aura = document.getElementById('lens-aura');
+      aura.classList.remove(
+        'lens-explore',
+        'lens-serve',
+        'lens-create',
+        'lens-inspire'
+      );
+      aura.classList.add('lens-' + lensKey);
     }
-    function hideCard(){ document.getElementById("card").style.display = "none"; }
+
+    function showLens(lensLabel) {
+      const lensKey = lensLabel.toLowerCase(); // "Explore" -> "explore"
+
+      // 1) Update the aura color
+      setLensAura(lensKey);
+
+      // 2) Update the card title and text
+      const titleEl = document.getElementById("card-title");
+      const textEl  = document.getElementById("card-text");
+      const linkEl  = document.getElementById("reflect-link");
+      const cardEl  = document.getElementById("card");
+
+      titleEl.innerText = lensLabel;
+      textEl.innerText  = STORIES[lensLabel] || "";
+
+      // 3) Update reflection link with ?lens= param
+      const urlHasQuery = FORM_URL_BASE.includes("?");
+      const link = urlHasQuery
+        ? `${FORM_URL_BASE}&lens=${encodeURIComponent(lensLabel)}`
+        : `${FORM_URL_BASE}?lens=${encodeURIComponent(lensLabel)}`;
+      linkEl.href = link;
+
+      // 4) Show the card
+      cardEl.style.display = "block";
+    }
+
+    function hideCard() {
+      document.getElementById("card").style.display = "none";
+    }
   </script>
 </body>
 </html>
