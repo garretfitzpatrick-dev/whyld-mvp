@@ -31,6 +31,53 @@
     .card .row { display:flex; gap:10px; margin-top: 10px; }
     .link { color: #0b65c2; text-decoration: underline; cursor:pointer; }
     .close { margin-left:auto; background:#f4f4f4; }
+
+    /* Full-screen aura overlay */
+      .lens-aura {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 10; /* Above AR scene, below UI */
+        transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
+      }
+      
+      /* Each lens uses a different inner glow */
+      .lens-explore {
+        box-shadow: 0 0 120px 40px rgba(80, 180, 255, 0.35) inset;
+      }
+      
+      .lens-serve {
+        box-shadow: 0 0 120px 40px rgba(100, 220, 160, 0.35) inset;
+      }
+      
+      .lens-create {
+        box-shadow: 0 0 120px 40px rgba(255, 180, 80, 0.35) inset;
+      }
+      
+      .lens-inspire {
+        box-shadow: 0 0 120px 40px rgba(220, 120, 255, 0.35) inset;
+      }
+      
+      /* Example minimal UI styling */
+      .ui {
+        position: fixed;
+        bottom: 12px;
+        left: 0; right: 0;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        z-index: 20;
+      }
+      
+      .ui button {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(255,255,255,0.8);
+        font-size: 14px;
+      }
+
+    
   </style>
 </head>
 <body>
@@ -58,6 +105,11 @@
     <a-entity camera></a-entity>
   </a-scene>
 
+<!-- Lens Aura Overlay -->
+  <div id="lens-aura" class="lens-aura lens-explore"></div>
+  
+
+  
   <!-- Lens content card -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
@@ -73,7 +125,28 @@
     </div>
   </div>
 
-  <!-- Bottom UI: lens buttons -->
+<!-- UI Buttons (example) -->
+  <div class="ui">
+    <button onclick="setLens('explore')">Explore</button>
+    <button onclick="setLens('serve')">Serve</button>
+    <button onclick="setLens('create')">Create</button>
+    <button onclick="setLens('inspire')">Inspire</button>
+  </div>
+
+  <script>
+    function setLens(lensName) {
+      const aura = document.getElementById('lens-aura');
+      aura.classList.remove(
+        'lens-explore',
+        'lens-serve',
+        'lens-create',
+        'lens-inspire'
+      );
+      aura.classList.add(`lens-${lensName}`);
+    }
+  </script>
+  
+<!-- Bottom UI: lens buttons 
   <div class="ui">
     <button class="btn" onclick="showLens('Explore')">Explore</button>
     <button class="btn" onclick="showLens('Serve')">Serve</button>
@@ -81,6 +154,7 @@
     <button class="btn" onclick="showLens('Inspire')">Inspire</button>
     <button class="btn" onclick="showLens('Reflect')">Reflect</button>
   </div>
+  -->
 
   <script>
     // Paste your reflection form URL here:
