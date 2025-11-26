@@ -14,6 +14,7 @@
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   }
 
+
   /* Bottom UI bar */
   .ui {
     position: fixed;
@@ -83,33 +84,41 @@
     background: #f4f4f4;
   }
 
-  /* Full-screen aura overlay */
-  .lens-aura {
-    position: fixed;
-    inset: 0;
-    pointer-events: none; /* IMPORTANT: this layer never blocks clicks */
-    z-index: 40;          /* Below UI and card */
-    transition: box-shadow 0.4s ease, background 0.4s ease, opacity 0.4s ease;
-    /* Stronger visible glow + subtle darkening */
-    background: radial-gradient(circle at center, transparent 55%, rgba(0,0,0,0.45) 100%);
-  }
+ /* Full-screen aura overlay */
+.lens-aura {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40; /* Below UI and card */
+  background: transparent; /* no full-screen wash */
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
 
-  /* Each lens uses a different inner glow */
-  .lens-explore {
-    box-shadow: 0 0 140px 50px rgba(80, 180, 255, 0.75) inset;
-  }
+/* Each lens uses a bold edge frame + glow */
+.lens-explore {
+  box-shadow:
+    0 0 0 10px rgba(80, 180, 255, 0.95) inset,   /* crisp inner border */
+    0 0 40px 18px rgba(80, 180, 255, 0.8) inset;  /* soft outer glow */
+}
 
-  .lens-serve {
-    box-shadow: 0 0 140px 50px rgba(100, 220, 160, 0.75) inset;
-  }
+.lens-serve {
+  box-shadow:
+    0 0 0 10px rgba(100, 220, 160, 0.95) inset,
+    0 0 40px 18px rgba(100, 220, 160, 0.8) inset;
+}
 
-  .lens-create {
-    box-shadow: 0 0 140px 50px rgba(255, 180, 80, 0.75) inset;
-  }
+.lens-create {
+  box-shadow:
+    0 0 0 10px rgba(255, 180, 80, 0.95) inset,
+    0 0 40px 18px rgba(255, 180, 80, 0.8) inset;
+}
 
-  .lens-inspire {
-    box-shadow: 0 0 140px 50px rgba(220, 120, 255, 0.75) inset;
-  }
+.lens-inspire {
+  box-shadow:
+    0 0 0 10px rgba(220, 120, 255, 0.95) inset,
+    0 0 40px 18px rgba(220, 120, 255, 0.8) inset;
+}
+
 </style>
   
 </head>
