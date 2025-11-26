@@ -3,17 +3,50 @@
 <head>
   <meta charset="utf-8">
   <title>Whyld World MVP</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Fullscreen + immersive viewport -->
+  <meta name="viewport"
+        content="width=device-width,
+                 initial-scale=1,
+                 maximum-scale=1,
+                 user-scalable=no,
+                 viewport-fit=cover">
+
+  <!-- Enable iOS fullscreen (standalone) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Enable Android fullscreen -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Optional but recommended if you want home-screen mode -->
+  <meta name="apple-mobile-web-app-title" content="Whyld World">
+  <!-- <link rel="apple-touch-icon" href="icon.png"> -->
+
   <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
+  <style>
+    /* Ensure the page occupies the full device screen */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;     /* prevent iOS scroll bounce */
+      position: fixed;      /* lock content to the screen */
+      top: 0;
+      left: 0;
+    }
+  </style>
+
 <style>
   body {
     margin: 0;
     overflow: hidden;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
   }
-
 
   /* Bottom UI bar */
   .ui {
