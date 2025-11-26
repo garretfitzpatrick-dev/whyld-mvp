@@ -191,47 +191,64 @@
       "Reflect": "Replace with your Reflect prompt or question."
     };
 
-    function setLensAura(lensKey) {
+// The lens currently selected by the user
+    let currentLensLabel = "Explore";
+
+    function setLens(lensLabel) {
+      currentLensLabel = lensLabel;
+
+      // Update aura
+      const lensKey = lensLabel.toLowerCase(); // "Explore" -> "explore"
       const aura = document.getElementById('lens-aura');
       aura.classList.remove(
         'lens-explore',
         'lens-serve',
         'lens-create',
-        'lens-inspire',
-        'lens-reflect'
+        'lens-inspire'
       );
       aura.classList.add('lens-' + lensKey);
     }
 
-    function showLens(lensLabel) {
-      const lensKey = lensLabel.toLowerCase(); // "Explore" -> "explore"
-
-      // 1) Update the aura color
-      setLensAura(lensKey);
-
-      // 2) Update the card title and text
+    function updateCardForCurrentLens() {
       const titleEl = document.getElementById("card-title");
       const textEl  = document.getElementById("card-text");
       const linkEl  = document.getElementById("reflect-link");
       const cardEl  = document.getElementById("card");
 
-      titleEl.innerText = lensLabel;
-      textEl.innerText  = STORIES[lensLabel] || "";
+      const story = STORIES[currentLensLabel] || "";
 
-      // 3) Update reflection link with ?lens= param
+      titleEl.innerText = currentLensLabel;
+      textEl.innerText  = story;
+
+      // Update reflection link with ?lens= param
       const urlHasQuery = FORM_URL_BASE.includes("?");
       const link = urlHasQuery
-        ? `${FORM_URL_BASE}&lens=${encodeURIComponent(lensLabel)}`
-        : `${FORM_URL_BASE}?lens=${encodeURIComponent(lensLabel)}`;
+        ? `${FORM_URL_BASE}&lens=${encodeURIComponent(currentLensLabel)}`
+        : `${FORM_URL_BASE}?lens=${encodeURIComponent(currentLensLabel)}`;
       linkEl.href = link;
 
-      // 4) Show the card
       cardEl.style.display = "block";
     }
 
     function hideCard() {
       document.getElementById("card").style.display = "none";
     }
+
+    // Hook card visibility to marker visibility
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initialize aura to default lens
+      setLens(currentLensLabel);
+
+      const marker = document.querySelector('a-marker');
+      if (marker) {
+        marker.addEventListener('markerFound', () => {
+          updateCardForCurrentLens();
+        });
+        marker.addEventListener('markerLost', () => {
+          hideCard();
+        });
+      }
+    });
   </script>
 </body>
 </html>
