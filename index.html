@@ -27,138 +27,137 @@
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
+  <!-- Base fullscreen / reset -->
   <style>
-    /* Ensure the page occupies the full device screen */
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      width: 100%;
       overflow: hidden;     /* prevent iOS scroll bounce */
-      position: fixed;      /* lock content to the screen */
+      background: black;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    /* Make AR scene fill the viewport */
+    a-scene {
+      position: fixed;
       top: 0;
       left: 0;
+      width: 100vw;
+      height: 100vh;
     }
   </style>
 
-<style>
-  body {
-    margin: 0;
-    overflow: hidden;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  }
+  <!-- Main UI styles -->
+  <style>
+    /* Bottom UI bar */
+    .ui {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 12px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 8px 12px;
+      pointer-events: auto;
+      z-index: 50;
+    }
 
-  /* Bottom UI bar */
-  .ui {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 12px;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 8px 12px;
-    /* IMPORTANT: allow clicks */
-    pointer-events: auto;
-    z-index: 50;
-  }
+    .btn {
+      background: rgba(255,255,255,0.9);
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-  .btn {
-    background: rgba(255,255,255,0.9);
-    border-radius: 999px;
-    padding: 8px 14px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-    cursor: pointer;
-  }
+    /* Lens content card */
+    .card {
+      position: fixed;
+      left: 50%;
+      top: 14px;
+      transform: translateX(-50%);
+      width: min(560px, 90%);
+      background: rgba(255,255,255,0.98);
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 14px;
+      display: none;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+      z-index: 60;
+    }
 
-  /* Lens content card */
-  .card {
-    position: fixed;
-    left: 50%;
-    top: 14px;
-    transform: translateX(-50%);
-    width: min(560px, 90%);
-    background: rgba(255,255,255,0.98);
-    border: 1px solid #ddd;
-    border-radius: 14px;
-    padding: 14px;
-    display: none;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-    z-index: 60;
-  }
+    .card h3 {
+      margin: 0 0 6px 0;
+      font-size: 18px;
+    }
 
-  .card h3 {
-    margin: 0 0 6px 0;
-    font-size: 18px;
-  }
+    .card p  {
+      margin: 8px 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
 
-  .card p  {
-    margin: 8px 0;
-    font-size: 15px;
-    line-height: 1.35;
-  }
+    .card .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-  .card .row {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
+    .link {
+      color: #0b65c2;
+      text-decoration: underline;
+      cursor: pointer;
+    }
 
-  .link {
-    color: #0b65c2;
-    text-decoration: underline;
-    cursor: pointer;
-  }
+    .close {
+      margin-left: auto;
+      background: #f4f4f4;
+    }
 
-  .close {
-    margin-left: auto;
-    background: #f4f4f4;
-  }
+    /* Full-screen aura overlay */
+    .lens-aura {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 40; /* Below UI and card */
+      background: transparent; /* no full-screen wash */
+      transition: box-shadow 0.3s ease, opacity 0.3s ease;
+    }
 
- /* Full-screen aura overlay */
-.lens-aura {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 40; /* Below UI and card */
-  background: transparent; /* no full-screen wash */
-  transition: box-shadow 0.3s ease, opacity 0.3s ease;
-}
+    /* Each lens uses a bold edge frame + glow */
+    .lens-explore {
+      box-shadow:
+        0 0 0 4px rgba(80, 180, 255, 0.7) inset,
+        0 0 40px 18px rgba(80, 180, 255, 0.4) inset;
+    }
 
-/* Each lens uses a bold edge frame + glow */
-.lens-explore {
-  box-shadow:
-    0 0 0 4px rgba(80, 180, 255, 0.7) inset,   /* crisp inner border */
-    0 0 40px 18px rgba(80, 180, 255, 0.4) inset;  /* soft outer glow */
-}
+    .lens-serve {
+      box-shadow:
+        0 0 0 4px rgba(100, 220, 160, 0.7) inset,
+        0 0 40px 18px rgba(100, 220, 160, 0.4) inset;
+    }
 
-.lens-serve {
-  box-shadow:
-    0 0 0 4px rgba(100, 220, 160, 0.7) inset,
-    0 0 40px 18px rgba(100, 220, 160, 0.4) inset;
-}
+    .lens-create {
+      box-shadow:
+        0 0 0 4px rgba(255, 180, 80, 0.7) inset,
+        0 0 40px 18px rgba(255, 180, 80, 0.4) inset;
+    }
 
-.lens-create {
-  box-shadow:
-    0 0 0 4px rgba(255, 180, 80, 0.7) inset,
-    0 0 40px 18px rgba(255, 180, 80, 0.4) inset;
-}
+    .lens-inspire {
+      box-shadow:
+        0 0 0 4px rgba(220, 120, 255, 0.7) inset,
+        0 0 40px 18px rgba(220, 120, 255, 0.4) inset;
+    }
 
-.lens-inspire {
-  box-shadow:
-    0 0 0 4px rgba(220, 120, 255, 0.7) inset,
-    0 0 40px 18px rgba(220, 120, 255, 0.4) inset;
-}
- 
-.lens-reflect {
-  box-shadow:
-    0 0 0 4px rgba(255, 255, 255, 0.7) inset,
-    0 0 40px 18px rgba(220, 120, 255, 0.4) inset;
-
-</style>
-  
+    .lens-reflect {
+      box-shadow:
+        0 0 0 4px rgba(255, 255, 255, 0.7) inset,
+        0 0 40px 18px rgba(220, 120, 255, 0.4) inset;
+    }
+  </style>
 </head>
 <body>
   <!-- AR Scene -->
@@ -205,11 +204,11 @@
 
   <!-- Bottom UI: lens buttons -->
   <div class="ui">
-    <button class="btn" onclick="showLens('Explore')">Explore</button>
-    <button class="btn" onclick="showLens('Serve')">Serve</button>
-    <button class="btn" onclick="showLens('Create')">Create</button>
-    <button class="btn" onclick="showLens('Inspire')">Inspire</button>
-    <button class="btn" onclick="showLens('Reflect')">Reflect</button>
+    <button class="btn" onclick="setLens('Explore')">Explore</button>
+    <button class="btn" onclick="setLens('Serve')">Serve</button>
+    <button class="btn" onclick="setLens('Create')">Create</button>
+    <button class="btn" onclick="setLens('Inspire')">Inspire</button>
+    <button class="btn" onclick="setLens('Reflect')">Reflect</button>
   </div>
 
   <script>
@@ -224,7 +223,7 @@
       "Reflect": "Replace with your Reflect prompt or question."
     };
 
-// The lens currently selected by the user
+    // The lens currently selected by the user
     let currentLensLabel = "Explore";
 
     function setLens(lensLabel) {
@@ -237,12 +236,12 @@
         'lens-explore',
         'lens-serve',
         'lens-create',
-        'lens-inspire'
+        'lens-inspire',
+        'lens-reflect'
       );
       aura.classList.add('lens-' + lensKey);
-    }
 
-    // 2) If the card is currently visible, update its content right away
+      // 2) If the card is currently visible, update its content right away
       const cardEl = document.getElementById("card");
       if (cardEl.style.display !== "none") {
         updateCardForCurrentLens(false); // don't force show; just update content
@@ -267,12 +266,10 @@
         : `${FORM_URL_BASE}?lens=${encodeURIComponent(currentLensLabel)}`;
       linkEl.href = link;
 
-      
       if (showIfHidden) {
         cardEl.style.display = "block";
       }
     }
-      
 
     function hideCard() {
       document.getElementById("card").style.display = "none";
@@ -283,7 +280,7 @@
       // Initialize aura to default lens
       setLens(currentLensLabel);
 
-      const marker = document.querySelector('ww-marker');
+      const marker = document.querySelector('#ww-marker');
       if (marker) {
         marker.addEventListener('markerFound', () => {
           updateCardForCurrentLens(true);
