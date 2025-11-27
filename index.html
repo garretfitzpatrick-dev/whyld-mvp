@@ -21,7 +21,6 @@
 
   <!-- Optional but recommended if you want home-screen mode -->
   <meta name="apple-mobile-web-app-title" content="Whyld World">
-  <!-- <link rel="apple-touch-icon" href="icon.png"> -->
 
   <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
@@ -34,6 +33,7 @@
       padding: 0;
       overflow: hidden;     /* prevent iOS scroll bounce */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: black;
     }
   </style>
 
@@ -120,32 +120,27 @@
     /* Each lens uses a bold edge frame + glow */
     .lens-explore {
       box-shadow:
-        0 0 0 4px rgba(80, 180, 255, 0.7) inset,
-        0 0 40px 18px rgba(80, 180, 255, 0.4) inset;
+        0 0 0 3px rgba(80, 180, 255, 0.7) inset;
     }
 
     .lens-serve {
       box-shadow:
-        0 0 0 4px rgba(100, 220, 160, 0.7) inset,
-        0 0 40px 18px rgba(100, 220, 160, 0.4) inset;
+        0 0 0 3px rgba(100, 220, 160, 0.7) inset;
     }
 
     .lens-create {
       box-shadow:
-        0 0 0 4px rgba(255, 180, 80, 0.7) inset,
-        0 0 40px 18px rgba(255, 180, 80, 0.4) inset;
+        0 0 0 3px rgba(255, 180, 80, 0.7) inset;
     }
 
     .lens-inspire {
       box-shadow:
-        0 0 0 4px rgba(220, 120, 255, 0.7) inset,
-        0 0 40px 18px rgba(220, 120, 255, 0.4) inset;
+        0 0 0 3px rgba(220, 120, 255, 0.7) inset;
     }
 
     .lens-reflect {
       box-shadow:
-        0 0 0 4px rgba(255, 255, 255, 0.7) inset,
-        0 0 40px 18px rgba(220, 120, 255, 0.4) inset;
+        0 0 0 3px rgba(255, 255, 255, 0.7) inset;
     }
   </style>
 </head>
@@ -196,4 +191,265 @@
   <div class="ui">
     <button class="btn" onclick="setLens('Explore')">Explore</button>
     <button class="btn" onclick="setLens('Serve')">Serve</button>
-    <button class="btn" onclick=
+    <button class="btn" onclick="setLens('Create')">Create</button>
+    <button class="btn" onclick="setLens('Inspire')">Inspire</button>
+    <button class="btn" onclick="setLens('Reflect')">Reflect</button>
+  </div>
+
+  <script>
+    // =============================
+    // CONFIG: reflection form link
+    // =============================
+    var FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE";
+
+    // =============================
+    // CONFIG: default stories by lens (fallback)
+    // =============================
+    var STORIES = {
+      "Explore": "Replace with your Explore story (50–80 words).",
+      "Serve":   "Replace with your Serve story (50–80 words).",
+      "Create":  "Replace with your Create story (50–80 words).",
+      "Inspire": "Replace with your Inspire story (50–80 words).",
+      "Reflect": "Replace with your Reflect prompt or question."
+    };
+
+    // =============================
+    // CONFIG: place-specific content
+    // =============================
+    var CONTENT = {
+      // Marker-specific content for the HIRO marker
+      "hiro_marker": {
+        "Explore": "Marker / Explore: a portable portal, carried from desk to street. This space is your testbed for layering meaning onto the world.",
+        "Serve":   "Marker / Serve: imagine this marker as a tiny beacon for causes you care about.",
+        "Create":  "Marker / Create: this printed square is the simplest possible canvas. What could you build from here?",
+        "Inspire": "Marker / Inspire: every prototype starts with something this small.",
+        "Reflect": "Marker / Reflect: what are you really trying to learn from this experiment?"
+      },
+
+      // Example GPS zone (Harvard Square demo)
+      "harvard_square_demo": {
+        "Explore": "Harvard Square / Explore: this area has carried ideas, protests, and discoveries across generations.",
+        "Serve":   "Harvard Square / Serve: within a short walk, multiple organizations support housing, food, and education.",
+        "Create":  "Harvard Square / Create: street performance, bookstores, and art spaces all converge here.",
+        "Inspire": "Harvard Square / Inspire: many people started new chapters of their lives on these streets.",
+        "Reflect": "Harvard Square / Reflect: when you think of 'this place,' what comes to mind first?"
+      }
+    };
+
+    // =============================
+    // CONFIG: GPS zones
+    // =============================
+    var ZONES = [
+      {
+        id: "harvard_square_demo",
+        lat: 42.3733,      // placeholder
+        lon: -71.1190,     // placeholder
+        radiusM: 50        // radius in meters
+      }
+    ];
+
+    // =============================
+    // STATE
+    // =============================
+    var currentLensLabel = "Explore";   // current lens
+    var currentContext   = null;        // { type: 'marker' | 'zone', id: string }
+    var markerVisible    = false;
+    var activeZoneId     = null;
+
+    var userLat = null;
+    var userLon = null;
+
+    // =============================
+    // LENS / AURA
+    // =============================
+    function setLens(lensLabel) {
+      currentLensLabel = lensLabel;
+
+      // Update aura
+      var lensKey = lensLabel.toLowerCase();
+      var aura = document.getElementById('lens-aura');
+      aura.classList.remove(
+        'lens-explore',
+        'lens-serve',
+        'lens-create',
+        'lens-inspire',
+        'lens-reflect'
+      );
+      aura.classList.add('lens-' + lensKey);
+
+      // If the card is currently visible and we have a context, update content
+      var cardEl = document.getElementById("card");
+      if (cardEl.style.display !== "none" && currentContext) {
+        updateCardForCurrentLens(false); // don't force show; just update content
+      }
+    }
+
+    // =============================
+    // CARD CONTENT
+    // =============================
+    function updateCardForCurrentLens(showIfHidden) {
+      if (typeof showIfHidden === "undefined") {
+        showIfHidden = true;
+      }
+
+      var titleEl = document.getElementById("card-title");
+      var textEl  = document.getElementById("card-text");
+      var linkEl  = document.getElementById("reflect-link");
+      var cardEl  = document.getElementById("card");
+
+      if (!currentContext) {
+        if (showIfHidden) {
+          cardEl.style.display = "none";
+        }
+        return;
+      }
+
+      var ctxId = currentContext.id;
+      var placeContent = CONTENT[ctxId];
+      var story = "";
+
+      if (placeContent && placeContent[currentLensLabel]) {
+        story = placeContent[currentLensLabel];
+      } else {
+        story = STORIES[currentLensLabel] || "";
+      }
+
+      titleEl.innerText = currentLensLabel;
+      textEl.innerText  = story;
+
+      // Build reflection link with lens + context
+      var params = [];
+      params.push("lens=" + encodeURIComponent(currentLensLabel));
+      if (currentContext && currentContext.id) {
+        params.push("context=" + encodeURIComponent(currentContext.id));
+      }
+
+      var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
+      var link = urlHasQuery
+        ? FORM_URL_BASE + "&" + params.join("&")
+        : FORM_URL_BASE + "?" + params.join("&");
+
+      linkEl.href = link;
+
+      if (showIfHidden) {
+        cardEl.style.display = "block";
+      }
+    }
+
+    function hideCard() {
+      document.getElementById("card").style.display = "none";
+      // We keep currentContext so new triggers can re-use it if needed
+    }
+
+    // =============================
+    // GEOLOCATION / ZONES
+    // =============================
+    function startGeoWatch() {
+      if (!navigator.geolocation) {
+        console.warn("Geolocation not available in this browser.");
+        return;
+      }
+
+      navigator.geolocation.watchPosition(
+        function (pos) {
+          userLat = pos.coords.latitude;
+          userLon = pos.coords.longitude;
+          checkNearbyZones();
+        },
+        function (err) {
+          console.warn("Geolocation error:", err);
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 20000
+        }
+      );
+    }
+
+    function checkNearbyZones() {
+      var i;
+      var zone;
+      var nearestZone = null;
+
+      for (i = 0; i < ZONES.length; i++) {
+        zone = ZONES[i];
+        if (isInsideZone(userLat, userLon, zone)) {
+          nearestZone = zone;
+          break; // simple: first match wins
+        }
+      }
+
+      if (nearestZone) {
+        if (activeZoneId !== nearestZone.id) {
+          activeZoneId = nearestZone.id;
+          // Only switch context if marker is NOT visible
+          if (!markerVisible) {
+            currentContext = { type: 'zone', id: activeZoneId };
+            updateCardForCurrentLens(true);
+          }
+        }
+      } else {
+        // Left all zones
+        activeZoneId = null;
+        if (!markerVisible) {
+          currentContext = null;
+          hideCard();
+        }
+      }
+    }
+
+    function isInsideZone(userLat, userLon, zone) {
+      if (userLat == null || userLon == null) return false;
+
+      var R = 6371e3; // Earth radius in meters
+      var dLat = (zone.lat - userLat) * Math.PI / 180;
+      var dLon = (zone.lon - userLon) * Math.PI / 180;
+
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(userLat * Math.PI / 180) * Math.cos(zone.lat * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var distance = R * c;
+
+      return distance <= zone.radiusM;
+    }
+
+    // =============================
+    // INIT: marker + geolocation
+    // =============================
+    window.addEventListener('DOMContentLoaded', function () {
+      // Initialize aura to default lens
+      setLens(currentLensLabel);
+
+      // Marker-based triggers
+      var marker = document.querySelector('#ww-marker');
+      if (marker) {
+        marker.addEventListener('markerFound', function () {
+          markerVisible = true;
+          currentContext = { type: 'marker', id: 'hiro_marker' };
+          updateCardForCurrentLens(true);
+        });
+
+        marker.addEventListener('markerLost', function () {
+          markerVisible = false;
+
+          if (activeZoneId) {
+            // Fall back to zone if we are inside one
+            currentContext = { type: 'zone', id: activeZoneId };
+            updateCardForCurrentLens(true);
+          } else {
+            currentContext = null;
+            hideCard();
+          }
+        });
+      }
+
+      // Start GPS watching for zones
+      startGeoWatch();
+    });
+  </script>
+</body>
+</html>
