@@ -35,7 +35,6 @@
       overflow: hidden;     /* prevent iOS scroll bounce */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
-
   </style>
 
   <!-- Main UI styles -->
@@ -179,7 +178,7 @@
   <!-- Lens Aura Overlay -->
   <div id="lens-aura" class="lens-aura"></div>
 
-  <!-- Lens content card (shown when marker visible) -->
+  <!-- Lens content card (marker or zone controlled) -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
     <p id="card-text">
@@ -197,90 +196,4 @@
   <div class="ui">
     <button class="btn" onclick="setLens('Explore')">Explore</button>
     <button class="btn" onclick="setLens('Serve')">Serve</button>
-    <button class="btn" onclick="setLens('Create')">Create</button>
-    <button class="btn" onclick="setLens('Inspire')">Inspire</button>
-    <button class="btn" onclick="setLens('Reflect')">Reflect</button>
-  </div>
-
-  <script>
-    // TODO: replace with your real form URL
-    const FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE";
-
-    const STORIES = {
-      "Explore": "Replace with your Explore story (50–80 words).",
-      "Serve":   "Replace with your Serve story (50–80 words).",
-      "Create":  "Replace with your Create story (50–80 words).",
-      "Inspire": "Replace with your Inspire story (50–80 words).",
-      "Reflect": "Replace with your Reflect prompt or question."
-    };
-
-    // The lens currently selected by the user
-    let currentLensLabel = "Explore";
-
-    function setLens(lensLabel) {
-      currentLensLabel = lensLabel;
-
-      // 1) Update aura immediately for visual feedback
-      const lensKey = lensLabel.toLowerCase(); // "Explore" -> "explore"
-      const aura = document.getElementById('lens-aura');
-      aura.classList.remove(
-        'lens-explore',
-        'lens-serve',
-        'lens-create',
-        'lens-inspire',
-        'lens-reflect'
-      );
-      aura.classList.add('lens-' + lensKey);
-
-      // 2) If the card is currently visible, update its content right away
-      const cardEl = document.getElementById("card");
-      if (cardEl.style.display !== "none") {
-        updateCardForCurrentLens(false); // don't force show; just update content
-      }
-    }
-
-    function updateCardForCurrentLens(showIfHidden = true) {
-      const titleEl = document.getElementById("card-title");
-      const textEl  = document.getElementById("card-text");
-      const linkEl  = document.getElementById("reflect-link");
-      const cardEl  = document.getElementById("card");
-
-      const story = STORIES[currentLensLabel] || "";
-
-      titleEl.innerText = currentLensLabel;
-      textEl.innerText  = story;
-
-      // Update reflection link with ?lens= param
-      const urlHasQuery = FORM_URL_BASE.includes("?");
-      const link = urlHasQuery
-        ? `${FORM_URL_BASE}&lens=${encodeURIComponent(currentLensLabel)}`
-        : `${FORM_URL_BASE}?lens=${encodeURIComponent(currentLensLabel)}`;
-      linkEl.href = link;
-
-      if (showIfHidden) {
-        cardEl.style.display = "block";
-      }
-    }
-
-    function hideCard() {
-      document.getElementById("card").style.display = "none";
-    }
-
-    // Hook card visibility to marker visibility
-    window.addEventListener('DOMContentLoaded', () => {
-      // Initialize aura to default lens
-      setLens(currentLensLabel);
-
-      const marker = document.querySelector('#ww-marker');
-      if (marker) {
-        marker.addEventListener('markerFound', () => {
-          updateCardForCurrentLens(true);
-        });
-        marker.addEventListener('markerLost', () => {
-          hideCard();
-        });
-      }
-    });
-  </script>
-</body>
-</html>
+    <button class="btn" onclick=
