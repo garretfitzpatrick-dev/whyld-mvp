@@ -271,6 +271,8 @@
   var userLat = null;
   var userLon = null;
 
+  var devMode = false;
+
   // =============================
   // LOAD CONTENT FROM API
   // =============================
@@ -381,6 +383,7 @@
   }
 
   function debugSetLocation(locationId, type) {
+    devMode = true; // prevent geolocation from overriding 
     // type: 'marker' or 'zone'
     currentLocation = { type: type, id: locationId };
   
@@ -433,6 +436,7 @@
   }
 
   function checkNearbyZones() {
+    if (devMode) return; // 🔥 do nothing in dev mode
     var i;
     var zone;
     var nearestZone = null;
