@@ -207,7 +207,7 @@
     // =============================
     // CONFIG: reflection form link
     // =============================
-    var FORM_URL_BASE = "https://YOUR_FORM_LINK_HERE";
+    var FORM_URL_BASE = "https://airtable.com/appXPj1T4lTXjx1kD/shrNSUnk4yNRibuOx";
 
     // =============================
     // CONFIG: default stories by lens (fallback)
@@ -259,7 +259,7 @@
     // STATE
     // =============================
     var currentLensLabel = "Explore";   // current lens
-    var currentContext   = null;        // { type: 'marker' | 'zone', id: string }
+    var currentLocation   = null;        // { type: 'marker' | 'zone', id: string }
     var markerVisible    = false;
     var activeZoneId     = null;
 
@@ -284,9 +284,9 @@
       );
       aura.classList.add('lens-' + lensKey);
 
-      // If the card is currently visible and we have a context, update content
+      // If the card is currently visible and we have a location, update content
       var cardEl = document.getElementById("card");
-      if (cardEl.style.display !== "none" && currentContext) {
+      if (cardEl.style.display !== "none" && currentLocation) {
         updateCardForCurrentLens(false); // don't force show; just update content
       }
     }
@@ -304,14 +304,14 @@
       var linkEl  = document.getElementById("reflect-link");
       var cardEl  = document.getElementById("card");
 
-      if (!currentContext) {
+      if (!currentLocation) {
         if (showIfHidden) {
           cardEl.style.display = "none";
         }
         return;
       }
 
-      var ctxId = currentContext.id;
+      var ctxId = currentLocation.id;
       var placeContent = CONTENT[ctxId];
       var story = "";
 
@@ -324,19 +324,23 @@
       titleEl.innerText = currentLensLabel;
       textEl.innerText  = story;
 
-      // Build reflection link with lens + context
-      var params = [];
-      params.push("lens=" + encodeURIComponent(currentLensLabel));
-      if (currentContext && currentContext.id) {
-        params.push("context=" + encodeURIComponent(currentContext.id));
-      }
+    // Build Airtable reflection link with prefilled fields
+    var params = [];
+    
+    // These must match your Airtable field names: "Lens" and "Location"
+    params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
+    
+    if (currentLocation && currentLocation.id) {
+      params.push("prefill_Location=" + encodeURIComponent(currentLocation.id));
+    }
+    
+    var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
+    var link = urlHasQuery
+      ? FORM_URL_BASE + "&" + params.join("&")
+      : FORM_URL_BASE + "?" + params.join("&");
+    
+    linkEl.href = link;
 
-      var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
-      var link = urlHasQuery
-        ? FORM_URL_BASE + "&" + params.join("&")
-        : FORM_URL_BASE + "?" + params.join("&");
-
-      linkEl.href = link;
 
       if (showIfHidden) {
         cardEl.style.display = "block";
@@ -345,7 +349,7 @@
 
     function hideCard() {
       document.getElementById("card").style.display = "none";
-      // We keep currentContext so new triggers can re-use it if needed
+      // We keep currentLocation so new triggers can re-use it if needed
     }
 
     // =============================
@@ -390,9 +394,9 @@
       if (nearestZone) {
         if (activeZoneId !== nearestZone.id) {
           activeZoneId = nearestZone.id;
-          // Only switch context if marker is NOT visible
+          // Only switch location if marker is NOT visible
           if (!markerVisible) {
-            currentContext = { type: 'zone', id: activeZoneId };
+            currentLocation = { type: 'zone', id: activeZoneId };
             updateCardForCurrentLens(true);
           }
         }
@@ -400,7 +404,7 @@
         // Left all zones
         activeZoneId = null;
         if (!markerVisible) {
-          currentContext = null;
+          currentLocation = null;
           hideCard();
         }
       }
@@ -436,7 +440,7 @@
       if (marker) {
         marker.addEventListener('markerFound', function () {
           markerVisible = true;
-          currentContext = { type: 'marker', id: 'hiro_marker' };
+          currentLocation = { type: 'marker', id: 'hiro_marker' };
           updateCardForCurrentLens(true);
         });
 
@@ -445,10 +449,10 @@
 
           if (activeZoneId) {
             // Fall back to zone if we are inside one
-            currentContext = { type: 'zone', id: activeZoneId };
+            currentLocation = { type: 'zone', id: activeZoneId };
             updateCardForCurrentLens(true);
           } else {
-            currentContext = null;
+            currentLocation = null;
             hideCard();
           }
         });
