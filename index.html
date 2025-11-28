@@ -79,6 +79,23 @@
       z-index: 60;
     }
 
+    .dev-ui {
+      position: fixed;
+      top: 14px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 70;
+      pointer-events: auto;
+    }
+    
+    .dev-ui .btn {
+      font-size: 11px;
+      padding: 4px 10px;
+      opacity: 0.85;
+    }
+
     .card h3 {
       margin: 0 0 6px 0;
       font-size: 18px;
@@ -353,6 +370,22 @@
     // We keep currentLocation so new triggers can re-use it if needed
   }
 
+  function debugSetLocation(locationId, type) {
+    // type: 'marker' or 'zone'
+    currentLocation = { type: type, id: locationId };
+  
+    if (type === 'marker') {
+      markerVisible = true;
+      activeZoneId = null;
+    } else if (type === 'zone') {
+      markerVisible = false;
+      activeZoneId = locationId;
+    }
+  
+    updateCardForCurrentLens(true);
+  }
+
+  
   // =============================
   // GEOLOCATION / ZONES
   // =============================
