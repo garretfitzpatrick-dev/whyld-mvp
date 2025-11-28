@@ -103,10 +103,15 @@
 
     .card p  {
       margin: 8px 0;
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.35;
     }
 
+    #card-text.collapsed {
+      max-height: 4.5em;  /* about 3 lines */
+      overflow: hidden;
+    }
+    
     .card .row {
       display: flex;
       gap: 10px;
@@ -164,6 +169,31 @@
     0 0 0 5px rgba(255, 255, 255, 0.9) inset,
     0 0 30px 16px rgba(255, 255, 255, 0.35) inset;
 }
+
+.reflections {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  font-size: 13px;
+  max-height: 90px;
+  overflow-y: auto;
+}
+
+.reflections-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#reflections-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reflection-item {
+  margin: 2px 0;
+}
     
   </style>
   
@@ -200,15 +230,25 @@
   <!-- Lens content card (marker or zone controlled) -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
-    <p id="card-text">
-      That old motorcycle by the window has crossed more miles than most of us will.
-      Look closer at the worn grips and the patched saddle—each mark is a waypoint.
-      What did this machine witness, and what did its rider learn along the way?
+    <p id="card-text" class="collapsed">
+    That old motorcycle by the window has crossed more miles than most of us will.
+    ...
     </p>
+    <button id="story-toggle" class="link" type="button" onclick="toggleStoryExpand()">
+      More
+    </button>
+    
+    <div id="reflections" class="reflections" style="display:none;">
+      <span class="reflections-title">Reflections here</span>
+      <ul id="reflections-list"></ul>
+    </div>
+
+    
     <div class="row">
       <a id="reflect-link" class="link" href="#" target="_blank">Leave a reflection</a>
       <button class="btn close" onclick="hideCard()">Close</button>
     </div>
+
   </div>
 
   <!-- Bottom UI: lens buttons -->
@@ -260,9 +300,15 @@
   // Your Worker content endpoint:
   var CONTENT_API_URL = "https://whyld-world-worker.garret-fitzpatrick.workers.dev/api/content";
 
+  var REFLECTIONS_API_URL = "https://whyld-world-worker.garret-fitzpatrick.workers.dev/api/reflections";
+  var reflectionsCache = {}; // key: locationId|lens -> array of reflections
+
+  
   // =============================
   // STATE
   // =============================
+  
+  var storyExpanded = false;
   var currentLensLabel = "Explore";   // current lens
   var currentLocation   = null;        // { type: 'marker' | 'zone', id: string }
   var markerVisible    = false;
@@ -357,6 +403,11 @@
     titleEl.innerText = currentLensLabel;
     textEl.innerText  = story;
 
+    storyExpanded = false;
+    textEl.classList.add("collapsed");
+    document.getElementById("story-toggle").innerText = "More";
+
+    
     // Build Airtable reflection link with prefilled fields
     var params = [];
     // These names must match your Airtable form field names ("Lens", "Location")
@@ -372,9 +423,15 @@
 
     linkEl.href = link;
 
+    
+
     if (showIfHidden) {
       cardEl.style.display = "block";
     }
+    
+    // After we set the story and reflection link, load reflections
+    loadReflectionsForCurrentLocationAndLens();
+    
   }
 
   function hideCard() {
@@ -486,6 +543,95 @@
     return distance <= zone.radiusM;
   }
 
+
+  function toggleStoryExpand() {
+  var textEl = document.getElementById("card-text");
+  var btnEl  = document.getElementById("story-toggle");
+
+  storyExpanded = !storyExpanded;
+
+  if (storyExpanded) {
+    textEl.classList.remove("collapsed");
+    btnEl.innerText = "Less";
+  } else {
+    textEl.classList.add("collapsed");
+    btnEl.innerText = "More";
+  }
+}
+
+  function loadReflectionsForCurrentLocationAndLens() {
+  if (!currentLocation || !REFLECTIONS_API_URL) {
+    renderReflections([]);
+    return;
+  }
+
+  var locationId = currentLocation.id;
+  var lens = currentLensLabel;
+  var key = locationId + "|" + lens;
+
+  // Use cache if we already loaded these
+  if (reflectionsCache[key]) {
+    renderReflections(reflectionsCache[key]);
+    return;
+  }
+
+  var url = REFLECTIONS_API_URL +
+    "?locationId=" + encodeURIComponent(locationId) +
+    "&lens=" + encodeURIComponent(lens);
+
+  fetch(url)
+    .then(function (resp) {
+      if (!resp.ok) throw new Error("Reflections API error: " + resp.status);
+      return resp.json();
+    })
+    .then(function (data) {
+      var refs = (data && data.reflections) || [];
+      reflectionsCache[key] = refs;
+      renderReflections(refs);
+    })
+    .catch(function (err) {
+      console.warn("Failed to load reflections:", err);
+      renderReflections([]);
+    });
+}
+
+function renderReflections(refs) {
+  var container = document.getElementById("reflections");
+  var listEl = document.getElementById("reflections-list");
+
+  if (!container || !listEl) return;
+
+  if (!refs || refs.length === 0) {
+    container.style.display = "none";
+    listEl.innerHTML = "";
+    return;
+  }
+
+  container.style.display = "block";
+
+  // Show up to 3 reflections, truncated
+  var maxToShow = Math.min(refs.length, 3);
+  var html = "";
+
+  for (var i = 0; i < maxToShow; i++) {
+    var text = refs[i].text || "";
+    if (text.length > 140) {
+      text = text.slice(0, 137) + "...";
+    }
+    html += '<li class="reflection-item">"' + escapeHtml(text) + '"</li>';
+  }
+
+  listEl.innerHTML = html;
+}
+
+// Simple HTML escaping to avoid issues
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+  
   // =============================
   // INIT: marker + geolocation + content load
   // =============================
