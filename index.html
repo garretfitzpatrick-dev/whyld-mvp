@@ -220,10 +220,10 @@
     <button class="btn" onclick="setLens('Reflect')">Reflect</button>
 
   <!-- Dev buttons (for testing locations without being there) -->
-    <button class="btn dev-btn" onclick="debugSetContext('hiro_marker', 'marker')">
+    <button class="btn dev-btn" onclick="debugSetLocation('hiro_marker', 'marker')">
       Dev: Marker
     </button>
-    <button class="btn dev-btn" onclick="debugSetContext('harvard_square_demo', 'zone')">
+    <button class="btn dev-btn" onclick="debugSetLocation('harvard_square_demo', 'zone')">
       Dev: Harvard Sq
     </button>
 
@@ -313,7 +313,7 @@
     );
     aura.classList.add('lens-' + lensKey);
 
-    // If the card is currently visible and we have a context, update content
+    // If the card is currently visible and we have a location, update content
     var cardEl = document.getElementById("card");
     if (cardEl.style.display !== "none" && currentLocation) {
       updateCardForCurrentLens(false); // don't force show; just update content
@@ -448,7 +448,7 @@
     if (nearestZone) {
       if (activeZoneId !== nearestZone.id) {
         activeZoneId = nearestZone.id;
-        // Only switch context if marker is NOT visible
+        // Only switch location if marker is NOT visible
         if (!markerVisible) {
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
