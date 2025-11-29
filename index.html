@@ -298,6 +298,7 @@
       <ul id="reflections-list"></ul>
     </div>
 
+    <div id="location-label" class="location-label"></div>
     
     <div class="row">
       <a id="reflect-link" class="link" href="#" target="_blank">Leave a reflection</a>
@@ -520,20 +521,23 @@ function updateLocationLabelFromCurrentLocation() {
     return;
   }
 
+  var baseLabel = "";
+  
   if (currentLocation.type === "marker") {
     // You can change this label text later if you add more markers
-    el.innerText = "Marker: hiro_marker";
+    baseLabel = "Marker: hiro_marker";
   } else if (currentLocation.type === "zone") {
     var zoneId = currentLocation.id;
     var label = zoneId;
 
     if (Array.isArray(ZONES)) {
       var z = ZONES.find(function (zone) { return zone.id === zoneId; });
-      if (z && z.label) label = z.label;
+      if (z && z.label) {label = z.label;
     }
-
-    el.innerText = label;
+    }
+    baseLabel = label;
   }
+  el.innerText = baseLabel;
 }
 
   
@@ -599,25 +603,26 @@ function updateLocationLabelFromCurrentLocation() {
     var zone;
     var nearestZone = null;
 
-    for (i = 0; i < ZONES.length; i++) {
-      zone = ZONES[i];
-      if (isInsideZone(userLat, userLon, zone)) {
-        nearestZone = zone;
-        break; // simple: first match wins
+  for (i = 0; i < ZONES.length; i++) {
+    zone = ZONES[i];
+    if (isInsideZone(userLat, userLon, zone)) {
+      nearestZone = zone;
+      break;
+    }
+  }
+
+  if (nearestZone) {
+    if (activeZoneId !== nearestZone.id) {
+      activeZoneId = nearestZone.id;
+
+      if (!markerVisible) {
+        currentLocation = { type: 'zone', id: activeZoneId };
+        updateCardForCurrentLens(true);
+        triggerZoneEnteredAnimation();
+        updateLocationLabelFromCurrentLocation();   // 🔹 label updates here
       }
     }
-
-    if (nearestZone) {
-      if (activeZoneId !== nearestZone.id) {
-        activeZoneId = nearestZone.id;
-        // Only switch location if marker is NOT visible
-        if (!markerVisible) {
-          currentLocation = { type: 'zone', id: activeZoneId };
-          updateCardForCurrentLens(true);
-          triggerZoneEnteredAnimation();   // <- new line
-          updateLocationLabelFromCurrentLocation();
-        }
-      }
+    
     } else {
       // Left all zones
       activeZoneId = null;
@@ -755,9 +760,6 @@ function escapeHtml(str) {
   }
 }
 
-    function showLocationLabel(text) {
-    var el = document.getElementById("location-label");
-    if (!el) return;
   
     // Update text
     el.innerText = text;
