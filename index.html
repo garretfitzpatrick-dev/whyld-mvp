@@ -63,6 +63,28 @@
       cursor: pointer;
     }
 
+    .location-label {
+      position: fixed;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 10px;
+      background: rgba(0,0,0,0.55);
+      color: white;
+      font-size: 11px;
+      letter-spacing: 0.2px;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 65; /* above aura, below dev buttons */
+    }
+    
+    .location-label.visible {
+      opacity: 1;
+    }
+
+    
     /* Lens content card */
     .card {
       position: fixed;
@@ -290,6 +312,9 @@
 
   </div>
 
+<div id="location-label" class="location-label"></div>
+
+  
   <!-- Bottom UI: lens buttons -->
   <div class="ui">
     <button class="btn" onclick="setLens('Explore')">Explore</button>
@@ -501,18 +526,21 @@
     var ZONES = [
   {
     id: "harvard_square_demo",     // keep or replace this one if you like
+    label: "Harvard Square",
     lat: 42.3733,
     lon: -71.1190,
     radiusM: 50
   },
   {
     id: "hsq_kiosk",
+    label: "Harvard Square Kiosk",
     lat: 42.37352,
     lon: -71.11919,
     radiusM: 35
   },
   {
     id: "harvard_coop_corner",
+    label: "Harvard Coop Corner",
     lat: 42.37365,
     lon: -71.11936,
     radiusM: 40
@@ -570,6 +598,7 @@
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
           triggerZoneEnteredAnimation();   // <- new line
+          showLocationLabel(nearestZone.label || nearestZone.id);
         }
       }
     } else {
@@ -707,6 +736,24 @@ function escapeHtml(str) {
     auraEl.classList.add("zone-flash");
   }
 }
+
+    function showLocationLabel(text) {
+    var el = document.getElementById("location-label");
+    if (!el) return;
+  
+    // Update text
+    el.innerText = text;
+  
+    // Show label
+    el.classList.add("visible");
+  
+    // Auto-hide after 2.8 seconds
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(function () {
+      el.classList.remove("visible");
+    }, 2800);
+  }
+
   
   // =============================
   // INIT: marker + geolocation + content load
@@ -725,6 +772,7 @@ function escapeHtml(str) {
         markerVisible = true;
         currentLocation = { type: 'marker', id: 'hiro_marker' };
         updateCardForCurrentLens(true);
+        showLocationLabel("Marker detected");
       });
 
       marker.addEventListener('markerLost', function () {
@@ -735,6 +783,7 @@ function escapeHtml(str) {
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
           triggerZoneEnteredAnimation();   // <- new line
+          showLocationLabel(ZONES.find(z => z.id === activeZoneId)?.label || activeZoneId);
         } else {
           currentLocation = null;
           hideCard();
