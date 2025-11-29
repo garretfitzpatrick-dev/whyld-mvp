@@ -76,15 +76,9 @@
       border-radius: 8px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s ease;
       z-index: 65; /* above aura, below dev buttons */
     }
-    
-    .location-label.visible {
-      opacity: 1;
-    }
-
-    
+      
     /* Lens content card */
     .card {
       position: fixed;
@@ -487,15 +481,12 @@
 
     linkEl.href = link;
 
-    
-
     if (showIfHidden) {
       cardEl.style.display = "block";
     }
     
     // After we set the story and reflection link, load reflections
-    loadReflectionsForCurrentLocationAndLens();
-    
+    loadReflectionsForCurrentLocationAndLens(); 
   }
 
   function hideCard() {
@@ -517,7 +508,33 @@
     }
   
     updateCardForCurrentLens(true);
+    updateLocationLabelFromCurrentLocation();
   }
+
+function updateLocationLabelFromCurrentLocation() {
+  var el = document.getElementById("location-label");
+  if (!el) return;
+
+  if (!currentLocation) {
+    el.innerText = "";
+    return;
+  }
+
+  if (currentLocation.type === "marker") {
+    // You can change this label text later if you add more markers
+    el.innerText = "Marker: hiro_marker";
+  } else if (currentLocation.type === "zone") {
+    var zoneId = currentLocation.id;
+    var label = zoneId;
+
+    if (Array.isArray(ZONES)) {
+      var z = ZONES.find(function (zone) { return zone.id === zoneId; });
+      if (z && z.label) label = z.label;
+    }
+
+    el.innerText = label;
+  }
+}
 
   
   // =============================
@@ -598,7 +615,7 @@
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
           triggerZoneEnteredAnimation();   // <- new line
-          showLocationLabel(nearestZone.label || nearestZone.id);
+          updateLocationLabelFromCurrentLocation();
         }
       }
     } else {
@@ -607,6 +624,7 @@
       if (!markerVisible) {
         currentLocation = null;
         hideCard();
+        updateLocationLabelFromCurrentLocation();
       }
     }
   }
@@ -772,7 +790,7 @@ function escapeHtml(str) {
         markerVisible = true;
         currentLocation = { type: 'marker', id: 'hiro_marker' };
         updateCardForCurrentLens(true);
-        showLocationLabel("Marker detected");
+        updateLocationLabelFromCurrentLocation();
       });
 
       marker.addEventListener('markerLost', function () {
@@ -783,11 +801,11 @@ function escapeHtml(str) {
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
           triggerZoneEnteredAnimation();   // <- new line
-          showLocationLabel(ZONES.find(z => z.id === activeZoneId)?.label || activeZoneId);
         } else {
           currentLocation = null;
           hideCard();
         }
+        updateLocationLabelFromCurrentLocation();
       });
     }
 
