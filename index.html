@@ -459,15 +459,32 @@
   // =============================
   // GEOLOCATION / ZONES
   // =============================
-  var ZONES = [
-    {
-      id: "harvard_square_demo",
-      lat: 42.3733,      // placeholder
-      lon: -71.1190,     // placeholder
-      radiusM: 50        // radius in meters
-    }
-    // Add more zones here later
-  ];
+    var ZONES = [
+  {
+    id: "harvard_square_demo",     // keep or replace this one if you like
+    lat: 42.3733,
+    lon: -71.1190,
+    radiusM: 50
+  },
+  {
+    id: "hsq_kiosk",
+    lat: 42.37352,
+    lon: -71.11919,
+    radiusM: 35
+  },
+  {
+    id: "harvard_coop_corner",
+    lat: 42.37365,
+    lon: -71.11936,
+    radiusM: 40
+  },
+  {
+    id: "st_pauls_steps",
+    lat: 42.3712,
+    lon: -71.1156,
+    radiusM: 35
+  }
+];
 
   function startGeoWatch() {
     if (!navigator.geolocation) {
