@@ -74,7 +74,6 @@
       font-size: 11px;
       letter-spacing: 0.2px;
       border-radius: 8px;
-      opacity: 0;
       pointer-events: none;
       z-index: 65; /* above aura, below dev buttons */
     }
@@ -297,8 +296,6 @@
       <span class="reflections-title">Reflections here</span>
       <ul id="reflections-list"></ul>
     </div>
-
-    <div id="location-label" class="location-label"></div>
     
     <div class="row">
       <a id="reflect-link" class="link" href="#" target="_blank">Leave a reflection</a>
@@ -760,21 +757,6 @@ function escapeHtml(str) {
   }
 }
 
-  
-    // Update text
-    el.innerText = text;
-  
-    // Show label
-    el.classList.add("visible");
-  
-    // Auto-hide after 2.8 seconds
-    clearTimeout(el._hideTimer);
-    el._hideTimer = setTimeout(function () {
-      el.classList.remove("visible");
-    }, 2800);
-  }
-
-  
   // =============================
   // INIT: marker + geolocation + content load
   // =============================
