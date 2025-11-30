@@ -790,7 +790,32 @@ function updateLocationLabelFromCurrentLocation() {
     btnEl.innerText = "More";
   }
 }
+
+  // Convert timestamp into "time ago" string
+  function formatTimeAgo(timestamp) {
+    if (!timestamp) return "";
   
+    var past = new Date(timestamp);
+    var now = new Date();
+    var diffMs = now - past;
+    var sec = Math.floor(diffMs / 1000);
+    var min = Math.floor(sec / 60);
+    var hr  = Math.floor(min / 60);
+    var day = Math.floor(hr / 24);
+  
+    if (sec < 60) return "just now";
+    if (min < 60) return min + " min ago";
+    if (hr < 24) return hr + " hr ago";
+    if (day === 1) return "yesterday";
+    if (day < 7) return day + " days ago";
+  
+    // Otherwise show date like "Nov 18"
+    return past.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric"
+    });
+  }
+
 // =============================
 // REFLECTIONS
 // =============================
@@ -868,9 +893,14 @@ function updateLocationLabelFromCurrentLocation() {
         var r = refs[j];
         var txt = escapeHtml(r.text || "");
         var who = r.userName
-          ? '<strong>' + escapeHtml(r.userName) + '</strong>: '
+          ? '<strong>' + escapeHtml(r.userName) + '</strong>'
           : '';
-        html += '<li class="reflection-item">' + who + txt + '</li>';
+        var time = r.timestamp ? " · " + formatTimeAgo(r.timestamp) : "";
+    
+        // if no name, no bullet separator
+        var prefix = who ? who + time + ": " : "";
+    
+        html += '<li class="reflection-item">' + prefix + txt + '</li>';
       }
     }
 
