@@ -514,15 +514,15 @@
     function updateCardForCurrentLens(showIfHidden) {
       if (typeof showIfHidden === "undefined") showIfHidden = true;
     
-      var titleEl = document.getElementById("card-title");
-      var textEl  = document.getElementById("card-text");
-      var toggleEl = document.getElementById("story-toggle");
-      var linkEl = document.getElementById("reflect-link");
-      var cardEl = document.getElementById("card");
+      var titleEl       = document.getElementById("card-title");
+      var textEl        = document.getElementById("card-text");
+      var toggleEl      = document.getElementById("story-toggle");
+      var linkEl        = document.getElementById("reflect-link");
+      var cardEl        = document.getElementById("card");
       var reflectionsEl = document.getElementById("reflections");
-
+    
       if (!cardEl || !titleEl || !textEl || !linkEl) return;
-      
+    
       if (!currentLocation) {
         if (showIfHidden) cardEl.style.display = "none";
         return;
@@ -533,24 +533,26 @@
       var story = "";
     
       if (placeContent) {
+        // New layered format: CONTENT[locationId][layer][lens]
         if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
           story = placeContent[currentLayer][currentLensLabel];
-        } else if (placeContent[currentLensLabel]) {
+        }
+        // Fallback flat: CONTENT[locationId][lens]
+        else if (placeContent[currentLensLabel]) {
           story = placeContent[currentLensLabel];
         }
       }
-    
       if (!story) {
         story = STORIES[currentLensLabel] || "";
       }
-
-      // Title is lens only (Explore, Serve, etc.)
+    
+      // Title shows lens only
       titleEl.innerText = currentLensLabel;
     
       // Reset card classes
       cardEl.classList.remove(
-        "layer-world", 
-        "layer-community", 
+        "layer-world",
+        "layer-community",
         "layer-personal",
         "community-expanded"
       );
@@ -568,6 +570,9 @@
         }
         storyExpanded = false;
         if (reflectionsEl) reflectionsEl.style.display = "block";
+    
+        // 🔹 Link label for World
+        linkEl.innerText = "Leave a reflection";
       }
     
       //
@@ -575,14 +580,17 @@
       //
       else if (currentLayer === "Community") {
         cardEl.classList.add("layer-community", "community-expanded");
-        textEl.innerText = story;  // still use the same story for now
+        textEl.innerText = story;
         textEl.classList.remove("collapsed");
         if (toggleEl) toggleEl.style.display = "none";
         if (reflectionsEl) reflectionsEl.style.display = "block";
+    
+        // 🔹 Link label for Community
+        linkEl.innerText = "Leave a reflection";
       }
     
       //
-      // 🙋 PERSONAL LAYER — introspection
+      // 🙋 PERSONAL LAYER — introspection, no reflections shown
       //
       else if (currentLayer === "Personal") {
         cardEl.classList.add("layer-personal");
@@ -590,15 +598,15 @@
         textEl.classList.remove("collapsed");
         if (toggleEl) toggleEl.style.display = "none";
         if (reflectionsEl) reflectionsEl.style.display = "none";  // hide reflections entirely
-
-        // Make the link feel more journal-like
+    
+        // 🔹 Link label for Personal
         linkEl.innerText = "Capture a personal note";
       }
     
-      // Reflection link
+      // Build Airtable reflection link with prefilled fields
       var params = [];
       params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
-      params.push("prefill_Layer=" + encodeURIComponent(currentLayer));
+      // We decided: no Layer field in Airtable, so no prefill_Layer
       if (currentLocation && currentLocation.id) {
         params.push("prefill_LocationId=" + encodeURIComponent(currentLocation.id));
       }
@@ -612,8 +620,8 @@
       if (showIfHidden) {
         cardEl.style.display = "block";
       }
-      
-      // Load reflections (World + Community only)
+    
+      // Load reflections for World + Community; skip Personal
       if (currentLayer !== "Personal") {
         loadReflectionsForCurrentLocationAndLens();
       }
