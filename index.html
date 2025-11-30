@@ -144,19 +144,59 @@
       background: #f4f4f4;
     }
 
-    /* Full-screen aura overlay */
-.lens-aura {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 40; /* Below UI and card, above AR scene */
-  background: transparent;
-  transition: box-shadow 0.25s ease, opacity 0.25s ease;
-}
+    /* Layer toggle (World / Community / Personal) */
+    .layer-toggle {
+      position: fixed;
+      top: 60px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 65;
+      pointer-events: auto;
+    }
 
-.lens-aura.zone-flash {
-  animation: lensZoneFlash 0.35s ease-out;
-}
+    .layer-btn {
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    .layer-btn.active {
+      background: rgba(255, 255, 255, 0.95);
+      color: #111;
+      border-color: #ddd;
+      opacity: 1;
+    }
+
+    .card.layer-world {
+      border-color: rgba(0, 150, 255, 0.6);
+    }
+    .card.layer-community {
+      border-color: rgba(120, 200, 120, 0.8);
+    }
+    .card.layer-personal {
+      border-color: rgba(255, 160, 80, 0.9);
+    }
+    
+    /* Full-screen aura overlay */
+    .lens-aura {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 40; /* Below UI and card, above AR scene */
+      background: transparent;
+      transition: box-shadow 0.25s ease, opacity 0.25s ease;
+    }
+    
+    .lens-aura.zone-flash {
+      animation: lensZoneFlash 0.35s ease-out;
+    }
 
 @keyframes lensZoneFlash {
   0% {
@@ -281,6 +321,13 @@
   <!-- Lens Aura Overlay -->
   <div id="lens-aura" class="lens-aura"></div>
 
+  <!-- Layer toggle: World / Community / Personal -->
+  <div class="layer-toggle">
+    <button class="layer-btn active" id="layer-world-btn" onclick="setLayer('World')">World</button>
+    <button class="layer-btn" id="layer-community-btn" onclick="setLayer('Community')">Community</button>
+    <button class="layer-btn" id="layer-personal-btn" onclick="setLayer('Personal')">Personal</button>
+  </div>
+  
   <!-- Lens content card (marker or zone controlled) -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
@@ -366,6 +413,7 @@
   
   var storyExpanded = false;
   var currentLensLabel = "Explore";   // current lens
+  var currentLayer = "World";  
   var currentLocation   = null;        // { type: 'marker' | 'zone', id: string }
   var markerVisible    = false;
   var activeZoneId     = null;
@@ -425,6 +473,30 @@
   }
 
   // =============================
+  // LAYER TOGGLE (World / Community / Personal)
+  // =============================
+  function setLayer(layerLabel) {
+    currentLayer = layerLabel;
+
+    // Update button styles
+    var worldBtn = document.getElementById("layer-world-btn");
+    var commBtn  = document.getElementById("layer-community-btn");
+    var persBtn  = document.getElementById("layer-personal-btn");
+
+    if (worldBtn && commBtn && persBtn) {
+      worldBtn.classList.toggle("active", layerLabel === "World");
+      commBtn.classList.toggle("active", layerLabel === "Community");
+      persBtn.classList.toggle("active", layerLabel === "Personal");
+    }
+
+    // When layer changes, refresh the card content and reflections (if visible)
+    var cardEl = document.getElementById("card");
+    if (cardEl && cardEl.style.display !== "none" && currentLocation) {
+      updateCardForCurrentLens(false); // no need to force show
+    }
+  }
+  
+  // =============================
   // CARD CONTENT
   // =============================
   function updateCardForCurrentLens(showIfHidden) {
@@ -432,6 +504,16 @@
       showIfHidden = true;
     }
 
+    // Optional: adjust card border by layer for subtle visual cue
+    cardEl.classList.remove("layer-world", "layer-community", "layer-personal");
+    if (currentLayer === "World") {
+      cardEl.classList.add("layer-world");
+    } else if (currentLayer === "Community") {
+      cardEl.classList.add("layer-community");
+    } else if (currentLayer === "Personal") {
+      cardEl.classList.add("layer-personal");
+    }
+    
     var titleEl = document.getElementById("card-title");
     var textEl  = document.getElementById("card-text");
     var linkEl  = document.getElementById("reflect-link");
@@ -448,11 +530,19 @@
     var placeContent = CONTENT[ctxId];
     var story = "";
 
-    if (placeContent && placeContent[currentLensLabel]) {
-      // Story from Airtable (via Worker)
-      story = placeContent[currentLensLabel];
-    } else {
-      // Fallback to generic lens story
+    if (placeContent) {
+      // Try new layered format first: CONTENT[locationId][layer][lens]
+      if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
+        story = placeContent[currentLayer][currentLensLabel];
+      }
+      // Fallback to old flat format: CONTENT[locationId][lens]
+      else if (placeContent[currentLensLabel]) {
+        story = placeContent[currentLensLabel];
+      }
+    }
+
+    if (!story) {
+      // Final fallback to generic lens story
       story = STORIES[currentLensLabel] || "";
     }
 
@@ -468,6 +558,7 @@
     var params = [];
     // These names must match your Airtable form field names ("Lens", "Location")
     params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
+    params.push("prefill_Layer=" + encodeURIComponent(currentLayer)); // NEW
     if (currentLocation && currentLocation.id) {
       params.push("prefill_Location=" + encodeURIComponent(currentLocation.id));
     }
@@ -673,7 +764,8 @@ function updateLocationLabelFromCurrentLocation() {
 
   var locationId = currentLocation.id;
   var lens = currentLensLabel;
-  var key = locationId + "|" + lens;
+  var layer = currentLayer;
+  var key = locationId + "|" + lens + "|" + layer;
 
   // Use cache if we already loaded these
   if (reflectionsCache[key]) {
@@ -683,7 +775,8 @@ function updateLocationLabelFromCurrentLocation() {
 
   var url = REFLECTIONS_API_URL +
     "?locationId=" + encodeURIComponent(locationId) +
-    "&lens=" + encodeURIComponent(lens);
+    "&lens=" + encodeURIComponent(lens) +
+    "&layer=" + encodeURIComponent(layer);
 
   fetch(url)
     .then(function (resp) {
