@@ -656,6 +656,37 @@
   };
 
   // =============================
+  // ARC LABELS (to match home screen)
+  // =============================
+  var ARC_LABELS = {
+    courage:   "Courageous",
+    creative:  "Creative",
+    connected: "Connected",
+    clear:     "Clear",
+    grounded:  "Grounded",
+    impactful: "Impactful"
+  };
+
+  // =============================
+  // Meaning Profile (from index.html)
+  // =============================
+  var USER_PROFILE = null;
+
+  function loadUserProfile() {
+    try {
+      var raw = localStorage.getItem("whyldProfile");
+      if (!raw) {
+        console.log("No whyldProfile found in localStorage.");
+        return;
+      }
+      USER_PROFILE = JSON.parse(raw);
+      console.log("Whyld profile loaded:", USER_PROFILE);
+    } catch (e) {
+      console.warn("Failed to load whyldProfile:", e);
+    }
+  }
+  
+  // =============================
   // CONTENT from Airtable via Cloudflare Worker
   // This will be filled dynamically.
   // =============================
@@ -706,33 +737,54 @@
   // =============================
   // LENS / AURA
   // =============================
+    // =============================
+  // LENS / AURA
+  // =============================
   function setLens(lensLabel) {
     currentLensLabel = lensLabel;
 
-    // Update aura
     var lensKey = lensLabel.toLowerCase();
     var aura = document.getElementById('lens-aura');
-    aura.classList.remove(
-      'lens-explore',
-      'lens-serve',
-      'lens-create',
-      'lens-inspire',
-      'lens-reflect'
-    );
-    aura.classList.add('lens-' + lensKey);
 
-    // Highlight active bottom button
-      document.querySelectorAll('.lens-btn').forEach(btn => {
-        btn.classList.remove('active-lens');
-      });
-      document.querySelector('.lens-' + lensKey + '-btn').classList.add('active-lens');
-    
+    // Update aura class + intensity based on user profile
+    if (aura) {
+      aura.classList.remove(
+        'lens-explore',
+        'lens-serve',
+        'lens-create',
+        'lens-inspire',
+        'lens-reflect'
+      );
+      aura.classList.add('lens-' + lensKey);
+
+      // Intensity from profile: low / medium / high
+      if (USER_PROFILE && USER_PROFILE.intensity === "low") {
+        aura.style.opacity = "0.4";
+      } else if (USER_PROFILE && USER_PROFILE.intensity === "high") {
+        aura.style.opacity = "1.0";
+      } else {
+        // default / medium
+        aura.style.opacity = "0.7";
+      }
+    }
+
+    // Highlight active bottom lens button
+    var buttons = document.querySelectorAll('.lens-btn');
+    buttons.forEach(function (btn) {
+      btn.classList.remove('active-lens');
+    });
+    var activeBtn = document.querySelector('.lens-' + lensKey + '-btn');
+    if (activeBtn) {
+      activeBtn.classList.add('active-lens');
+    }
+
     // If the card is currently visible and we have a location, update content
     var cardEl = document.getElementById("card");
-    if (cardEl.style.display !== "none" && currentLocation) {
+    if (cardEl && cardEl.style.display !== "none" && currentLocation) {
       updateCardForCurrentLens(false); // don't force show; just update content
     }
   }
+
 
   // =============================
   // LAYER TOGGLE (World / Community / Personal)
@@ -757,125 +809,185 @@
       updateCardForCurrentLens(false); // no need to force show
     }
   }
+
+  // =============================
+  // PERSONAL LAYER PROMPT BUILDER
+  // =============================
+  function buildPersonalPrompt(lensLabel, profile) {
+    var drivers = profile.drivers || [];
+    var arcId = profile.arcId || null;
+    var arcLabel = arcId ? (ARC_LABELS[arcId] || arcId) : null;
+    var bigQ = profile.bigQuestion || "";
+    var noticeMore = profile.noticeMore || "";
+    var name = profile.name || "";
+  
+    var driversText = drivers.length
+      ? drivers.join(", ")
+      : "what matters most to you";
+  
+    var arcText = arcLabel
+      ? "a " + arcLabel.toLowerCase() + " chapter"
+      : "this chapter";
+  
+    var lines = [];
+  
+    if (name) {
+      lines.push("Hey " + name + ",");
+    }
+  
+    // Line 1: frame the lens + arc + drivers
+    lines.push(
+      "From this " + lensLabel + " lens, in " + arcText +
+      ", notice how this place touches " + driversText + "."
+    );
+  
+    // Line 2: fold in the big question
+    if (bigQ) {
+      lines.push(
+        'Given your question — "' + bigQ + '" — what feels like the next small move from here?'
+      );
+    } else {
+      lines.push(
+        "What feels like the next small move from here?"
+      );
+    }
+  
+    // Line 3: tie in what they want to notice more of
+    if (noticeMore) {
+      lines.push(
+        'You said you want to notice more of "' + noticeMore +
+        '". Do you see any trace of that here, even in a small way?'
+      );
+    }
+  
+    return lines.join("\n\n");
+  }
   
   // =============================
   // CARD CONTENT
   // =============================
-    function updateCardForCurrentLens(showIfHidden) {
-      if (typeof showIfHidden === "undefined") showIfHidden = true;
-    
-      var titleEl       = document.getElementById("card-title");
-      var textEl        = document.getElementById("card-text");
-      var toggleEl      = document.getElementById("story-toggle");
-      var linkEl        = document.getElementById("reflect-link");
-      var cardEl        = document.getElementById("card");
-      var reflectionsEl = document.getElementById("reflections");
-    
-      if (!cardEl || !titleEl || !textEl || !linkEl) return;
-    
-      if (!currentLocation) {
-        if (showIfHidden) cardEl.style.display = "none";
-        return;
+  function updateCardForCurrentLens(showIfHidden) {
+    if (typeof showIfHidden === "undefined") showIfHidden = true;
+  
+    var titleEl       = document.getElementById("card-title");
+    var textEl        = document.getElementById("card-text");
+    var toggleEl      = document.getElementById("story-toggle");
+    var linkEl        = document.getElementById("reflect-link");
+    var cardEl        = document.getElementById("card");
+    var reflectionsEl = document.getElementById("reflections");
+  
+    if (!cardEl || !titleEl || !textEl || !linkEl) return;
+  
+    if (!currentLocation) {
+      if (showIfHidden) cardEl.style.display = "none";
+      return;
+    }
+  
+    var ctxId = currentLocation.id;
+    var placeContent = CONTENT[ctxId];
+    var story = "";
+  
+    if (placeContent) {
+      // New layered format: CONTENT[locationId][layer][lens]
+      if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
+        story = placeContent[currentLayer][currentLensLabel];
       }
-    
-      var ctxId = currentLocation.id;
-      var placeContent = CONTENT[ctxId];
-      var story = "";
-    
-      if (placeContent) {
-        // New layered format: CONTENT[locationId][layer][lens]
-        if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
-          story = placeContent[currentLayer][currentLensLabel];
-        }
-        // Fallback flat: CONTENT[locationId][lens]
-        else if (placeContent[currentLensLabel]) {
-          story = placeContent[currentLensLabel];
-        }
-      }
-      if (!story) {
-        story = STORIES[currentLensLabel] || "";
-      }
-    
-      // Title shows lens only
-      titleEl.innerText = currentLensLabel;
-    
-      // Reset card classes
-      cardEl.classList.remove(
-        "layer-world",
-        "layer-community",
-        "layer-personal",
-        "community-expanded"
-      );
-    
-      //
-      // 🌍 WORLD LAYER — canonical story, collapsed with "More"
-      //
-      if (currentLayer === "World") {
-        cardEl.classList.add("layer-world");
-        textEl.innerText = story;
-        textEl.classList.add("collapsed");
-        if (toggleEl) {
-          toggleEl.style.display = "inline-block";
-          toggleEl.innerText = "More";
-        }
-        storyExpanded = false;
-        if (reflectionsEl) reflectionsEl.style.display = "block";
-    
-        // 🔹 Link label for World
-        linkEl.innerText = "Leave a reflection";
-      }
-    
-      //
-      // 👥 COMMUNITY LAYER — reflections first, taller card
-      //
-      else if (currentLayer === "Community") {
-        cardEl.classList.add("layer-community", "community-expanded");
-        textEl.innerText = story;
-        textEl.classList.remove("collapsed");
-        if (toggleEl) toggleEl.style.display = "none";
-        if (reflectionsEl) reflectionsEl.style.display = "block";
-    
-        // 🔹 Link label for Community
-        linkEl.innerText = "Leave a reflection";
-      }
-    
-      //
-      // 🙋 PERSONAL LAYER — introspection, no reflections shown
-      //
-      else if (currentLayer === "Personal") {
-        cardEl.classList.add("layer-personal");
-        textEl.innerText = story;     // ideally a prompt
-        textEl.classList.remove("collapsed");
-        if (toggleEl) toggleEl.style.display = "none";
-        if (reflectionsEl) reflectionsEl.style.display = "none";  // hide reflections entirely
-    
-        // 🔹 Link label for Personal
-        linkEl.innerText = "Capture a personal note";
-      }
-    
-      // Build Airtable reflection link with prefilled fields
-      var params = [];
-      params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
-      // We decided: no Layer field in Airtable, so no prefill_Layer
-      if (currentLocation && currentLocation.id) {
-        params.push("prefill_LocationId=" + encodeURIComponent(currentLocation.id));
-      }
-    
-      var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
-      var link = urlHasQuery
-        ? FORM_URL_BASE + "&" + params.join("&")
-        : FORM_URL_BASE + "?" + params.join("&");
-      linkEl.href = link;
-    
-      if (showIfHidden) {
-        cardEl.style.display = "block";
-      }
-    
-      // Load reflections for World + Community; skip Personal
-      if (currentLayer !== "Personal") {
-        loadReflectionsForCurrentLocationAndLens();
+      // Fallback flat: CONTENT[locationId][lens]
+      else if (placeContent[currentLensLabel]) {
+        story = placeContent[currentLensLabel];
       }
     }
+    if (!story) {
+      story = STORIES[currentLensLabel] || "";
+    }
+
+    // 🔹 PERSONALIZATION for PERSONAL LAYER:
+    // For Personal, we override the story with a custom prompt
+    if (currentLayer === "Personal" && USER_PROFILE) {
+      story = buildPersonalPrompt(currentLensLabel, USER_PROFILE);
+    }
+  
+    // Title shows lens only
+    titleEl.innerText = currentLensLabel;
+  
+    // Reset card classes
+    cardEl.classList.remove(
+      "layer-world",
+      "layer-community",
+      "layer-personal",
+      "community-expanded"
+    );
+  
+    //
+    // 🌍 WORLD LAYER — canonical story, collapsed with "More"
+    //
+    if (currentLayer === "World") {
+      cardEl.classList.add("layer-world");
+      textEl.innerText = story;
+      textEl.classList.add("collapsed");
+      if (toggleEl) {
+        toggleEl.style.display = "inline-block";
+        toggleEl.innerText = "More";
+      }
+      storyExpanded = false;
+      if (reflectionsEl) reflectionsEl.style.display = "block";
+  
+      // Link label for World
+      linkEl.innerText = "Leave a reflection";
+    }
+  
+    //
+    // 👥 COMMUNITY LAYER — reflections first, taller card
+    //
+    else if (currentLayer === "Community") {
+      cardEl.classList.add("layer-community", "community-expanded");
+      textEl.innerText = story;
+      textEl.classList.remove("collapsed");
+      if (toggleEl) toggleEl.style.display = "none";
+      if (reflectionsEl) reflectionsEl.style.display = "block";
+  
+      // Link label for Community
+      linkEl.innerText = "Leave a reflection";
+    }
+  
+    //
+    // 🙋 PERSONAL LAYER — introspection, no reflections shown
+    //
+    else if (currentLayer === "Personal") {
+      cardEl.classList.add("layer-personal");
+      textEl.innerText = story;     // now our custom prompt
+      textEl.classList.remove("collapsed");
+      if (toggleEl) toggleEl.style.display = "none";
+      if (reflectionsEl) reflectionsEl.style.display = "none";  // hide reflections entirely
+  
+      // Link label for Personal
+      linkEl.innerText = "Capture a personal note";
+    }
+  
+    // Build Airtable reflection link with prefilled fields
+    var params = [];
+    params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
+    // We decided: no Layer field in Airtable, so no prefill_Layer
+    if (currentLocation && currentLocation.id) {
+      params.push("prefill_LocationId=" + encodeURIComponent(currentLocation.id));
+    }
+  
+    var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
+    var link = urlHasQuery
+      ? FORM_URL_BASE + "&" + params.join("&")
+      : FORM_URL_BASE + "?" + params.join("&");
+    linkEl.href = link;
+  
+    if (showIfHidden) {
+      cardEl.style.display = "block";
+    }
+  
+    // Load reflections for World + Community; skip Personal
+    if (currentLayer !== "Personal") {
+      loadReflectionsForCurrentLocationAndLens();
+    }
+  }
+
 
   function hideCard() {
     var cardEl = document.getElementById("card");
@@ -1308,20 +1420,26 @@ function updateLocationLabelFromCurrentLocation() {
     closeZoneMap();
   }
 
-
-  
   // =============================
   // INIT: marker + geolocation + content load
   // =============================
   window.addEventListener('DOMContentLoaded', function () {
-    // Initialize aura to default lens
+    // 1) Load meaning profile from home screen
+    loadUserProfile();
+
+    // 2) If the user has a focus lens, start with that
+    if (USER_PROFILE && USER_PROFILE.focusLens) {
+      currentLensLabel = USER_PROFILE.focusLens;
+    }
+
+    // 3) Initialize aura + lens + layer
     setLens(currentLensLabel);
     setLayer(currentLayer);
 
-    // Load content from Cloudflare Worker / Airtable
+    // 4) Load content from Cloudflare Worker / Airtable
     loadContentFromAPI();
 
-    // Marker-based triggers
+    // 5) Marker-based triggers
     var marker = document.querySelector('#ww-marker');
     if (marker) {
       marker.addEventListener('markerFound', function () {
@@ -1338,7 +1456,7 @@ function updateLocationLabelFromCurrentLocation() {
           // Fall back to zone if we are inside one
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
-          triggerZoneEnteredAnimation();   // <- new line
+          triggerZoneEnteredAnimation();
         } else {
           currentLocation = null;
           hideCard();
@@ -1346,6 +1464,11 @@ function updateLocationLabelFromCurrentLocation() {
         updateLocationLabelFromCurrentLocation();
       });
     }
+
+    // 6) Start GPS watching for zones
+    startGeoWatch();
+  });
+  
 
     // Start GPS watching for zones
     startGeoWatch();
