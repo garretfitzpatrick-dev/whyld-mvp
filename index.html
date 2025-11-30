@@ -401,6 +401,110 @@
 .reflection-item {
   margin: 2px 0;
 }
+
+/* Map toggle button near top-left */
+.map-toggle-btn {
+  position: fixed;
+  top: 14px;
+  left: 12px;
+  z-index: 66;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.6);
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Zone map overlay */
+.zone-map-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: auto;
+}
+
+.zone-map-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+
+.zone-map-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(420px, 90%);
+  max-height: 70vh;
+  background: rgba(255,255,255,0.97);
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.zone-map-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.zone-map-close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+}
+
+.zone-map-body {
+  padding: 8px 10px 10px;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+/* Individual zone row */
+.zone-map-item {
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zone-map-item:hover {
+  background: #f7f9ff;
+}
+
+.zone-map-item-name {
+  font-weight: 500;
+}
+
+.zone-map-item-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Highlight currently active zone */
+.zone-map-item.active-zone {
+  border-color: #3a86ff;
+  box-shadow: 0 0 0 1px rgba(58,134,255,0.5);
+  background: #eef4ff;
+}
+
+
+
     
   </style>
   
@@ -466,6 +570,10 @@
 
 <div id="location-label" class="location-label"></div>
 
+  <!-- Map toggle button -->
+<button class="map-toggle-btn" type="button" onclick="openZoneMap()">
+  Map
+</button>
   
   <!-- Bottom UI: lens buttons -->
  <div class="ui">
@@ -487,6 +595,21 @@
   </div>
 </div>
 
+<!-- Zone Map Overlay -->
+<div id="zone-map-overlay" class="zone-map-overlay" style="display:none;">
+  <div class="zone-map-backdrop" onclick="closeZoneMap()"></div>
+  <div class="zone-map-panel">
+    <div class="zone-map-header">
+      <span>Harvard Square Zones</span>
+      <button type="button" class="zone-map-close-btn" onclick="closeZoneMap()">✕</button>
+    </div>
+    <div class="zone-map-body" id="zone-map-body">
+      <!-- Zone list will be filled by JS -->
+    </div>
+  </div>
+</div>
+
+  
 
 <script>
   // =============================
@@ -1065,6 +1188,72 @@ function updateLocationLabelFromCurrentLocation() {
   }
 }
 
+// =============================
+// ZONE MAP OVERLAY
+// =============================
+  function openZoneMap() {
+    var overlay = document.getElementById("zone-map-overlay");
+    if (!overlay) return;
+    overlay.style.display = "block";
+    renderZoneMapList();
+  }
+  
+  function closeZoneMap() {
+    var overlay = document.getElementById("zone-map-overlay");
+    if (!overlay) return;
+    overlay.style.display = "none";
+  }
+  
+  // Build zone list in the overlay
+  function renderZoneMapList() {
+    var bodyEl = document.getElementById("zone-map-body");
+    if (!bodyEl || !Array.isArray(ZONES)) return;
+  
+    var html = "";
+    for (var i = 0; i < ZONES.length; i++) {
+      var z = ZONES[i];
+      var name = z.label || z.id;
+      var id = z.id;
+  
+      var isActive = (currentLocation && currentLocation.type === "zone" && currentLocation.id === id)
+                     || activeZoneId === id;
+  
+      var classes = "zone-map-item";
+      if (isActive) classes += " active-zone";
+  
+      var meta = "";
+      if (activeZoneId === id) {
+        meta = "You are here (via GPS)";
+      } else if (currentLocation && currentLocation.type === "zone" && currentLocation.id === id) {
+        meta = "Viewing this zone";
+      } else {
+        meta = "Tap to preview";
+      }
+  
+      html +=
+        '<div class="' + classes + '" onclick="selectZoneFromMap(\'' + id + '\')">' +
+          '<div class="zone-map-item-name">' + escapeHtml(name) + '</div>' +
+          '<div class="zone-map-item-meta">' + escapeHtml(meta) + '</div>' +
+        '</div>';
+    }
+  
+    bodyEl.innerHTML = html;
+  }
+  
+  // When user taps a zone in the map overlay
+  function selectZoneFromMap(zoneId) {
+    // Enter dev mode so GPS won't fight us
+    devMode = true;
+  
+    // Reuse existing helper
+    debugSetLocation(zoneId, 'zone');
+  
+    // Close map after selection
+    closeZoneMap();
+  }
+
+
+  
   // =============================
   // INIT: marker + geolocation + content load
   // =============================
