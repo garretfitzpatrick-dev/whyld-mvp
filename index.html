@@ -82,6 +82,52 @@
       white-space: nowrap;
     }
 
+    /* Base style for all lens buttons */
+    .lens-btn {
+      border-width: 2px;
+      border-style: solid;
+      background: rgba(255,255,255,0.95);
+      transition: all 0.2s ease;
+    }
+    
+    /* ====== Per-lens colors ======= */
+    
+    .lens-explore-btn {
+      border-color: rgba(80,180,255,0.9);
+      box-shadow: inset 0 0 6px rgba(80,180,255,0.25);
+    }
+    
+    .lens-serve-btn {
+      border-color: rgba(100,220,160,0.9);
+      box-shadow: inset 0 0 6px rgba(100,220,160,0.25);
+    }
+    
+    .lens-create-btn {
+      border-color: rgba(255,180,80,0.9);
+      box-shadow: inset 0 0 6px rgba(255,180,80,0.25);
+    }
+    
+    .lens-inspire-btn {
+      border-color: rgba(220,120,255,0.9);
+      box-shadow: inset 0 0 6px rgba(220,120,255,0.25);
+    }
+    
+    .lens-reflect-btn {
+      border-color: rgba(255,255,255,0.9);
+      box-shadow: inset 0 0 6px rgba(255,255,255,0.2);
+    }
+    
+    /* ====== Active lens button ====== */
+    
+    .lens-btn.active-lens {
+      background: rgba(255,255,255,1.0);
+      box-shadow: 0 0 8px rgba(0,0,0,0.15),
+                  inset 0 0 10px rgba(0,0,0,0.05);
+      transform: translateY(-1px);
+    }
+
+
+    
     .location-label {
       position: fixed;
       top: 4px;
@@ -394,11 +440,11 @@
   <!-- Bottom UI: lens buttons -->
  <div class="ui">
   <div class="ui-row main">
-    <button class="btn" onclick="setLens('Explore')">Explore</button>
-    <button class="btn" onclick="setLens('Serve')">Serve</button>
-    <button class="btn" onclick="setLens('Create')">Create</button>
-    <button class="btn" onclick="setLens('Inspire')">Inspire</button>
-    <button class="btn" onclick="setLens('Reflect')">Reflect</button>
+    <button class="btn lens-btn lens-explore-btn" onclick="setLens('Explore')">Explore</button>
+    <button class="btn lens-btn lens-serve-btn" onclick="setLens('Serve')">Serve</button>
+    <button class="btn lens-btn lens-create-btn" onclick="setLens('Create')">Create</button>
+    <button class="btn lens-btn lens-inspire-btn" onclick="setLens('Inspire')">Inspire</button>
+    <button class="btn lens-btn lens-reflect-btn" onclick="setLens('Reflect')">Reflect</button>
   </div>
 
   <div class="ui-row dev">
@@ -497,6 +543,12 @@
     );
     aura.classList.add('lens-' + lensKey);
 
+    // Highlight active bottom button
+      document.querySelectorAll('.lens-btn').forEach(btn => {
+        btn.classList.remove('active-lens');
+      });
+      document.querySelector('.lens-' + lensKey + '-btn').classList.add('active-lens');
+    
     // If the card is currently visible and we have a location, update content
     var cardEl = document.getElementById("card");
     if (cardEl.style.display !== "none" && currentLocation) {
