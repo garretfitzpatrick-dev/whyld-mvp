@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Whyld World MVP</title>
+  <title>Whyld World MVP – AR</title>
 
   <!-- Fullscreen + immersive viewport -->
   <meta name="viewport"
@@ -33,7 +33,6 @@
       padding: 0;
       overflow: hidden;     /* prevent iOS scroll bounce */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      
     }
   </style>
 
@@ -91,73 +90,49 @@
     }
     
     /* ====== Per-lens colors ======= */
-    
     .lens-explore-btn {
-      border-color: rgba(80,180,255,0.9);
+      --lens-color: rgba(80,180,255,1);
+      border-color: var(--lens-color);
+      color: #1877cc;
       box-shadow: inset 0 0 6px rgba(80,180,255,0.25);
     }
     
     .lens-serve-btn {
-      border-color: rgba(100,220,160,0.9);
+      --lens-color: rgba(100,220,160,1);
+      border-color: var(--lens-color);
+      color: #1c8f5a;
       box-shadow: inset 0 0 6px rgba(100,220,160,0.25);
     }
     
     .lens-create-btn {
-      border-color: rgba(255,180,80,0.9);
+      --lens-color: rgba(255,180,80,1);
+      border-color: var(--lens-color);
+      color: #d67a00;
       box-shadow: inset 0 0 6px rgba(255,180,80,0.25);
     }
     
     .lens-inspire-btn {
-      border-color: rgba(220,120,255,0.9);
+      --lens-color: rgba(220,120,255,1);
+      border-color: var(--lens-color);
+      color: #aa4ad9;
       box-shadow: inset 0 0 6px rgba(220,120,255,0.25);
     }
     
     .lens-reflect-btn {
-      border-color: rgba(255,255,255,0.9);
-      box-shadow: inset 0 0 6px rgba(255,255,255,0.2);
-    }
-
-    .lens-explore-btn { 
-      --lens-color: rgba(80,180,255,1); 
-      border-color: var(--lens-color);
-      color: #1877cc;
-    }
-    .lens-serve-btn {   
-      --lens-color: rgba(100,220,160,1);
-      border-color: var(--lens-color);
-      color: #1c8f5a;
-    }
-    .lens-create-btn {  
-      --lens-color: rgba(255,180,80,1);
-      border-color: var(--lens-color);
-      color: #d67a00;
-    }
-    .lens-inspire-btn { 
-      --lens-color: rgba(220,120,255,1);
-      border-color: var(--lens-color);
-      color: #aa4ad9;
-    }
-    .lens-reflect-btn { 
       --lens-color: rgba(255,255,255,1);
       border-color: rgba(255,255,255,0.9);
       color: #555;
+      box-shadow: inset 0 0 6px rgba(255,255,255,0.2);
     }
-
-
     
-    /* ====== Active lens button ====== */
-    
+    /* Active lens button */
     .lens-btn.active-lens {
       box-shadow:
         0 4px 10px rgba(0,0,0,0.18),
-        0 0 12px var(--lens-color);
+        0 0 14px var(--lens-color);
+      background: rgba(255,255,255,0.98);
     }
 
-    .lens-btn.active-lens {
-      background: color-mix(in srgb, var(--lens-color) 12%, white);
-    }
-
-    
     .location-label {
       position: fixed;
       top: 4px;
@@ -189,23 +164,6 @@
       z-index: 60;
     }
 
-    .dev-ui {
-      position: fixed;
-      top: 14px;
-      right: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      z-index: 70;
-      pointer-events: auto;
-    }
-    
-    .dev-ui .btn {
-      font-size: 11px;
-      padding: 4px 10px;
-      opacity: 0.85;
-    }
-
     .card h3 {
       margin: 0 0 6px 0;
       font-size: 18px;
@@ -215,6 +173,7 @@
       margin: 8px 0;
       font-size: 14px;
       line-height: 1.35;
+      white-space: pre-wrap; /* so our personal prompts keep line breaks */
     }
 
     #card-text.collapsed {
@@ -232,6 +191,10 @@
       color: #0b65c2;
       text-decoration: underline;
       cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
     }
 
     .close {
@@ -305,241 +268,211 @@
       z-index: 40; /* Below UI and card, above AR scene */
       background: transparent;
       transition: box-shadow 0.25s ease, opacity 0.25s ease;
+      opacity: 0.7;
     }
     
     .lens-aura.zone-flash {
       animation: lensZoneFlash 0.35s ease-out;
     }
 
-@keyframes lensZoneFlash {
-  0% {
-    opacity: 0.0;
-  }
-  30% {
-    opacity: 1.0;
-  }
-  100% {
-    opacity: 1.0;
-  }
-}
+    @keyframes lensZoneFlash {
+      0% {
+        opacity: 0.0;
+      }
+      30% {
+        opacity: 1.0;
+      }
+      100% {
+        opacity: 0.7;
+      }
+    }
    
-/* Zone entered animation: subtle pop + glow */
-.card.zone-entered {
-  animation: zoneEnteredCard 0.28s ease-out;
-}
+    /* Zone entered animation: subtle pop + glow */
+    .card.zone-entered {
+      animation: zoneEnteredCard 0.28s ease-out;
+    }
 
-@keyframes zoneEnteredCard {
-  0% {
-    transform: translateX(-50%) translateY(-4px) scale(0.96);
-    box-shadow: 0 0 0 rgba(0,0,0,0);
-    opacity: 0.0;
-  }
-  60% {
-    transform: translateX(-50%) translateY(0) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    opacity: 1.0;
-  }
-  100% {
-    transform: translateX(-50%) translateY(0) scale(1.0);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-    opacity: 1.0;
-  }
-}
+    @keyframes zoneEnteredCard {
+      0% {
+        transform: translateX(-50%) translateY(-4px) scale(0.96);
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        opacity: 0.0;
+      }
+      60% {
+        transform: translateX(-50%) translateY(0) scale(1.02);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        opacity: 1.0;
+      }
+      100% {
+        transform: translateX(-50%) translateY(0) scale(1.0);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+        opacity: 1.0;
+      }
+    }
     
-/* Each lens: crisp border + soft inner glow */
-.lens-explore {
-  box-shadow:
-    0 0 0 5px rgba(80, 180, 255, 0.9) inset,   /* strong border */
-    0 0 30px 16px rgba(80, 180, 255, 0.35) inset; /* gentle glow */
-}
+    /* Each lens: crisp border + soft inner glow */
+    .lens-explore {
+      box-shadow:
+        0 0 0 5px rgba(80, 180, 255, 0.9) inset,
+        0 0 30px 16px rgba(80, 180, 255, 0.35) inset;
+    }
 
-.lens-serve {
-  box-shadow:
-    0 0 0 5px rgba(100, 220, 160, 0.9) inset,
-    0 0 30px 16px rgba(100, 220, 160, 0.35) inset;
-}
+    .lens-serve {
+      box-shadow:
+        0 0 0 5px rgba(100, 220, 160, 0.9) inset,
+        0 0 30px 16px rgba(100, 220, 160, 0.35) inset;
+    }
 
-.lens-create {
-  box-shadow:
-    0 0 0 5px rgba(255, 180, 80, 0.9) inset,
-    0 0 30px 16px rgba(255, 180, 80, 0.35) inset;
-}
+    .lens-create {
+      box-shadow:
+        0 0 0 5px rgba(255, 180, 80, 0.9) inset,
+        0 0 30px 16px rgba(255, 180, 80, 0.35) inset;
+    }
 
-.lens-inspire {
-  box-shadow:
-    0 0 0 5px rgba(220, 120, 255, 0.9) inset,
-    0 0 30px 16px rgba(220, 120, 255, 0.35) inset;
-}
+    .lens-inspire {
+      box-shadow:
+        0 0 0 5px rgba(220, 120, 255, 0.9) inset,
+        0 0 30px 16px rgba(220, 120, 255, 0.35) inset;
+    }
 
-.lens-reflect {
-  box-shadow:
-    0 0 0 5px rgba(255, 255, 255, 0.9) inset,
-    0 0 30px 16px rgba(255, 255, 255, 0.35) inset;
-}
+    .lens-reflect {
+      box-shadow:
+        0 0 0 5px rgba(255, 255, 255, 0.9) inset,
+        0 0 30px 16px rgba(255, 255, 255, 0.35) inset;
+    }
 
-.reflections {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #eee;
-  font-size: 13px;
-  max-height: 90px;
-  overflow-y: auto;
-}
+    .reflections {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+      font-size: 13px;
+      max-height: 90px;
+      overflow-y: auto;
+    }
 
-.reflections-title {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 4px;
-}
+    .reflections-title {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+    }
 
-#reflections-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+    #reflections-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
 
-.reflection-item {
-  margin: 2px 0;
-}
+    .reflection-item {
+      margin: 2px 0;
+      font-size: 13px;
+    }
 
-/* Map toggle button near top-left */
-.map-toggle-btn {
-  position: fixed;
-  top: 4px;
-  left: 12px;
-  z-index: 66;
-  padding: 4px 10px;
-  font-size: 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.6);
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  cursor: pointer;
-}
+    /* Map toggle button near top-left */
+    .map-toggle-btn {
+      position: fixed;
+      top: 4px;
+      left: 12px;
+      z-index: 66;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      cursor: pointer;
+    }
 
-/* Zone map overlay */
-.zone-map-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  pointer-events: auto;
-}
+    /* Zone map overlay */
+    .zone-map-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      pointer-events: auto;
+    }
 
-.zone-map-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-}
+    .zone-map-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+    }
 
-.zone-map-panel {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: min(420px, 90%);
-  max-height: 70vh;
-  background: rgba(255,255,255,0.97);
-  border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.3);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+    .zone-map-panel {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(420px, 90%);
+      max-height: 70vh;
+      background: rgba(255,255,255,0.97);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-.zone-map-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
-  font-size: 14px;
-  font-weight: 600;
-}
+    .zone-map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      font-weight: 600;
+    }
 
-.zone-map-close-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  padding: 2px 4px;
-}
+    .zone-map-close-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 2px 4px;
+    }
 
-.zone-map-body {
-  padding: 10px;
-  overflow-y: visible;
-  font-size: 13px;
-}
+    .zone-map-body {
+      padding: 8px 10px 10px;
+      overflow-y: auto;
+      font-size: 13px;
+    }
 
-/* Schematic mini-map box */
-.zone-mini-map {
-  position: relative;
-  width: 100%;
-  padding-top: 75%;       /* 4:3 aspect ratio */
-  background-image: url('harvard-square-map.png');   /* <- adjust path if needed */
-  background-size: cover;
-  background-position: center;
-  border-radius: 14px;
-  border: 1px solid #d0d8ff;
-  box-shadow: inset 0 0 18px rgba(0,0,0,0.08);
-}
+    /* Individual zone row */
+    .zone-map-item {
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      border: 1px solid #eee;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-/* Optional inner grid */
-.zone-mini-map-grid {
-  position: absolute;
-  inset: 8px;
-  border-radius: 12px;
-  border: 1px dashed rgba(255,255,255,0.7);
-  pointer-events: none;
-}
+    .zone-map-item:hover {
+      background: #f7f9ff;
+    }
 
-/* Dot for each zone */
-.zone-map-dot {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  background: rgba(58,134,255,0.95);
-  box-shadow: 0 0 8px rgba(58,134,255,0.7);
-  transform: translate(-50%, -50%);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 10px;
-}
+    .zone-map-item-name {
+      font-weight: 500;
+    }
 
-/* Label next to each dot */
-.zone-map-label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  margin-top: 18px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  font-size: 10px;
-  white-space: nowrap;
-}
+    .zone-map-item-meta {
+      font-size: 11px;
+      color: #666;
+    }
 
-/* Active zone highlight (mini-map dot) */
-.zone-map-dot.active-zone-dot {
-  background: #ffb347;
-  box-shadow: 0 0 10px rgba(255,179,71,0.9);
-  transform: translate(-50%, -50%) scale(1.15);
-}
-
-    
+    /* Highlight currently active zone */
+    .zone-map-item.active-zone {
+      border-color: #3a86ff;
+      box-shadow: 0 0 0 1px rgba(58,134,255,0.5);
+      background: #eef4ff;
+    }
   </style>
-  
 </head>
 <body>
   <!-- AR Scene -->
   <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-    <!-- Marker (use printed HIRO marker) -->
     <a-marker preset="hiro" id="ww-marker" emitevents="true">
-      <!-- Text moved above and slightly toward the camera so it clears the printed marker -->
       <a-entity position="0 0.4 -0.6" rotation="-90 0 0">
         <a-text
           value="Point at the marker to reveal layers →"
@@ -549,7 +482,6 @@
         </a-text>
       </a-entity>
 
-      <!-- Slightly smaller presence ring so it hugs the marker -->
       <a-entity
         geometry="primitive: torus; radius: 0.25; tube: 0.02"
         material="color: #3a86ff; opacity: 0.85"
@@ -570,12 +502,12 @@
     <button class="layer-btn" id="layer-personal-btn" onclick="setLayer('Personal')">Personal</button>
   </div>
   
-  <!-- Lens content card (marker or zone controlled) -->
+  <!-- Lens content card -->
   <div id="card" class="card">
     <h3 id="card-title">Explore</h3>
     <p id="card-text" class="collapsed">
-    That old motorcycle by the window has crossed more miles than most of us will.
-    ...
+      That old motorcycle by the window has crossed more miles than most of us will.
+      ...
     </p>
     <button id="story-toggle" class="link" type="button" onclick="toggleStoryExpand()">
       More
@@ -590,62 +522,57 @@
       <a id="reflect-link" class="link" href="#" target="_blank">Leave a reflection</a>
       <button class="btn close" onclick="hideCard()">Close</button>
     </div>
-
   </div>
 
-<div id="location-label" class="location-label"></div>
+  <div id="location-label" class="location-label"></div>
 
   <!-- Map toggle button -->
-<button class="map-toggle-btn" type="button" onclick="openZoneMap()">
-  Map
-</button>
+  <button class="map-toggle-btn" type="button" onclick="openZoneMap()">
+    Map
+  </button>
   
-  <!-- Bottom UI: lens buttons -->
- <div class="ui">
-  <div class="ui-row main">
-    <button class="btn lens-btn lens-explore-btn" onclick="setLens('Explore')">Explore</button>
-    <button class="btn lens-btn lens-serve-btn" onclick="setLens('Serve')">Serve</button>
-    <button class="btn lens-btn lens-create-btn" onclick="setLens('Create')">Create</button>
-    <button class="btn lens-btn lens-inspire-btn" onclick="setLens('Inspire')">Inspire</button>
-    <button class="btn lens-btn lens-reflect-btn" onclick="setLens('Reflect')">Reflect</button>
-  </div>
-
-  <div class="ui-row dev">
-    <button class="btn dev-btn" onclick="debugSetLocation('hiro_marker', 'marker')">
-      Dev: Marker
-    </button>
-    <button class="btn dev-btn" onclick="debugSetLocation('harvard_square_demo', 'zone')">
-      Dev: Harvard Sq
-    </button>
-  </div>
-</div>
-
-<!-- Zone Map Overlay -->
-<div id="zone-map-overlay" class="zone-map-overlay" style="display:none;">
-  <div class="zone-map-backdrop" onclick="closeZoneMap()"></div>
-  <div class="zone-map-panel">
-    <div class="zone-map-header">
-      <span>Harvard Square Zones</span>
-      <button type="button" class="zone-map-close-btn" onclick="closeZoneMap()">✕</button>
+  <!-- Bottom UI: lens buttons + dev buttons -->
+  <div class="ui">
+    <div class="ui-row main">
+      <button class="btn lens-btn lens-explore-btn" onclick="setLens('Explore')">Explore</button>
+      <button class="btn lens-btn lens-serve-btn" onclick="setLens('Serve')">Serve</button>
+      <button class="btn lens-btn lens-create-btn" onclick="setLens('Create')">Create</button>
+      <button class="btn lens-btn lens-inspire-btn" onclick="setLens('Inspire')">Inspire</button>
+      <button class="btn lens-btn lens-reflect-btn" onclick="setLens('Reflect')">Reflect</button>
     </div>
-    <div class="zone-map-body" id="zone-map-body">
-      <!-- Zone list will be filled by JS -->
+
+    <div class="ui-row dev">
+      <button class="btn dev-btn" onclick="debugSetLocation('hiro_marker', 'marker')">
+        Dev: Marker
+      </button>
+      <button class="btn dev-btn" onclick="debugSetLocation('harvard_square_demo', 'zone')">
+        Dev: Harvard Sq
+      </button>
     </div>
   </div>
-</div>
 
-  
+  <!-- Zone Map Overlay -->
+  <div id="zone-map-overlay" class="zone-map-overlay" style="display:none;">
+    <div class="zone-map-backdrop" onclick="closeZoneMap()"></div>
+    <div class="zone-map-panel">
+      <div class="zone-map-header">
+        <span>Harvard Square Zones</span>
+        <button type="button" class="zone-map-close-btn" onclick="closeZoneMap()">✕</button>
+      </div>
+      <div class="zone-map-body" id="zone-map-body">
+        <!-- Zone list will be filled by JS -->
+      </div>
+    </div>
+  </div>
 
 <script>
   // =============================
   // CONFIG: reflection form link
-  // (replace with your actual Airtable form URL)
   // =============================
   var FORM_URL_BASE = "https://airtable.com/appXPj1T4lTXjx1kD/shrNSUnk4yNRibuOx";
 
   // =============================
   // CONFIG: default stories by lens (fallback)
-  // Used if no place-specific content found
   // =============================
   var STORIES = {
     "Explore": "Replace with your Explore story (50–80 words).",
@@ -655,9 +582,7 @@
     "Reflect": "Replace with your Reflect prompt or question."
   };
 
-  // =============================
-  // ARC LABELS (to match home screen)
-  // =============================
+  // ARC labels (to match index.html)
   var ARC_LABELS = {
     courage:   "Courageous",
     creative:  "Creative",
@@ -667,9 +592,7 @@
     impactful: "Impactful"
   };
 
-  // =============================
-  // Meaning Profile (from index.html)
-  // =============================
+  // Meaning Profile loaded from index.html
   var USER_PROFILE = null;
 
   function loadUserProfile() {
@@ -685,25 +608,21 @@
       console.warn("Failed to load whyldProfile:", e);
     }
   }
-  
-  // =============================
+
   // CONTENT from Airtable via Cloudflare Worker
-  // This will be filled dynamically.
-  // =============================
   var CONTENT = {};
   var CONTENT_LOADED = false;
   var CONTENT_API_URL = "https://whyld-world-worker.garret-fitzpatrick.workers.dev/api/content";
   var REFLECTIONS_API_URL = "https://whyld-world-worker.garret-fitzpatrick.workers.dev/api/reflections";
-  var reflectionsCache = {}; // key: locationId|lens -> array of reflections
-  
+  var reflectionsCache = {}; // key: locationId|lens|layer -> array of reflections
+
   // =============================
   // STATE
   // =============================
-  
   var storyExpanded = false;
   var currentLensLabel = "Explore";   // current lens
   var currentLayer = "World";  
-  var currentLocation   = null;        // { type: 'marker' | 'zone', id: string }
+  var currentLocation   = null;       // { type: 'marker' | 'zone', id: string }
   var markerVisible    = false;
   var activeZoneId     = null;
   var userLat = null;
@@ -730,14 +649,10 @@
       })
       .catch(function (err) {
         console.warn("Failed to load content from API:", err);
-        // CONTENT stays as {}, so STORIES will be used as fallback
       });
   }
 
   // =============================
-  // LENS / AURA
-  // =============================
-    // =============================
   // LENS / AURA
   // =============================
   function setLens(lensLabel) {
@@ -763,16 +678,15 @@
       } else if (USER_PROFILE && USER_PROFILE.intensity === "high") {
         aura.style.opacity = "1.0";
       } else {
-        // default / medium
         aura.style.opacity = "0.7";
       }
     }
 
     // Highlight active bottom lens button
     var buttons = document.querySelectorAll('.lens-btn');
-    buttons.forEach(function (btn) {
-      btn.classList.remove('active-lens');
-    });
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove('active-lens');
+    }
     var activeBtn = document.querySelector('.lens-' + lensKey + '-btn');
     if (activeBtn) {
       activeBtn.classList.add('active-lens');
@@ -781,10 +695,9 @@
     // If the card is currently visible and we have a location, update content
     var cardEl = document.getElementById("card");
     if (cardEl && cardEl.style.display !== "none" && currentLocation) {
-      updateCardForCurrentLens(false); // don't force show; just update content
+      updateCardForCurrentLens(false);
     }
   }
-
 
   // =============================
   // LAYER TOGGLE (World / Community / Personal)
@@ -792,7 +705,6 @@
   function setLayer(layerLabel) {
     currentLayer = layerLabel;
 
-    // Update button styles
     var worldBtn = document.getElementById("layer-world-btn");
     var commBtn  = document.getElementById("layer-community-btn");
     var persBtn  = document.getElementById("layer-personal-btn");
@@ -803,10 +715,9 @@
       persBtn.classList.toggle("active", layerLabel === "Personal");
     }
 
-    // When layer changes, refresh the card content and reflections (if visible)
     var cardEl = document.getElementById("card");
     if (cardEl && cardEl.style.display !== "none" && currentLocation) {
-      updateCardForCurrentLens(false); // no need to force show
+      updateCardForCurrentLens(false);
     }
   }
 
@@ -820,49 +731,47 @@
     var bigQ = profile.bigQuestion || "";
     var noticeMore = profile.noticeMore || "";
     var name = profile.name || "";
-  
+
     var driversText = drivers.length
       ? drivers.join(", ")
       : "what matters most to you";
-  
+
     var arcText = arcLabel
       ? "a " + arcLabel.toLowerCase() + " chapter"
       : "this chapter";
-  
+
     var lines = [];
-  
+
     if (name) {
       lines.push("Hey " + name + ",");
     }
-  
-    // Line 1: frame the lens + arc + drivers
+
     lines.push(
       "From this " + lensLabel + " lens, in " + arcText +
       ", notice how this place touches " + driversText + "."
     );
-  
-    // Line 2: fold in the big question
+
     if (bigQ) {
       lines.push(
-        'Given your question — "' + bigQ + '" — what feels like the next small move from here?'
+        'Given your question — "' + bigQ +
+        '" — what feels like the next small move from here?'
       );
     } else {
       lines.push(
         "What feels like the next small move from here?"
       );
     }
-  
-    // Line 3: tie in what they want to notice more of
+
     if (noticeMore) {
       lines.push(
         'You said you want to notice more of "' + noticeMore +
         '". Do you see any trace of that here, even in a small way?'
       );
     }
-  
+
     return lines.join("\n\n");
   }
-  
+
   // =============================
   // CARD CONTENT
   // =============================
@@ -888,12 +797,9 @@
     var story = "";
   
     if (placeContent) {
-      // New layered format: CONTENT[locationId][layer][lens]
       if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
         story = placeContent[currentLayer][currentLensLabel];
-      }
-      // Fallback flat: CONTENT[locationId][lens]
-      else if (placeContent[currentLensLabel]) {
+      } else if (placeContent[currentLensLabel]) {
         story = placeContent[currentLensLabel];
       }
     }
@@ -901,16 +807,13 @@
       story = STORIES[currentLensLabel] || "";
     }
 
-    // 🔹 PERSONALIZATION for PERSONAL LAYER:
-    // For Personal, we override the story with a custom prompt
+    // Personal layer uses profile-driven prompt if available
     if (currentLayer === "Personal" && USER_PROFILE) {
       story = buildPersonalPrompt(currentLensLabel, USER_PROFILE);
     }
   
-    // Title shows lens only
     titleEl.innerText = currentLensLabel;
   
-    // Reset card classes
     cardEl.classList.remove(
       "layer-world",
       "layer-community",
@@ -918,9 +821,6 @@
       "community-expanded"
     );
   
-    //
-    // 🌍 WORLD LAYER — canonical story, collapsed with "More"
-    //
     if (currentLayer === "World") {
       cardEl.classList.add("layer-world");
       textEl.innerText = story;
@@ -931,43 +831,30 @@
       }
       storyExpanded = false;
       if (reflectionsEl) reflectionsEl.style.display = "block";
-  
-      // Link label for World
       linkEl.innerText = "Leave a reflection";
     }
   
-    //
-    // 👥 COMMUNITY LAYER — reflections first, taller card
-    //
     else if (currentLayer === "Community") {
       cardEl.classList.add("layer-community", "community-expanded");
       textEl.innerText = story;
       textEl.classList.remove("collapsed");
       if (toggleEl) toggleEl.style.display = "none";
       if (reflectionsEl) reflectionsEl.style.display = "block";
-  
-      // Link label for Community
       linkEl.innerText = "Leave a reflection";
     }
   
-    //
-    // 🙋 PERSONAL LAYER — introspection, no reflections shown
-    //
     else if (currentLayer === "Personal") {
       cardEl.classList.add("layer-personal");
-      textEl.innerText = story;     // now our custom prompt
+      textEl.innerText = story;
       textEl.classList.remove("collapsed");
       if (toggleEl) toggleEl.style.display = "none";
-      if (reflectionsEl) reflectionsEl.style.display = "none";  // hide reflections entirely
-  
-      // Link label for Personal
+      if (reflectionsEl) reflectionsEl.style.display = "none";
       linkEl.innerText = "Capture a personal note";
     }
   
     // Build Airtable reflection link with prefilled fields
     var params = [];
     params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
-    // We decided: no Layer field in Airtable, so no prefill_Layer
     if (currentLocation && currentLocation.id) {
       params.push("prefill_LocationId=" + encodeURIComponent(currentLocation.id));
     }
@@ -982,12 +869,10 @@
       cardEl.style.display = "block";
     }
   
-    // Load reflections for World + Community; skip Personal
     if (currentLayer !== "Personal") {
       loadReflectionsForCurrentLocationAndLens();
     }
   }
-
 
   function hideCard() {
     var cardEl = document.getElementById("card");
@@ -995,8 +880,7 @@
   }
 
   function debugSetLocation(locationId, type) {
-    devMode = true; // prevent geolocation from overriding 
-    // type: 'marker' or 'zone'
+    devMode = true;
     currentLocation = { type: type, id: locationId };
   
     if (type === 'marker') {
@@ -1011,78 +895,68 @@
     updateLocationLabelFromCurrentLocation();
   }
 
-function updateLocationLabelFromCurrentLocation() {
-  var el = document.getElementById("location-label");
-  if (!el) return;
+  function updateLocationLabelFromCurrentLocation() {
+    var el = document.getElementById("location-label");
+    if (!el) return;
 
-  if (!currentLocation) {
-    el.innerText = "";
-    return;
-  }
+    if (!currentLocation) {
+      el.innerText = "";
+      return;
+    }
 
-  var baseLabel = "";
+    var baseLabel = "";
   
-  if (currentLocation.type === "marker") {
-    // You can change this label text later if you add more markers
-    baseLabel = "Marker: hiro_marker";
-  } else if (currentLocation.type === "zone") {
-    var zoneId = currentLocation.id;
-    var label = zoneId;
-    if (Array.isArray(ZONES)) {
-      var z = ZONES.find(function (zone) { return zone.id === zoneId; });
-      if (z && z.label) {label = z.label;
-    }
-    }
-    baseLabel = label;
-  }
-  el.innerText = baseLabel;
-}
-  
-  // =============================
-  // GEOLOCATION / ZONES
-  // =============================
-    // =============================
-  // GEOLOCATION / ZONES
-  // =============================
-    var ZONES = [
-      {
-        id: "harvard_square_demo",     // keep or replace this one if you like
-        label: "Harvard Square",
-        lat: 42.3733,
-        lon: -71.1190,
-        radiusM: 50,
-        mapX: 50,   // center-ish
-        mapY: 50
-      },
-      {
-        id: "hsq_kiosk",
-        label: "Harvard Square Kiosk",
-        lat: 42.37352,
-        lon: -71.11919,
-        radiusM: 35,
-        mapX: 45,
-        mapY: 35
-      },
-      {
-        id: "harvard_coop_corner",
-        label: "Harvard Coop Corner",
-        lat: 42.37365,
-        lon: -71.11936,
-        radiusM: 40,
-        mapX: 40,
-        mapY: 45
-      },
-      {
-        id: "st_pauls_steps",
-        label: "St. Paul's Steps",
-        lat: 42.3712,
-        lon: -71.1156,
-        radiusM: 35,
-        mapX: 78,
-        mapY: 84
+    if (currentLocation.type === "marker") {
+      baseLabel = "Marker: hiro_marker";
+    } else if (currentLocation.type === "zone") {
+      var zoneId = currentLocation.id;
+      var label = zoneId;
+      if (Array.isArray(ZONES)) {
+        for (var i = 0; i < ZONES.length; i++) {
+          if (ZONES[i].id === zoneId && ZONES[i].label) {
+            label = ZONES[i].label;
+            break;
+          }
+        }
       }
-    ];
-
+      baseLabel = label;
+    }
+    el.innerText = baseLabel;
+  }
+  
+  // =============================
+  // GEOLOCATION / ZONES
+  // =============================
+  var ZONES = [
+    {
+      id: "harvard_square_demo",
+      label: "Harvard Square",
+      lat: 42.3733,
+      lon: -71.1190,
+      radiusM: 50
+    },
+    {
+      id: "hsq_kiosk",
+      label: "Harvard Square Kiosk",
+      lat: 42.37352,
+      lon: -71.11919,
+      radiusM: 35
+    },
+    {
+      id: "harvard_coop_corner",
+      label: "Harvard Coop Corner",
+      lat: 42.37365,
+      lon: -71.11936,
+      radiusM: 40
+    },
+    {
+      id: "st_pauls_steps",
+      label: "St. Paul's Steps",
+      lat: 42.3712,
+      lon: -71.1156,
+      radiusM: 35
+    }
+  ];
 
   function startGeoWatch() {
     if (!navigator.geolocation) {
@@ -1108,7 +982,7 @@ function updateLocationLabelFromCurrentLocation() {
   }
 
   function checkNearbyZones() {
-    if (devMode) return; // 🔥 do nothing in dev mode
+    if (devMode) return;
     
     var nearestZone = null;
     for (var i = 0; i < ZONES.length; i++) {
@@ -1119,20 +993,18 @@ function updateLocationLabelFromCurrentLocation() {
       }
     }
 
-  if (nearestZone) {
-    if (activeZoneId !== nearestZone.id) {
-      activeZoneId = nearestZone.id;
+    if (nearestZone) {
+      if (activeZoneId !== nearestZone.id) {
+        activeZoneId = nearestZone.id;
 
-      if (!markerVisible) {
-        currentLocation = { type: 'zone', id: activeZoneId };
-        updateCardForCurrentLens(true);
-        triggerZoneEnteredAnimation();
-        updateLocationLabelFromCurrentLocation();   // 🔹 label updates here
+        if (!markerVisible) {
+          currentLocation = { type: 'zone', id: activeZoneId };
+          updateCardForCurrentLens(true);
+          triggerZoneEnteredAnimation();
+          updateLocationLabelFromCurrentLocation();
+        }
       }
-    }
-    
     } else {
-      // Left all zones
       activeZoneId = null;
       if (!markerVisible) {
         currentLocation = null;
@@ -1145,7 +1017,7 @@ function updateLocationLabelFromCurrentLocation() {
   function isInsideZone(userLat, userLon, zone) {
     if (userLat == null || userLon == null) return false;
 
-    var R = 6371e3; // Earth radius in meters
+    var R = 6371e3;
     var dLat = (zone.lat - userLat) * Math.PI / 180;
     var dLon = (zone.lon - userLon) * Math.PI / 180;
 
@@ -1161,23 +1033,23 @@ function updateLocationLabelFromCurrentLocation() {
   }
 
   function toggleStoryExpand() {
-  var textEl = document.getElementById("card-text");
-  var btnEl  = document.getElementById("story-toggle");
+    var textEl = document.getElementById("card-text");
+    var btnEl  = document.getElementById("story-toggle");
 
-  if (!textEl || !btnEl) return;
+    if (!textEl || !btnEl) return;
     
-  storyExpanded = !storyExpanded;
+    storyExpanded = !storyExpanded;
 
-  if (storyExpanded) {
-    textEl.classList.remove("collapsed");
-    btnEl.innerText = "Less";
-  } else {
-    textEl.classList.add("collapsed");
-    btnEl.innerText = "More";
+    if (storyExpanded) {
+      textEl.classList.remove("collapsed");
+      btnEl.innerText = "Less";
+    } else {
+      textEl.classList.add("collapsed");
+      btnEl.innerText = "More";
+    }
   }
-}
 
-  // Convert timestamp into "time ago" string
+  // Time-ago formatter
   function formatTimeAgo(timestamp) {
     if (!timestamp) return "";
   
@@ -1195,53 +1067,51 @@ function updateLocationLabelFromCurrentLocation() {
     if (day === 1) return "yesterday";
     if (day < 7) return day + " days ago";
   
-    // Otherwise show date like "Nov 18"
     return past.toLocaleDateString(undefined, {
       month: "short",
       day: "numeric"
     });
   }
 
-// =============================
-// REFLECTIONS
-// =============================
+  // =============================
+  // REFLECTIONS
+  // =============================
   function loadReflectionsForCurrentLocationAndLens() {
-  if (!currentLocation || !REFLECTIONS_API_URL) {
-    renderReflections([]);
-    return;
-  }
-
-  var locationId = currentLocation.id;
-  var lens = currentLensLabel;
-  var layer = currentLayer;
-  var key = locationId + "|" + lens + "|" + layer;
-
-  // Use cache if we already loaded these
-  if (reflectionsCache[key]) {
-    renderReflections(reflectionsCache[key]);
-    return;
-  }
-
-  var url = REFLECTIONS_API_URL +
-    "?locationId=" + encodeURIComponent(locationId) +
-    "&lens=" + encodeURIComponent(lens) +
-    "&layer=" + encodeURIComponent(layer);
-
-  fetch(url)
-    .then(function (resp) {
-      if (!resp.ok) throw new Error("Reflections API error: " + resp.status);
-      return resp.json();
-    })
-    .then(function (data) {
-      var refs = (data && data.reflections) || [];
-      reflectionsCache[key] = refs;
-      renderReflections(refs);
-    })
-    .catch(function (err) {
-      console.warn("Failed to load reflections:", err);
+    if (!currentLocation || !REFLECTIONS_API_URL) {
       renderReflections([]);
-    });
-}
+      return;
+    }
+
+    var locationId = currentLocation.id;
+    var lens = currentLensLabel;
+    var layer = currentLayer;
+    var key = locationId + "|" + lens + "|" + layer;
+
+    if (reflectionsCache[key]) {
+      renderReflections(reflectionsCache[key]);
+      return;
+    }
+
+    var url = REFLECTIONS_API_URL +
+      "?locationId=" + encodeURIComponent(locationId) +
+      "&lens=" + encodeURIComponent(lens) +
+      "&layer=" + encodeURIComponent(layer);
+
+    fetch(url)
+      .then(function (resp) {
+        if (!resp.ok) throw new Error("Reflections API error: " + resp.status);
+        return resp.json();
+      })
+      .then(function (data) {
+        var refs = (data && data.reflections) || [];
+        reflectionsCache[key] = refs;
+        renderReflections(refs);
+      })
+      .catch(function (err) {
+        console.warn("Failed to load reflections:", err);
+        renderReflections([]);
+      });
+  }
 
   function renderReflections(refs) {
     var container = document.getElementById("reflections");
@@ -1264,51 +1134,33 @@ function updateLocationLabelFromCurrentLocation() {
     var html = "";
   
     if (currentLayer === "World") {
-      // Small preview (up to 3), same aesthetic as Community
       var max = Math.min(refs.length, 3);
       for (var i = 0; i < max; i++) {
         var r = refs[i];
         var txt = escapeHtml(r.text || "");
-        
-        // Truncate in World layer so it feels like a preview
         if (txt.length > 140) {
           txt = txt.slice(0, 137) + "…";
         }
-    
-        var who = r.userName
-          ? '<strong>' + escapeHtml(r.userName) + '</strong>'
-          : '';
+        var who = r.userName ? "<strong>" + escapeHtml(r.userName) + "</strong>" : "";
         var time = r.timestamp ? " · " + formatTimeAgo(r.timestamp) : "";
-    
         var prefix = who ? who + time + ": " : "";
-    
         html += '<li class="reflection-item">' + prefix + txt + '</li>';
       }
-    }
-
-  
-    else if (currentLayer === "Community") {
+    } else if (currentLayer === "Community") {
       var maxC = Math.min(refs.length, 20);
       for (var j = 0; j < maxC; j++) {
-        var r = refs[j];
-        var txt = escapeHtml(r.text || "");
-        var who = r.userName
-          ? '<strong>' + escapeHtml(r.userName) + '</strong>'
-          : '';
-        var time = r.timestamp ? " · " + formatTimeAgo(r.timestamp) : "";
-    
-        // if no name, no bullet separator
-        var prefix = who ? who + time + ": " : "";
-    
-        html += '<li class="reflection-item">' + prefix + txt + '</li>';
+        var r2 = refs[j];
+        var txt2 = escapeHtml(r2.text || "");
+        var who2 = r2.userName ? "<strong>" + escapeHtml(r2.userName) + "</strong>" : "";
+        var time2 = r2.timestamp ? " · " + formatTimeAgo(r2.timestamp) : "";
+        var prefix2 = who2 ? who2 + time2 + ": " : "";
+        html += '<li class="reflection-item">' + prefix2 + txt2 + '</li>';
       }
     }
 
     listEl.innerHTML = html;
   }
   
-  
-  // Simple HTML escaping to avoid issues
   function escapeHtml(str) {
     return String(str)
       .replace(/&/g, "&amp;")
@@ -1316,31 +1168,28 @@ function updateLocationLabelFromCurrentLocation() {
       .replace(/>/g, "&gt;");
   }
   
-// =============================
-// ANIMATIONS
-// =============================
+  // =============================
+  // ANIMATIONS
+  // =============================
   function triggerZoneEnteredAnimation() {
-  var cardEl = document.getElementById("card");
-  var auraEl = document.getElementById("lens-aura");
-  if (!cardEl) return;
+    var cardEl = document.getElementById("card");
+    var auraEl = document.getElementById("lens-aura");
+    if (!cardEl) return;
 
-  // Restart the card animation
-  cardEl.classList.remove("zone-entered");
-  // Force reflow so animation can replay
-  void cardEl.offsetWidth;
-  cardEl.classList.add("zone-entered");
+    cardEl.classList.remove("zone-entered");
+    void cardEl.offsetWidth;
+    cardEl.classList.add("zone-entered");
 
-  // Optional: small aura flash
-  if (auraEl) {
-    auraEl.classList.remove("zone-flash");
-    void auraEl.offsetWidth;
-    auraEl.classList.add("zone-flash");
+    if (auraEl) {
+      auraEl.classList.remove("zone-flash");
+      void auraEl.offsetWidth;
+      auraEl.classList.add("zone-flash");
+    }
   }
-}
 
-// =============================
-// ZONE MAP OVERLAY
-// =============================
+  // =============================
+  // ZONE MAP OVERLAY
+  // =============================
   function openZoneMap() {
     var overlay = document.getElementById("zone-map-overlay");
     if (!overlay) return;
@@ -1354,92 +1203,63 @@ function updateLocationLabelFromCurrentLocation() {
     overlay.style.display = "none";
   }
   
-    // Build mini-map in the overlay
   function renderZoneMapList() {
     var bodyEl = document.getElementById("zone-map-body");
     if (!bodyEl || !Array.isArray(ZONES)) return;
-
-    // Build mini-map skeleton
-    var html =
-      '<div class="zone-mini-map">' +
-        '<div class="zone-mini-map-grid"></div>' +
-        '<div id="zone-mini-map-dots"></div>' +
-      '</div>';
-
-    bodyEl.innerHTML = html;
-
-    var dotsContainer = document.getElementById("zone-mini-map-dots");
-    if (!dotsContainer) return;
-
-    // Add a dot + label for each zone
+  
+    var html = "";
     for (var i = 0; i < ZONES.length; i++) {
       var z = ZONES[i];
-      // Require mapX/mapY to place it
-      if (typeof z.mapX !== "number" || typeof z.mapY !== "number") continue;
-
-      var isActive =
-        (currentLocation && currentLocation.type === "zone" && currentLocation.id === z.id) ||
-        activeZoneId === z.id;
-
-      // Dot
-      var dot = document.createElement("div");
-      dot.className = "zone-map-dot" + (isActive ? " active-zone-dot" : "");
-      dot.style.left = z.mapX + "%";
-      dot.style.top  = z.mapY + "%";
-      dot.title      = z.label || z.id;
-
-      // Optional initial letter inside the dot
-      dot.textContent = (z.label || z.id).charAt(0).toUpperCase();
-
-      dot.onclick = (function(zoneId) {
-        return function() { selectZoneFromMap(zoneId); };
-      })(z.id);
-
-      // Label
-      var label = document.createElement("div");
-      label.className = "zone-map-label";
-      label.style.left = z.mapX + "%";
-      label.style.top  = z.mapY + "%";
-      label.textContent = z.label || z.id;
-
-      dotsContainer.appendChild(dot);
-      dotsContainer.appendChild(label);
+      var name = z.label || z.id;
+      var id = z.id;
+  
+      var isActive = (currentLocation && currentLocation.type === "zone" && currentLocation.id === id)
+                     || activeZoneId === id;
+  
+      var classes = "zone-map-item";
+      if (isActive) classes += " active-zone";
+  
+      var meta = "";
+      if (activeZoneId === id) {
+        meta = "You are here (via GPS)";
+      } else if (currentLocation && currentLocation.type === "zone" && currentLocation.id === id) {
+        meta = "Viewing this zone";
+      } else {
+        meta = "Tap to preview";
+      }
+  
+      html +=
+        '<div class="' + classes + '" onclick="selectZoneFromMap(\'' + id + '\')">' +
+          '<div class="zone-map-item-name">' + escapeHtml(name) + '</div>' +
+          '<div class="zone-map-item-meta">' + escapeHtml(meta) + '</div>' +
+        '</div>';
     }
+  
+    bodyEl.innerHTML = html;
   }
-
   
-  // When user taps a zone in the map overlay
   function selectZoneFromMap(zoneId) {
-    // Enter dev mode so GPS won't fight us
     devMode = true;
-  
-    // Reuse existing helper
     debugSetLocation(zoneId, 'zone');
-  
-    // Close map after selection
     closeZoneMap();
   }
 
   // =============================
-  // INIT: marker + geolocation + content load
+  // INIT
   // =============================
   window.addEventListener('DOMContentLoaded', function () {
-    // 1) Load meaning profile from home screen
     loadUserProfile();
 
-    // 2) If the user has a focus lens, start with that
+    // Start with user's focus lens if set
     if (USER_PROFILE && USER_PROFILE.focusLens) {
       currentLensLabel = USER_PROFILE.focusLens;
     }
 
-    // 3) Initialize aura + lens + layer
     setLens(currentLensLabel);
     setLayer(currentLayer);
 
-    // 4) Load content from Cloudflare Worker / Airtable
     loadContentFromAPI();
 
-    // 5) Marker-based triggers
     var marker = document.querySelector('#ww-marker');
     if (marker) {
       marker.addEventListener('markerFound', function () {
@@ -1453,7 +1273,6 @@ function updateLocationLabelFromCurrentLocation() {
         markerVisible = false;
 
         if (activeZoneId) {
-          // Fall back to zone if we are inside one
           currentLocation = { type: 'zone', id: activeZoneId };
           updateCardForCurrentLens(true);
           triggerZoneEnteredAnimation();
@@ -1465,12 +1284,6 @@ function updateLocationLabelFromCurrentLocation() {
       });
     }
 
-    // 6) Start GPS watching for zones
-    startGeoWatch();
-  });
-  
-
-    // Start GPS watching for zones
     startGeoWatch();
   });
 </script>
