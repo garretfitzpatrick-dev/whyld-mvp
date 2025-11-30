@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Whyld World · Meaning Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <style>
+    :root {
+      --bg-start: #050816;
+      --bg-end: #1a2a3a;
+      --accent: #3a86ff;
+      --accent-soft: rgba(58, 134, 255, 0.18);
+      --card-bg: rgba(8, 12, 20, 0.92);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f9fbff;
+      --text-soft: #a5b1c7;
+      --chip-bg: rgba(255, 255, 255, 0.04);
+      --chip-active-bg: rgba(58, 134, 255, 0.16);
+      --chip-border: rgba(255, 255, 255, 0.16);
+      --chip-active-border: rgba(58, 134, 255, 0.85);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(circle at top, #192a46 0, #050816 55%, #02030a 100%);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1120px;
+      padding: 16px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: conic-gradient(from 180deg, #3a86ff, #ff9f1c, #ff006e, #3a86ff);
+      box-shadow: 0 0 18px rgba(58, 134, 255, 0.6);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .header-arc {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .header-arc span {
+      color: #ffd166;
+      font-weight: 600;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 800px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-arc {
+        text-align: left;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      padding: 12px 14px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(18px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .card-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-soft);
+    }
+
+    .card-body {
+      font-size: 13px;
+      color: var(--text-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--chip-border);
+      background: var(--chip-bg);
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-soft);
+      transition: all 0.16s ease;
+      user-select: none;
+    }
+
+    .chip span {
+      opacity: 0.8;
+    }
+
+    .chip.active {
+      border-color: var(--chip-active-border);
+      background: var(--chip-active-bg);
+      color: var(--text-main);
+      box-shadow: 0 0 0 1px rgba(58, 134, 255, 0.25);
+    }
+
+    .chip.active span {
+      opacity: 1;
+    }
+
+    .arc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .arc-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .arc-card {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.02);
+      padding: 8px 9px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all 0.16s ease;
+    }
+
+    .arc-card.active {
+      border-color: rgba(255, 209, 102, 0.9);
+      box-shadow: 0 0 0 1px rgba(255, 209, 102, 0.2);
+      background: radial-gradient(circle at top left, rgba(255, 209, 102, 0.18), rgba(255, 255, 255, 0.01));
+    }
+
+    .arc-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .arc-tagline {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.28);
+      padding: 7px 9px;
+      font-size: 12px;
+      color: var(--text-main);
+      resize: vertical;
+      min-height: 34px;
+    }
+
+    textarea::placeholder,
+    input::placeholder {
+      color: rgba(165, 177, 199, 0.6);
+    }
+
+    textarea:focus,
+    input:focus {
+      outline: none;
+      border-color: rgba(58, 134, 255, 0.8);
+      box-shadow: 0 0 0 1px rgba(58, 134, 255, 0.25);
+    }
+
+    .meaning-graph {
+      margin-top: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.4));
+      padding: 8px;
+      font-size: 11px;
+      color: var(--text-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .meaning-graph-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .graph-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .graph-bar-label {
+      min-width: 82px;
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .graph-bar-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .graph-bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(58, 134, 255, 0.7), rgba(255, 0, 110, 0.8));
+      transition: width 0.25s ease;
+      width: 0%;
+    }
+
+    .graph-summary {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .journey-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .journey-item {
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .journey-label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .journey-main {
+      font-size: 12px;
+    }
+
+    .journey-meta {
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .actions-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .primary-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #3a86ff, #ff006e);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .primary-btn span {
+      font-size: 16px;
+    }
+
+    .secondary-link {
+      font-size: 11px;
+      color: var(--text-soft);
+      text-decoration: underline;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+
+    .secondary-link:hover {
+      opacity: 1;
+    }
+
+    footer {
+      margin-top: 4px;
+      font-size: 10px;
+      color: rgba(165, 177, 199, 0.6);
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <div class="brand-title">Whyld World</div>
+          <div class="brand-subtitle" id="brand-subtitle">
+            A lens for meaning in the world.
+          </div>
+        </div>
+      </div>
+      <div class="header-arc">
+        Current arc:&nbsp;<span id="arc-header-label">Not set yet</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- LEFT: Meaning inputs -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Your Meaning Configuration</div>
+          <div class="card-pill">Inner World</div>
+        </div>
+        <div class="card-body">
+
+          <!-- Meaning Drivers -->
+          <div>
+            <div class="section-label">What matters most to you right now?</div>
+            <div class="chip-row" id="drivers-row">
+              <!-- Chips generated by JS -->
+            </div>
+          </div>
+
+          <!-- Arc Selection -->
+          <div>
+            <div class="section-label">What arc are you in?</div>
+            <div class="arc-grid" id="arc-grid">
+              <!-- Arc cards generated by JS -->
+            </div>
+          </div>
+
+          <!-- Notice & Missing -->
+          <div class="field-group">
+            <label class="section-label" for="notice-input">
+              What do you want to notice more of in the world?
+            </label>
+            <textarea id="notice-input" placeholder="e.g., acts of quiet courage, moments of wonder, opportunities to help"></textarea>
+          </div>
+
+          <div class="field-group">
+            <label class="section-label" for="missing-input">
+              What feels missing or undernourished right now?
+            </label>
+            <textarea id="missing-input" placeholder="e.g., deep connection, creative time, a sense of direction"></textarea>
+          </div>
+
+          <!-- Big Question -->
+          <div class="field-group">
+            <label class="section-label" for="question-input">
+              What's a question you're holding on this part of your journey?
+            </label>
+            <input id="question-input" type="text" placeholder="e.g., How can I align my work with what I care about most?" />
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Meaning Graph & Journey Preview -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Meaning Graph · Snapshot</div>
+          <div class="card-pill">Today</div>
+        </div>
+        <div class="card-body">
+          <div class="meaning-graph">
+            <div class="graph-summary" id="graph-summary">
+              Choose a few things that matter to you and an arc you’re in. This graph will reflect your current meaning
+              landscape and can guide how Whyld World responds in AR.
+            </div>
+            <div class="meaning-graph-bars" id="graph-bars">
+              <!-- Bars filled by JS -->
+            </div>
+          </div>
+
+          <div>
+            <div class="section-label">Your journey so far</div>
+            <ul class="journey-list" id="journey-list">
+              <!-- Journey entries (from local profile) -->
+            </ul>
+          </div>
+
+          <div class="actions-row">
+            <button class="primary-btn" type="button" onclick="enterWorld()">
+              <span>⟶</span> Enter the World
+            </button>
+            <div class="secondary-link" onclick="resetProfile()">
+              Reset profile &amp; start over
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Your choices here don’t lock you in. Whyld World is meant to evolve with you as your sense of meaning and purpose
+      changes over time.
+    </footer>
+  </div>
+
+  <script>
+    // -----------------------------
+    // CONFIG
+    // -----------------------------
+    const MEANING_DRIVERS = [
+      "Growth",
+      "Mastery",
+      "Belonging",
+      "Joy",
+      "Wonder",
+      "Freedom",
+      "Service",
+      "Purpose",
+      "Creativity",
+      "Clarity"
+    ];
+
+    const ARCS = [
+      {
+        id: "courage",
+        name: "Becoming More Courageous",
+        tagline: "Leaning into stretch moments, not just safe ones."
+      },
+      {
+        id: "creative",
+        name: "Becoming More Creative",
+        tagline: "Letting yourself experiment, play, and make things."
+      },
+      {
+        id: "connected",
+        name: "Becoming More Connected",
+        tagline: "Deepening relationships with people and places."
+      },
+      {
+        id: "clear",
+        name: "Becoming More Clear",
+        tagline: "Finding coherence and direction in the noise."
+      },
+      {
+        id: "grounded",
+        name: "Becoming More Grounded",
+        tagline: "Staying present and rooted amid change."
+      },
+      {
+        id: "impactful",
+        name: "Becoming More Impactful",
+        tagline: "Aligning your effort with what truly matters."
+      }
+    ];
+
+    const PROFILE_KEY = "ww_profile";
+
+    // -----------------------------
+    // STATE
+    // -----------------------------
+    let profile = {
+      drivers: [],
+      arcId: null,
+      noticeMore: "",
+      missing: "",
+      bigQuestion: "",
+      updatedAt: null
+    };
+
+    // -----------------------------
+    // DOM refs
+    // -----------------------------
+    const driversRow = document.getElementById("drivers-row");
+    const arcGrid = document.getElementById("arc-grid");
+    const noticeInput = document.getElementById("notice-input");
+    const missingInput = document.getElementById("missing-input");
+    const questionInput = document.getElementById("question-input");
+    const graphBars = document.getElementById("graph-bars");
+    const graphSummary = document.getElementById("graph-summary");
+    const journeyList = document.getElementById("journey-list");
+    const arcHeaderLabel = document.getElementById("arc-header-label");
+    const brandSubtitle = document.getElementById("brand-subtitle");
+
+    // -----------------------------
+    // INIT
+    // -----------------------------
+    document.addEventListener("DOMContentLoaded", () => {
+      renderDriverChips();
+      renderArcCards();
+      loadProfile();
+      updateUIFromProfile();
+    });
+
+    function renderDriverChips() {
+      driversRow.innerHTML = "";
+      MEANING_DRIVERS.forEach((label) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.dataset.driver = label;
+        chip.innerHTML = `<span>${label}</span>`;
+        chip.addEventListener("click", () => toggleDriver(label));
+        driversRow.appendChild(chip);
+      });
+    }
+
+    function renderArcCards() {
+      arcGrid.innerHTML = "";
+      ARCS.forEach((arc) => {
+        const card = document.createElement("div");
+        card.className = "arc-card";
+        card.dataset.arcId = arc.id;
+        card.innerHTML = `
+          <div class="arc-name">${arc.name}</div>
+          <div class="arc-tagline">${arc.tagline}</div>
+        `;
+        card.addEventListener("click", () => selectArc(arc.id));
+        arcGrid.appendChild(card);
+      });
+    }
+
+    // -----------------------------
+    // PROFILE LOAD/SAVE
+    // -----------------------------
+    function loadProfile() {
+      try {
+        const raw = localStorage.getItem(PROFILE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          profile = Object.assign(profile, parsed);
+        }
+      } catch (e) {
+        console.warn("Failed to parse stored profile", e);
+      }
+    }
+
+    function saveProfile() {
+      profile.noticeMore = noticeInput.value.trim();
+      profile.missing = missingInput.value.trim();
+      profile.bigQuestion = questionInput.value.trim();
+      profile.updatedAt = new Date().toISOString();
+
+      try {
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+      } catch (e) {
+        console.warn("Failed to save profile", e);
+      }
+
+      updateMeaningGraph();
+      updateJourneyPreview();
+    }
+
+    function resetProfile() {
+      if (!confirm("Reset your Whyld World profile and start fresh?")) return;
+
+      profile = {
+        drivers: [],
+        arcId: null,
+        noticeMore: "",
+        missing: "",
+        bigQuestion: "",
+        updatedAt: null
+      };
+      localStorage.removeItem(PROFILE_KEY);
+      updateUIFromProfile();
+    }
+
+    // -----------------------------
+    // UI UPDATES
+    // -----------------------------
+    function updateUIFromProfile() {
+      // Drivers
+      document.querySelectorAll(".chip").forEach((chip) => {
+        const label = chip.dataset.driver;
+        chip.classList.toggle("active", profile.drivers.includes(label));
+      });
+
+      // Arc
+      document.querySelectorAll(".arc-card").forEach((card) => {
+        const id = card.dataset.arcId;
+        card.classList.toggle("active", id === profile.arcId);
+      });
+
+      const activeArc = ARCS.find((a) => a.id === profile.arcId);
+      arcHeaderLabel.textContent = activeArc ? activeArc.name : "Not set yet";
+
+      // Inputs
+      noticeInput.value = profile.noticeMore || "";
+      missingInput.value = profile.missing || "";
+      questionInput.value = profile.bigQuestion || "";
+
+      // Brand subtitling tweak
+      if (activeArc) {
+        brandSubtitle.textContent = "Tuned to your current arc: " + activeArc.name;
+      } else {
+        brandSubtitle.textContent = "A lens for meaning in the world.";
+      }
+
+      // Meaning graph & journey
+      updateMeaningGraph();
+      updateJourneyPreview();
+    }
+
+    function toggleDriver(label) {
+      const idx = profile.drivers.indexOf(label);
+      if (idx === -1) {
+        profile.drivers.push(label);
+      } else {
+        profile.drivers.splice(idx, 1);
+      }
+      saveProfile();
+      updateUIFromProfile();
+    }
+
+    function selectArc(arcId) {
+      profile.arcId = arcId;
+      saveProfile();
+      updateUIFromProfile();
+    }
+
+    noticeInput.addEventListener("change", saveProfile);
+    missingInput.addEventListener("change", saveProfile);
+    questionInput.addEventListener("change", saveProfile);
+
+    // -----------------------------
+    // Meaning Graph
+    // -----------------------------
+    function updateMeaningGraph() {
+      graphBars.innerHTML = "";
+
+      const selected = profile.drivers || [];
+      if (!selected.length) {
+        graphSummary.textContent =
+          "Pick a few things that matter to you. Each one becomes a bar in your Meaning Graph and can influence how stories and prompts are framed in AR.";
+        return;
+      }
+
+      graphSummary.textContent =
+        "These themes are currently at the center of your meaning landscape. Whyld World can emphasize them when surfacing stories, reflections, and prompts.";
+
+      // equal weights for now; we can evolve this later
+      const fraction = 1 / selected.length;
+
+      selected.forEach((driver, index) => {
+        const row = document.createElement("div");
+        row.className = "graph-bar-row";
+
+        const labelEl = document.createElement("div");
+        labelEl.className = "graph-bar-label";
+        labelEl.textContent = driver;
+
+        const track = document.createElement("div");
+        track.className = "graph-bar-track";
+
+        const fill = document.createElement("div");
+        fill.className = "graph-bar-fill";
+
+        // Slight variation by index for visual interest
+        const base = 40 + Math.round(fraction * 50);
+        const jitter = (index % 3) * 5;
+        const width = Math.min(100, base + jitter);
+        fill.style.width = width + "%";
+
+        track.appendChild(fill);
+        row.appendChild(labelEl);
+        row.appendChild(track);
+        graphBars.appendChild(row);
+      });
+    }
+
+    // -----------------------------
+    // Journey Preview
+    // -----------------------------
+    function updateJourneyPreview() {
+      journeyList.innerHTML = "";
+
+      const items = [];
+
+      const activeArc = ARCS.find((a) => a.id === profile.arcId);
+      if (activeArc) {
+        items.push({
+          label: "Arc in focus",
+          main: activeArc.name,
+          meta: activeArc.tagline
+        });
+      } else {
+        items.push({
+          label: "Arc in focus",
+          main: "Not chosen yet. Pick an arc to frame how you’re moving through the world.",
+          meta: ""
+        });
+      }
+
+      if (profile.drivers && profile.drivers.length) {
+        items.push({
+          label: "Meaning drivers",
+          main: profile.drivers.join(" · "),
+          meta: "These are the themes that Whyld World will lean into when you explore places."
+        });
+      } else {
+        items.push({
+          label: "Meaning drivers",
+          main: "You haven’t picked any yet.",
+          meta: "Select a few so the system knows what to amplify."
+        });
+      }
+
+      if (profile.bigQuestion) {
+        items.push({
+          label: "Guiding question",
+          main: profile.bigQuestion,
+          meta: "You can update this anytime as your journey evolves."
+        });
+      }
+
+      if (profile.noticeMore) {
+        items.push({
+          label: "What you want to notice",
+          main: profile.noticeMore,
+          meta: ""
+        });
+      }
+
+      if (profile.missing) {
+        items.push({
+          label: "What feels undernourished",
+          main: profile.missing,
+          meta: ""
+        });
+      }
+
+      if (profile.updatedAt) {
+        const dt = new Date(profile.updatedAt);
+        items.push({
+          label: "Profile last updated",
+          main: dt.toLocaleString(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          }),
+          meta: ""
+        });
+      }
+
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = "journey-item";
+
+        const label = document.createElement("div");
+        label.className = "journey-label";
+        label.textContent = item.label;
+
+        const main = document.createElement("div");
+        main.className = "journey-main";
+        main.textContent = item.main;
+
+        li.appendChild(label);
+        li.appendChild(main);
+
+        if (item.meta) {
+          const meta = document.createElement("div");
+          meta.className = "journey-meta";
+          meta.textContent = item.meta;
+          li.appendChild(meta);
+        }
+
+        journeyList.appendChild(li);
+      });
+    }
+
+    // -----------------------------
+    // Navigation into AR world
+    // -----------------------------
+    function enterWorld() {
+      // Ensure latest data saved
+      saveProfile();
+
+      // Navigate to the AR prototype file.
+      // If your AR file has a different name, change 'ar.html' accordingly.
+      window.location.href = "ar.html";
+    }
+  </script>
+</body>
+</html>
