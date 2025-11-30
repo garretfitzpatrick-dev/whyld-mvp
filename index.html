@@ -863,16 +863,17 @@ function updateLocationLabelFromCurrentLocation() {
     }
   
     else if (currentLayer === "Community") {
-      // Big list (up to 20)
       var maxC = Math.min(refs.length, 20);
       for (var j = 0; j < maxC; j++) {
         var r = refs[j];
         var txt = escapeHtml(r.text || "");
-        var who = r.userName ? escapeHtml(r.userName) + ": " : "";
-        html += '<li class="reflection-item">"' + who + '"' + txt + '"</li>';
+        var who = r.userName
+          ? '<strong>' + escapeHtml(r.userName) + '</strong>: '
+          : '';
+        html += '<li class="reflection-item">' + who + txt + '</li>';
       }
     }
-  
+
     listEl.innerHTML = html;
   }
   
