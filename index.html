@@ -878,14 +878,28 @@ function updateLocationLabelFromCurrentLocation() {
     var html = "";
   
     if (currentLayer === "World") {
-      // Small preview
+      // Small preview (up to 3), same aesthetic as Community
       var max = Math.min(refs.length, 3);
       for (var i = 0; i < max; i++) {
-        var t = refs[i].text || "";
-        if (t.length > 140) t = t.slice(0,137) + "...";
-        html += '<li class="reflection-item">"' + escapeHtml(t) + '"</li>';
+        var r = refs[i];
+        var txt = escapeHtml(r.text || "");
+        
+        // Truncate in World layer so it feels like a preview
+        if (txt.length > 140) {
+          txt = txt.slice(0, 137) + "…";
+        }
+    
+        var who = r.userName
+          ? '<strong>' + escapeHtml(r.userName) + '</strong>'
+          : '';
+        var time = r.timestamp ? " · " + formatTimeAgo(r.timestamp) : "";
+    
+        var prefix = who ? who + time + ": " : "";
+    
+        html += '<li class="reflection-item">' + prefix + txt + '</li>';
       }
     }
+
   
     else if (currentLayer === "Community") {
       var maxC = Math.min(refs.length, 20);
