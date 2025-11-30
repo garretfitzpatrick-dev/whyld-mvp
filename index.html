@@ -402,10 +402,8 @@
 
   // Your Worker content endpoint:
   var CONTENT_API_URL = "https://whyld-world-worker.garret-fitzpatrick.workers.dev/api/content";
-
   var REFLECTIONS_API_URL = "https://whyld-world-worker.garret-fitzpatrick.workers.dev/api/reflections";
   var reflectionsCache = {}; // key: locationId|lens -> array of reflections
-
   
   // =============================
   // STATE
@@ -417,10 +415,8 @@
   var currentLocation   = null;        // { type: 'marker' | 'zone', id: string }
   var markerVisible    = false;
   var activeZoneId     = null;
-
   var userLat = null;
   var userLon = null;
-
   var devMode = false;
 
   // =============================
@@ -504,16 +500,6 @@
       showIfHidden = true;
     }
 
-    // Optional: adjust card border by layer for subtle visual cue
-    cardEl.classList.remove("layer-world", "layer-community", "layer-personal");
-    if (currentLayer === "World") {
-      cardEl.classList.add("layer-world");
-    } else if (currentLayer === "Community") {
-      cardEl.classList.add("layer-community");
-    } else if (currentLayer === "Personal") {
-      cardEl.classList.add("layer-personal");
-    }
-    
     var titleEl = document.getElementById("card-title");
     var textEl  = document.getElementById("card-text");
     var linkEl  = document.getElementById("reflect-link");
@@ -627,7 +613,6 @@ function updateLocationLabelFromCurrentLocation() {
   }
   el.innerText = baseLabel;
 }
-
   
   // =============================
   // GEOLOCATION / ZONES
@@ -687,6 +672,7 @@ function updateLocationLabelFromCurrentLocation() {
 
   function checkNearbyZones() {
     if (devMode) return; // 🔥 do nothing in dev mode
+    
     var i;
     var zone;
     var nearestZone = null;
@@ -739,7 +725,6 @@ function updateLocationLabelFromCurrentLocation() {
 
     return distance <= zone.radiusM;
   }
-
 
   function toggleStoryExpand() {
   var textEl = document.getElementById("card-text");
@@ -856,6 +841,7 @@ function escapeHtml(str) {
   window.addEventListener('DOMContentLoaded', function () {
     // Initialize aura to default lens
     setLens(currentLensLabel);
+    setLayer(currentLayer);
 
     // Load content from Cloudflare Worker / Airtable
     loadContentFromAPI();
