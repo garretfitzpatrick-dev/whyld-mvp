@@ -360,10 +360,11 @@
         </p>
       </div>
       <div class="hero-right">
-        <button class="enter-btn" type="button" onclick="enterWorld()">
+        <a class="enter-btn" href="ar.html">
           <span>Enter the world</span>
           <span class="arrow">↗</span>
-        </button>
+        </a>
+
         <p class="enter-caption">
           Your profile is stored locally on this device and shapes what you see in the AR view.
         </p>
@@ -842,7 +843,7 @@
     // ============================
     function enterWorld() {
       saveProfile(true);
-      window.location.href = "AR.html"; // case-sensitive, matches your AR file
+      window.location.href = "ar.html"; // case-sensitive, matches your AR file
     }
 
     // ============================
