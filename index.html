@@ -144,6 +144,18 @@
       background: #f4f4f4;
     }
 
+    .card.layer-world {
+      border-color: rgba(0, 150, 255, 0.7);
+    }
+    
+    .card.layer-community {
+      border-color: rgba(120, 200, 120, 0.85);
+    }
+    
+    .card.layer-personal {
+      border-color: rgba(255, 160, 80, 0.9);
+    }
+
     /* Layer toggle (World / Community / Personal) */
     .layer-toggle {
       position: fixed;
@@ -504,6 +516,16 @@
     var textEl  = document.getElementById("card-text");
     var linkEl  = document.getElementById("reflect-link");
     var cardEl  = document.getElementById("card");
+    
+    // Update card styling based on current layer
+    cardEl.classList.remove("layer-world", "layer-community", "layer-personal");
+    if (currentLayer === "World") {
+      cardEl.classList.add("layer-world");
+    } else if (currentLayer === "Community") {
+      cardEl.classList.add("layer-community");
+    } else if (currentLayer === "Personal") {
+      cardEl.classList.add("layer-personal");
+    }
 
     if (!currentLocation) {
       if (showIfHidden) {
@@ -532,7 +554,7 @@
       story = STORIES[currentLensLabel] || "";
     }
 
-    titleEl.innerText = currentLensLabel;
+    titleEl.innerText = currentLensLabel + " · " + currentLayer;
     textEl.innerText  = story;
 
     storyExpanded = false;
