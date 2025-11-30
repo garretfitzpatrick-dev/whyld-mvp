@@ -145,17 +145,23 @@
     }
 
     .card.layer-world {
-      border-color: rgba(0, 150, 255, 0.7);
+      background: rgba(255,255,255,0.98);
     }
     
     .card.layer-community {
-      border-color: rgba(120, 200, 120, 0.85);
+      background: #fff9f0;
     }
     
     .card.layer-personal {
-      border-color: rgba(255, 160, 80, 0.9);
+      background: #f3f7ff;
     }
 
+    /* Community layer: slightly taller card */
+    .card.community-expanded {
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+      
     /* Layer toggle (World / Community / Personal) */
     .layer-toggle {
       position: fixed;
@@ -507,61 +513,102 @@
   // =============================
   // CARD CONTENT
   // =============================
-  function updateCardForCurrentLens(showIfHidden) {
-    if (typeof showIfHidden === "undefined") {
-      showIfHidden = true;
-    }
-
-    var titleEl = document.getElementById("card-title");
-    var textEl  = document.getElementById("card-text");
-    var linkEl  = document.getElementById("reflect-link");
-    var cardEl  = document.getElementById("card");
+    function updateCardForCurrentLens(showIfHidden) {
+      if (typeof showIfHidden === "undefined") showIfHidden = true;
     
-    // Update card styling based on current layer
-    cardEl.classList.remove("layer-world", "layer-community", "layer-personal");
-    if (currentLayer === "World") {
-      cardEl.classList.add("layer-world");
-    } else if (currentLayer === "Community") {
-      cardEl.classList.add("layer-community");
-    } else if (currentLayer === "Personal") {
-      cardEl.classList.add("layer-personal");
-    }
-
-    if (!currentLocation) {
-      if (showIfHidden) {
-        cardEl.style.display = "none";
-      }
-      return;
-    }
-
-    var ctxId = currentLocation.id;
-    var placeContent = CONTENT[ctxId];
-    var story = "";
-
-    if (placeContent) {
-      // Try new layered format first: CONTENT[locationId][layer][lens]
-      if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
-        story = placeContent[currentLayer][currentLensLabel];
-      }
-      // Fallback to old flat format: CONTENT[locationId][lens]
-      else if (placeContent[currentLensLabel]) {
-        story = placeContent[currentLensLabel];
-      }
-    }
-
-    if (!story) {
-      // Final fallback to generic lens story
-      story = STORIES[currentLensLabel] || "";
-    }
-
-    titleEl.innerText = currentLensLabel + " · " + currentLayer;
-    textEl.innerText  = story;
-
-    storyExpanded = false;
-    textEl.classList.add("collapsed");
-    document.getElementById("story-toggle").innerText = "More";
-
+      var titleEl = document.getElementById("card-title");
+      var textEl  = document.getElementById("card-text");
+      var toggleEl = document.getElementById("story-toggle");
+      var linkEl = document.getElementById("reflect-link");
+      var cardEl = document.getElementById("card");
+      var reflectionsEl = document.getElementById("reflections");
     
+      if (!currentLocation) {
+        if (showIfHidden) cardEl.style.display = "none";
+        return;
+      }
+    
+      var ctxId = currentLocation.id;
+      var placeContent = CONTENT[ctxId];
+      var story = "";
+    
+      if (placeContent) {
+        if (placeContent[currentLayer] && placeContent[currentLayer][currentLensLabel]) {
+          story = placeContent[currentLayer][currentLensLabel];
+        } else if (placeContent[currentLensLabel]) {
+          story = placeContent[currentLensLabel];
+        }
+      }
+    
+      if (!story) story = STORIES[currentLensLabel] || "";
+    
+      // Title is lens only (Explore, Serve, etc.)
+      titleEl.innerText = currentLensLabel;
+    
+      // Reset card classes
+      cardEl.classList.remove(
+        "layer-world", "layer-community", "layer-personal",
+        "community-expanded"
+      );
+    
+      //
+      // 🌍 WORLD LAYER — canonical narrative
+      //
+      if (currentLayer === "World") {
+        cardEl.classList.add("layer-world");
+        textEl.innerText = story;
+        textEl.classList.add("collapsed");
+        if (toggleEl) toggleEl.style.display = "inline-block";
+        storyExpanded = false;
+        reflectionsEl.style.display = "block";
+      }
+    
+      //
+      // 👥 COMMUNITY LAYER — reflections first
+      //
+      else if (currentLayer === "Community") {
+        cardEl.classList.add("layer-community", "community-expanded");
+        textEl.innerText = story;  // still use the same story for now
+        textEl.classList.remove("collapsed");
+        if (toggleEl) toggleEl.style.display = "none";
+        reflectionsEl.style.display = "block";
+      }
+    
+      //
+      // 🙋 PERSONAL LAYER — introspection
+      //
+      else if (currentLayer === "Personal") {
+        cardEl.classList.add("layer-personal");
+        textEl.innerText = story;     // story may be a prompt
+        textEl.classList.remove("collapsed");
+        if (toggleEl) toggleEl.style.display = "none";
+        reflectionsEl.style.display = "none";  // hide reflections entirely
+      }
+    
+      // Reflection link
+      var params = [];
+      params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
+      params.push("prefill_Layer=" + encodeURIComponent(currentLayer));
+      if (currentLocation && currentLocation.id) {
+        params.push("prefill_Location=" + encodeURIComponent(currentLocation.id));
+      }
+    
+      var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
+      var link = urlHasQuery
+        ? FORM_URL_BASE + "&" + params.join("&")
+        : FORM_URL_BASE + "?" + params.join("&");
+    
+      linkEl.href = link;
+    
+      if (showIfHidden) cardEl.style.display = "block";
+    
+      // Load reflections (World + Community only)
+      if (currentLayer !== "Personal") {
+        loadReflectionsForCurrentLocationAndLens();
+      }
+    }
+
+  
     // Build Airtable reflection link with prefilled fields
     var params = [];
     // These names must match your Airtable form field names ("Lens", "Location")
@@ -801,42 +848,57 @@ function updateLocationLabelFromCurrentLocation() {
     });
 }
 
-function renderReflections(refs) {
-  var container = document.getElementById("reflections");
-  var listEl = document.getElementById("reflections-list");
-
-  if (!container || !listEl) return;
-
-  if (!refs || refs.length === 0) {
-    container.style.display = "none";
-    listEl.innerHTML = "";
-    return;
-  }
-
-  container.style.display = "block";
-
-  // Show up to 3 reflections, truncated
-  var maxToShow = Math.min(refs.length, 3);
-  var html = "";
-
-  for (var i = 0; i < maxToShow; i++) {
-    var text = refs[i].text || "";
-    if (text.length > 140) {
-      text = text.slice(0, 137) + "...";
+  function renderReflections(refs) {
+    var container = document.getElementById("reflections");
+    var listEl = document.getElementById("reflections-list");
+  
+    if (!container || !listEl) return;
+  
+    if (currentLayer === "Personal") {
+      container.style.display = "none";
+      return;
     }
-    html += '<li class="reflection-item">"' + escapeHtml(text) + '"</li>';
+  
+    if (!refs || refs.length === 0) {
+      container.style.display = "none";
+      listEl.innerHTML = "";
+      return;
+    }
+  
+    container.style.display = "block";
+    var html = "";
+  
+    if (currentLayer === "World") {
+      // Small preview
+      var max = Math.min(refs.length, 3);
+      for (var i = 0; i < max; i++) {
+        var t = refs[i].text || "";
+        if (t.length > 140) t = t.slice(0,137) + "...";
+        html += '<li class="reflection-item">"' + escapeHtml(t) + '"</li>';
+      }
+    }
+  
+    else if (currentLayer === "Community") {
+      // Big list (up to 20)
+      var maxC = Math.min(refs.length, 20);
+      for (var j = 0; j < maxC; j++) {
+        var r = refs[j];
+        var txt = escapeHtml(r.text || "");
+        html += '<li class="reflection-item">"' + txt + '"</li>';
+      }
+    }
+  
+    listEl.innerHTML = html;
   }
-
-  listEl.innerHTML = html;
-}
-
-// Simple HTML escaping to avoid issues
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
+  
+  
+  // Simple HTML escaping to avoid issues
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
 
   function triggerZoneEnteredAnimation() {
   var cardEl = document.getElementById("card");
