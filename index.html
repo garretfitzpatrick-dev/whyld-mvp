@@ -466,44 +466,67 @@
 }
 
 .zone-map-body {
-  padding: 8px 10px 10px;
-  overflow-y: auto;
+  padding: 10px;
+  overflow-y: visible;
   font-size: 13px;
 }
 
-/* Individual zone row */
-.zone-map-item {
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-bottom: 6px;
-  border: 1px solid #eee;
+/* Schematic mini-map box */
+.zone-mini-map {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;       /* 4:3 aspect ratio */
+  background: radial-gradient(circle at 30% 20%, #f5f7ff, #dde4ff);
+  border-radius: 14px;
+  border: 1px solid #d0d8ff;
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.08);
+}
+
+/* Optional inner grid */
+.zone-mini-map-grid {
+  position: absolute;
+  inset: 8px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,0.7);
+  pointer-events: none;
+}
+
+/* Dot for each zone */
+.zone-map-dot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(58,134,255,0.95);
+  box-shadow: 0 0 8px rgba(58,134,255,0.7);
+  transform: translate(-50%, -50%);
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  color: #fff;
+  font-size: 10px;
 }
 
-.zone-map-item:hover {
-  background: #f7f9ff;
+/* Label next to each dot */
+.zone-map-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  margin-top: 18px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  font-size: 10px;
+  white-space: nowrap;
 }
 
-.zone-map-item-name {
-  font-weight: 500;
+/* Active zone highlight (mini-map dot) */
+.zone-map-dot.active-zone-dot {
+  background: #ffb347;
+  box-shadow: 0 0 10px rgba(255,179,71,0.9);
+  transform: translate(-50%, -50%) scale(1.15);
 }
-
-.zone-map-item-meta {
-  font-size: 11px;
-  color: #666;
-}
-
-/* Highlight currently active zone */
-.zone-map-item.active-zone {
-  border-color: #3a86ff;
-  box-shadow: 0 0 0 1px rgba(58,134,255,0.5);
-  background: #eef4ff;
-}
-
-
 
     
   </style>
@@ -904,36 +927,48 @@ function updateLocationLabelFromCurrentLocation() {
   // =============================
   // GEOLOCATION / ZONES
   // =============================
+    // =============================
+  // GEOLOCATION / ZONES
+  // =============================
     var ZONES = [
-  {
-    id: "harvard_square_demo",     // keep or replace this one if you like
-    label: "Harvard Square",
-    lat: 42.3733,
-    lon: -71.1190,
-    radiusM: 50
-  },
-  {
-    id: "hsq_kiosk",
-    label: "Harvard Square Kiosk",
-    lat: 42.37352,
-    lon: -71.11919,
-    radiusM: 35
-  },
-  {
-    id: "harvard_coop_corner",
-    label: "Harvard Coop Corner",
-    lat: 42.37365,
-    lon: -71.11936,
-    radiusM: 40
-  },
-  {
-    id: "st_pauls_steps",
-    label: "St. Paul's Steps",
-    lat: 42.3712,
-    lon: -71.1156,
-    radiusM: 35
-  }
-];
+      {
+        id: "harvard_square_demo",     // keep or replace this one if you like
+        label: "Harvard Square",
+        lat: 42.3733,
+        lon: -71.1190,
+        radiusM: 50,
+        mapX: 50,   // center-ish
+        mapY: 40
+      },
+      {
+        id: "hsq_kiosk",
+        label: "Harvard Square Kiosk",
+        lat: 42.37352,
+        lon: -71.11919,
+        radiusM: 35,
+        mapX: 45,
+        mapY: 30
+      },
+      {
+        id: "harvard_coop_corner",
+        label: "Harvard Coop Corner",
+        lat: 42.37365,
+        lon: -71.11936,
+        radiusM: 40,
+        mapX: 60,
+        mapY: 50
+      },
+      {
+        id: "st_pauls_steps",
+        label: "St. Paul's Steps",
+        lat: 42.3712,
+        lon: -71.1156,
+        radiusM: 35,
+        mapX: 30,
+        mapY: 70
+      }
+    ];
+
 
   function startGeoWatch() {
     if (!navigator.geolocation) {
@@ -1205,41 +1240,59 @@ function updateLocationLabelFromCurrentLocation() {
     overlay.style.display = "none";
   }
   
-  // Build zone list in the overlay
+    // Build mini-map in the overlay
   function renderZoneMapList() {
     var bodyEl = document.getElementById("zone-map-body");
     if (!bodyEl || !Array.isArray(ZONES)) return;
-  
-    var html = "";
+
+    // Build mini-map skeleton
+    var html =
+      '<div class="zone-mini-map">' +
+        '<div class="zone-mini-map-grid"></div>' +
+        '<div id="zone-mini-map-dots"></div>' +
+      '</div>';
+
+    bodyEl.innerHTML = html;
+
+    var dotsContainer = document.getElementById("zone-mini-map-dots");
+    if (!dotsContainer) return;
+
+    // Add a dot + label for each zone
     for (var i = 0; i < ZONES.length; i++) {
       var z = ZONES[i];
-      var name = z.label || z.id;
-      var id = z.id;
-  
-      var isActive = (currentLocation && currentLocation.type === "zone" && currentLocation.id === id)
-                     || activeZoneId === id;
-  
-      var classes = "zone-map-item";
-      if (isActive) classes += " active-zone";
-  
-      var meta = "";
-      if (activeZoneId === id) {
-        meta = "You are here (via GPS)";
-      } else if (currentLocation && currentLocation.type === "zone" && currentLocation.id === id) {
-        meta = "Viewing this zone";
-      } else {
-        meta = "Tap to preview";
-      }
-  
-      html +=
-        '<div class="' + classes + '" onclick="selectZoneFromMap(\'' + id + '\')">' +
-          '<div class="zone-map-item-name">' + escapeHtml(name) + '</div>' +
-          '<div class="zone-map-item-meta">' + escapeHtml(meta) + '</div>' +
-        '</div>';
+      // Require mapX/mapY to place it
+      if (typeof z.mapX !== "number" || typeof z.mapY !== "number") continue;
+
+      var isActive =
+        (currentLocation && currentLocation.type === "zone" && currentLocation.id === z.id) ||
+        activeZoneId === z.id;
+
+      // Dot
+      var dot = document.createElement("div");
+      dot.className = "zone-map-dot" + (isActive ? " active-zone-dot" : "");
+      dot.style.left = z.mapX + "%";
+      dot.style.top  = z.mapY + "%";
+      dot.title      = z.label || z.id;
+
+      // Optional initial letter inside the dot
+      dot.textContent = (z.label || z.id).charAt(0).toUpperCase();
+
+      dot.onclick = (function(zoneId) {
+        return function() { selectZoneFromMap(zoneId); };
+      })(z.id);
+
+      // Label
+      var label = document.createElement("div");
+      label.className = "zone-map-label";
+      label.style.left = z.mapX + "%";
+      label.style.top  = z.mapY + "%";
+      label.textContent = z.label || z.id;
+
+      dotsContainer.appendChild(dot);
+      dotsContainer.appendChild(label);
     }
-  
-    bodyEl.innerHTML = html;
   }
+
   
   // When user taps a zone in the map overlay
   function selectZoneFromMap(zoneId) {
