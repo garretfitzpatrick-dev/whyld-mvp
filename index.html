@@ -46,12 +46,30 @@
       right: 0;
       bottom: 12px;
       display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: nowrap;
-      padding: 6px 10px;
+      flex-direction: column;   /* stack rows vertically */
+      gap: 6px;
+      padding: 8px 12px;
       pointer-events: auto;
       z-index: 50;
+    }
+    
+    .ui-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: nowrap;        /* prevent individual rows from wrapping */
+    }
+    
+    .ui-row.main .btn {
+      padding: 6px 10px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    
+    .ui-row.dev .btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      opacity: 0.85;
     }
 
     .btn {
@@ -374,23 +392,24 @@
 
   
   <!-- Bottom UI: lens buttons -->
-  <div class="ui">
+ <div class="ui">
+  <div class="ui-row main">
     <button class="btn" onclick="setLens('Explore')">Explore</button>
     <button class="btn" onclick="setLens('Serve')">Serve</button>
     <button class="btn" onclick="setLens('Create')">Create</button>
     <button class="btn" onclick="setLens('Inspire')">Inspire</button>
     <button class="btn" onclick="setLens('Reflect')">Reflect</button>
+  </div>
 
-  <!-- Dev buttons (for testing locations without being there) -->
+  <div class="ui-row dev">
     <button class="btn dev-btn" onclick="debugSetLocation('hiro_marker', 'marker')">
       Dev: Marker
     </button>
     <button class="btn dev-btn" onclick="debugSetLocation('harvard_square_demo', 'zone')">
       Dev: Harvard Sq
     </button>
-
-  
   </div>
+</div>
 
 
 <script>
