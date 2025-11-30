@@ -616,31 +616,6 @@
       }
     }
 
-  
-    // Build Airtable reflection link with prefilled fields
-    var params = [];
-    // These names must match your Airtable form field names ("Lens", "Location")
-    params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
-    params.push("prefill_Layer=" + encodeURIComponent(currentLayer)); // NEW
-    if (currentLocation && currentLocation.id) {
-      params.push("prefill_Location=" + encodeURIComponent(currentLocation.id));
-    }
-
-    var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
-    var link = urlHasQuery
-      ? FORM_URL_BASE + "&" + params.join("&")
-      : FORM_URL_BASE + "?" + params.join("&");
-
-    linkEl.href = link;
-
-    if (showIfHidden) {
-      cardEl.style.display = "block";
-    }
-    
-    // After we set the story and reflection link, load reflections
-    loadReflectionsForCurrentLocationAndLens(); 
-  }
-
   function hideCard() {
     var cardEl = document.getElementById("card");
     if (cardEl) cardEl.style.display = "none";
