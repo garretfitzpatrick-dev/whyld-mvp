@@ -868,7 +868,8 @@ function updateLocationLabelFromCurrentLocation() {
       for (var j = 0; j < maxC; j++) {
         var r = refs[j];
         var txt = escapeHtml(r.text || "");
-        html += '<li class="reflection-item">"' + txt + '"</li>';
+        var who = r.userName ? escapeHtml(r.userName) + ": " : "";
+        html += '<li class="reflection-item">"' + who + '"' + txt + '"</li>';
       }
     }
   
