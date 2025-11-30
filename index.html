@@ -597,7 +597,7 @@
       params.push("prefill_Lens=" + encodeURIComponent(currentLensLabel));
       params.push("prefill_Layer=" + encodeURIComponent(currentLayer));
       if (currentLocation && currentLocation.id) {
-        params.push("prefill_Location=" + encodeURIComponent(currentLocation.id));
+        params.push("prefill_LocationId=" + encodeURIComponent(currentLocation.id));
       }
     
       var urlHasQuery = FORM_URL_BASE.indexOf("?") !== -1;
