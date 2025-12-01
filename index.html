@@ -2,23 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Whyld World – Meaning Profile</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Whyld World · Home</title>
+  <meta name="viewport"
+        content="width=device-width,
+                 initial-scale=1,
+                 maximum-scale=1,
+                 user-scalable=no" />
 
   <style>
     :root {
-      --bg: #050816;
-      --card-bg: rgba(9, 15, 30, 0.96);
+      --bg: #050814;
+      --card-bg: rgba(10, 12, 24, 0.94);
       --card-border: rgba(255, 255, 255, 0.06);
-      --accent: #51b3ff;
-      --accent-soft: rgba(81, 179, 255, 0.15);
-      --text-main: #f7f7ff;
-      --text-muted: #a4b0c4;
-      --pill-bg: rgba(255, 255, 255, 0.06);
-      --pill-border: rgba(255, 255, 255, 0.14);
-      --pill-active-bg: rgba(81, 179, 255, 0.15);
-      --pill-active-border: #51b3ff;
-      --danger: #ff7a7a;
+      --accent: #4fd1c5;
+      --accent-soft: rgba(79, 209, 197, 0.18);
+      --text-main: #f7fafc;
+      --text-muted: #a0aec0;
+      --divider: rgba(255, 255, 255, 0.08);
+      --input-bg: rgba(15, 18, 35, 0.9);
+      --input-border: rgba(255, 255, 255, 0.12);
+      --danger: #f56565;
     }
 
     * {
@@ -28,8 +31,8 @@
     html, body {
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at 0% 0%, #10253d 0, #050816 45%, #02020a 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #151a3a 0, #050814 55%, #000 100%);
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
     }
@@ -38,828 +41,998 @@
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: stretch;
-      padding: 16px;
+      padding: 18px 12px 32px;
     }
 
     .app-shell {
       width: 100%;
-      max-width: 1100px;
+      max-width: 960px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 18px;
     }
 
-    /* HEADER / HERO */
+    /* Header / hero */
     .hero {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: radial-gradient(circle at 20% 0%, rgba(81, 179, 255, 0.35), transparent 55%),
-                  linear-gradient(135deg, rgba(10, 18, 42, 0.98), rgba(4, 6, 20, 0.98));
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .hero-left {
-      max-width: 620px;
+    .hero-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
     }
 
     .hero-title {
-      font-size: 20px;
-      letter-spacing: 0.06em;
+      font-size: 28px;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: #a9c9ff;
-      margin: 0 0 4px 0;
+      font-weight: 650;
     }
 
-    .hero-main {
-      font-size: 20px;
-      margin: 0 0 4px 0;
-    }
-
-    .hero-sub {
-      margin: 0;
+    .hero-pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
       color: var(--text-muted);
-      font-size: 14px;
-      max-width: 600px;
+      white-space: nowrap;
     }
 
-    .hero-right {
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      max-width: 52rem;
+    }
+
+    .hero-subtitle strong {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    /* Layout: top row cards */
+    .top-row {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-      min-width: 180px;
+      gap: 14px;
     }
 
-    .enter-btn {
-      border-radius: 999px;
-      padding: 10px 20px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      background: linear-gradient(135deg, #51b3ff, #8b5bfd);
-      color: #050816;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 10px 25px rgba(81, 179, 255, 0.45);
-    }
-
-    .enter-btn span.arrow {
-      font-size: 16px;
-      transform: translateY(1px);
-    }
-
-    .enter-caption {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: right;
-      max-width: 210px;
-    }
-
-    /* LAYOUT */
-    .main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
-      gap: 12px;
-    }
-
-    @media (max-width: 880px) {
-      .main-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .hero-right {
-        align-items: flex-start;
-      }
-      .enter-caption {
-        text-align: left;
+    @media (min-width: 880px) {
+      .top-row {
+        flex-direction: row;
+        align-items: stretch;
       }
     }
 
-    /* CARDS */
     .card {
       background: var(--card-bg);
       border-radius: 16px;
       border: 1px solid var(--card-border);
-      padding: 12px 14px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      padding: 14px 14px 16px;
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 8px;
+      gap: 8px;
     }
 
     .card-title {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 600;
     }
 
-    .card-subtitle {
+    .card-tag {
       font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
       color: var(--text-muted);
     }
 
-    .section-label {
-      font-size: 12px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .section-hint {
-      font-size: 11px;
+    .card-body {
+      font-size: 14px;
       color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    input[type="text"],
-    textarea,
-    select {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(4, 7, 16, 0.85);
-      color: var(--text-main);
-      padding: 7px 9px;
-      font-size: 13px;
-      outline: none;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 44px;
-      max-height: 120px;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: rgba(164, 176, 196, 0.6);
-    }
-
-    /* CHIPS / PILLS */
-    .pill-row {
+      line-height: 1.5;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .pill {
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 11px;
-      border: 1px solid var(--pill-border);
-      background: var(--pill-bg);
-      color: var(--text-muted);
-      cursor: pointer;
+    /* Form styles */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .field-label {
+      font-size: 13px;
+      color: #e2e8f0;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
-    .pill.selected {
-      background: var(--pill-active-bg);
-      border-color: var(--pill-active-border);
-      color: #dbeaff;
-    }
-
-    .pill .emoji {
-      font-size: 13px;
-    }
-
-    /* ARCS */
-    .arc-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-    }
-
-    @media (max-width: 640px) {
-      .arc-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .arc-card {
-      border-radius: 12px;
-      padding: 8px 8px 7px;
-      border: 1px solid var(--pill-border);
-      background: radial-gradient(circle at 0 0, rgba(81, 179, 255, 0.18), transparent 55%);
-      cursor: pointer;
+    .field-label span.hint {
       font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      background: var(--input-bg);
+      border-radius: 10px;
+      border: 1px solid var(--input-border);
+      padding: 7px 9px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+    }
+
+    textarea {
+      min-height: 64px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid rgba(148,163,184,0.9);
+      color: #cbd5f5;
+      cursor: pointer;
+      background: rgba(15,23,42,0.9);
+      transition: all 0.18s ease;
+    }
+
+    .chip.selected {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #e6fffb;
+      box-shadow: 0 0 0 1px rgba(79,209,197,0.35);
+    }
+
+    .radio-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .pill-radio {
+      position: relative;
+    }
+
+    .pill-radio input {
+      display: none;
+    }
+
+    .pill-radio label {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.85);
+      color: #cbd5f5;
+      cursor: pointer;
+      background: rgba(15,23,42,0.9);
+      transition: all 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .pill-radio input:checked + label {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #e6fffb;
+      box-shadow: 0 0 0 1px rgba(79,209,197,0.35);
+    }
+
+    /* Meaning graph */
+    .graph-container {
+      margin-top: 6px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 8px;
     }
 
-    .arc-card-title {
+    .graph-bars {
       display: flex;
-      align-items: center;
-      gap: 4px;
-      font-weight: 600;
-      font-size: 11px;
-    }
-
-    .arc-card-title span.emoji {
-      font-size: 13px;
-    }
-
-    .arc-card-desc {
-      color: var(--text-muted);
-      font-size: 11px;
-      line-height: 1.3;
-    }
-
-    .arc-card.selected {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(81, 179, 255, 0.4);
-      background: radial-gradient(circle at 0 0, rgba(81, 179, 255, 0.28), rgba(10, 18, 42, 0.98));
-    }
-
-    /* RIGHT COLUMN */
-    .meaning-graph {
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+      padding: 6px 2px 2px;
       border-radius: 12px;
-      padding: 8px 10px 10px;
-      background: radial-gradient(circle at 10% 0%, rgba(139, 91, 253, 0.28), transparent 55%),
-                  rgba(5, 8, 22, 0.96);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: radial-gradient(circle at top, rgba(79,209,197,0.12), rgba(15,23,42,0.9));
+      border: 1px solid rgba(148,163,184,0.45);
+      position: relative;
+      overflow: hidden;
     }
 
-    .graph-placeholder {
-      border-radius: 10px;
-      border: 1px dashed rgba(255, 255, 255, 0.14);
-      padding: 8px;
-      font-size: 11px;
+    .graph-grid-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(148,163,184,0.18);
+    }
+
+    .graph-grid-line.g1 { bottom: 25%; }
+    .graph-grid-line.g2 { bottom: 50%; }
+    .graph-grid-line.g3 { bottom: 75%; }
+
+    .graph-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      position: relative;
+    }
+
+    .graph-bar-inner {
+      width: 70%;
+      border-radius: 999px;
+      background: linear-gradient(
+        to top,
+        rgba(79,209,197,0.9),
+        rgba(129,230,217,0.2)
+      );
+      box-shadow:
+        0 0 0 1px rgba(56,178,172,0.7),
+        0 0 18px rgba(56,178,172,0.4);
+      transition: height 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+      transform-origin: bottom;
+    }
+
+    .graph-bar-label {
+      font-size: 10px;
+      color: #e2e8f0;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .graph-bar-dot {
+      position: absolute;
+      top: -4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f6ad55;
+      box-shadow: 0 0 10px rgba(246,173,85,0.9);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .graph-bar.active .graph-bar-inner {
+      transform: scaleY(1.05);
+    }
+
+    .graph-bar.active .graph-bar-dot {
+      opacity: 1;
+    }
+
+    .graph-caption {
+      font-size: 12px;
       color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Intensity row */
+    .intensity-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
       margin-top: 4px;
     }
 
-    .graph-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 6px;
-    }
-
-    .graph-chip {
-      border-radius: 999px;
-      font-size: 10px;
-      padding: 3px 8px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(9, 14, 30, 0.9);
-      color: var(--text-muted);
-    }
-
-    .journey-list {
-      margin-top: 6px;
-      padding-left: 16px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .journey-list li {
-      margin-bottom: 2px;
-    }
-
-    .last-saved {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-      text-align: right;
-    }
-
-    .badge {
-      font-size: 10px;
+    .intensity-badge {
       padding: 2px 8px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(5,8,22,0.9);
+      font-size: 11px;
+      border: 1px solid rgba(148,163,184,0.7);
       color: var(--text-muted);
     }
 
+    /* Bottom actions / explainer */
+    .actions-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 720px) {
+      .actions-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .primary-btn {
+      appearance: none;
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #0b1120;
+      background: linear-gradient(135deg, #4fd1c5, #63b3ed);
+      box-shadow:
+        0 12px 25px rgba(79,209,197,0.5),
+        0 0 1px rgba(255,255,255,0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .primary-btn span.icon {
+      font-size: 18px;
+    }
+
+    .save-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .error-text {
+      font-size: 12px;
+      color: var(--danger);
+      margin-top: 4px;
+    }
+
+    /* Explainer card */
+    .explainer-card {
+      background: rgba(10, 12, 24, 0.92);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 14px;
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .explainer-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .explainer-step {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .step-pill {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(79,209,197,0.15);
+      border: 1px solid rgba(79,209,197,0.8);
+      color: #e6fffb;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      flex: 1;
+    }
+
+    .step-text strong {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
+    .explainer-footnote {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .explainer-footnote strong {
+      color: #e2e8f0;
+    }
   </style>
 </head>
 <body>
   <div class="app-shell">
-    <!-- HERO -->
+    <!-- HEADER -->
     <header class="hero">
-      <div class="hero-left">
-        <p class="hero-title">Whyld World · Meaning OS</p>
-        <h1 class="hero-main">Tune your lenses before you step into the world.</h1>
-        <p class="hero-sub">
-          This is your personal calibration space. Tell Whyld World what matters to you right now,
-          so the system can give you superpowers.
-        </p>
+      <div class="hero-title-row">
+        <div class="hero-title">Whyld World</div>
+        <div class="hero-pill">Prototype · Meaning Lens</div>
       </div>
-      <div class="hero-right">
-        <a class="enter-btn" href="ar.html">
-          <span>Enter the world</span>
-          <span class="arrow">↗</span>
-        </a>
-
-        <p class="enter-caption">
-          Your profile is stored locally on this device and shapes what you see in the AR view.
-        </p>
-      </div>
+      <p class="hero-subtitle">
+        Choose the <strong>chapter of your life</strong> you’re in, what feels meaningful,
+        and how intense you want the signal to be. Then step into the world and let
+        locations, stories, and reflections <strong>refract through your lenses</strong>.
+      </p>
     </header>
 
-    <!-- MAIN GRID -->
-    <main class="main-grid">
-      <!-- LEFT COLUMN: PROFILE INPUTS -->
-      <section class="card">
+    <!-- TOP ROW: profile + graph -->
+    <div class="top-row">
+      <!-- LEFT: Profile / form -->
+      <section class="card" id="profile-card">
         <div class="card-header">
-          <div>
-            <div class="card-title">Your Meaning Profile</div>
-            <div class="card-subtitle">Who is stepping into the world right now?</div>
-          </div>
-          <div>
-            <span class="badge" id="arc-badge">Arc: not set</span>
-          </div>
+          <div class="card-title">Your current arc</div>
+          <div class="card-tag">Set your meaning profile</div>
         </div>
 
-        <!-- Name -->
-        <div style="margin-bottom: 10px;">
-          <div class="section-label">Name (optional)</div>
-          <div class="section-hint">Used only for personalization in prompts (e.g., "Hey Garret...").</div>
-          <input type="text" id="userName" placeholder="How should Whyld World refer to you?" />
-        </div>
+        <div class="card-body">
+          <div class="field-group">
+            <label class="field-label">
+              Name
+              <span class="hint">(optional, for a more personal voice)</span>
+            </label>
+            <input id="name-input" type="text" placeholder="What should Whyld World call you?" />
+          </div>
 
-        <!-- Meaning drivers -->
-        <div style="margin-bottom: 10px;">
-          <div class="section-label">Meaning drivers</div>
-          <div class="section-hint">
-            Pick a few themes you want the world to amplify for you right now.
-          </div>
-          <div class="pill-row" id="driversRow">
-            <!-- filled by JS -->
-          </div>
-        </div>
-
-        <!-- Arc -->
-        <div style="margin-bottom: 10px;">
-          <div class="section-label">Current arc</div>
-          <div class="section-hint">
-            Which chapter of your story feels most true right now?
-          </div>
-          <div class="arc-grid" id="arcGrid">
-            <!-- arcs filled by JS -->
-          </div>
-        </div>
-
-        <!-- Focus lens + intensity -->
-        <div style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 8px; margin-bottom: 10px;">
-          <div>
-            <div class="section-label">Focus lens</div>
-            <div class="section-hint">Which lens do you want to lean on first?</div>
-            <div class="pill-row" id="focusLensRow">
-              <!-- filled by JS -->
+          <div class="field-group">
+            <label class="field-label">
+              What feels most meaningful right now?
+              <span class="hint">(tap 1–3)</span>
+            </label>
+            <div class="chips-row" id="drivers-chips">
+              <!-- chips injected by JS -->
             </div>
           </div>
-          <div>
-            <div class="section-label">Intensity</div>
-            <div class="section-hint">How bold should the invitations feel?</div>
-            <div class="pill-row" id="intensityRow">
-              <!-- filled by JS -->
+
+          <div class="field-group">
+            <label class="field-label">
+              Focus lens
+              <span class="hint">(where should the system lean first?)</span>
+            </label>
+            <div class="radio-row" id="focus-lens-row">
+              <!-- radios injected by JS -->
             </div>
           </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Which arc are you in?
+              <span class="hint">(this shapes the Meaning Graph)</span>
+            </label>
+            <div class="radio-row" id="arc-row">
+              <!-- radios injected by JS -->
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              A question you’re carrying
+              <span class="hint">(this threads into your personal prompts)</span>
+            </label>
+            <textarea id="big-question-input"
+                      placeholder="What are you really trying to figure out right now?"></textarea>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              What do you want to notice more of?
+            </label>
+            <input id="notice-more-input"
+                   type="text"
+                   placeholder="Moments of wonder, courage, connection, flow, impact..." />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">
+              Intensity
+              <span class="hint">(how strongly should the lenses show up?)</span>
+            </label>
+            <div class="intensity-row" id="intensity-row">
+              <div class="pill-radio">
+                <input type="radio" name="intensity" id="int-low" value="low" />
+                <label for="int-low">Gentle</label>
+              </div>
+              <div class="pill-radio">
+                <input type="radio" name="intensity" id="int-med" value="medium" />
+                <label for="int-med">Balanced</label>
+              </div>
+              <div class="pill-radio">
+                <input type="radio" name="intensity" id="int-high" value="high" />
+                <label for="int-high">Turn it up</label>
+              </div>
+              <span class="intensity-badge" id="intensity-summary">
+                Starts at <strong>Balanced</strong>.
+              </span>
+            </div>
+          </div>
+
+          <div id="profile-error" class="error-text" style="display:none;"></div>
         </div>
 
-        <!-- Questions -->
-        <div style="margin-bottom: 8px;">
-          <div class="section-label">What do you want to notice more of?</div>
-          <textarea id="noticeMore" placeholder="Patterns, people, beauty, opportunities…"></textarea>
-        </div>
-
-        <div style="margin-bottom: 8px;">
-          <div class="section-label">What feels missing right now?</div>
-          <textarea id="missing" placeholder="Support, challenge, connection, clarity…"></textarea>
-        </div>
-
-        <div>
-          <div class="section-label">What’s a question you’re holding?</div>
-          <textarea id="bigQuestion" placeholder="E.g., “What would a more meaningful path look like for me?”"></textarea>
+        <div class="actions-row">
+          <button class="primary-btn" type="button" id="enter-world-btn">
+            <span class="icon">➜</span>
+            Enter the world
+          </button>
+          <div class="save-hint" id="save-hint">
+            Your profile is saved locally and shapes how the AR prototype speaks to you.
+          </div>
         </div>
       </section>
 
-      <!-- RIGHT COLUMN: GRAPH + JOURNEY -->
+      <!-- RIGHT: Meaning Graph -->
       <section class="card">
         <div class="card-header">
-          <div>
-            <div class="card-title">Meaning Graph · v0</div>
-            <div class="card-subtitle">
-              A snapshot of how your world will be tuned in the AR view.
+          <div class="card-title">Meaning Graph</div>
+          <div class="card-tag">Prototype view</div>
+        </div>
+
+        <div class="card-body">
+          <p>
+            A quick sketch of how your current chapter leans across six arcs.
+            This doesn’t lock you in; it just gives the lenses a starting shape.
+          </p>
+
+          <div class="graph-container">
+            <div class="graph-bars" id="graph-bars">
+              <div class="graph-grid-line g1"></div>
+              <div class="graph-grid-line g2"></div>
+              <div class="graph-grid-line g3"></div>
+              <!-- bars injected by JS -->
+            </div>
+            <div class="graph-caption" id="graph-caption">
+              Choose an arc on the left to see how your current chapter is weighted.
             </div>
           </div>
         </div>
-
-        <div class="meaning-graph">
-          <div class="section-label">Your lenses & drivers</div>
-          <div class="section-hint">
-            These connections will shape prompts in World / Community / Personal layers.
-          </div>
-          <div class="graph-placeholder" id="graphSummary">
-            No profile loaded yet. Choose a few drivers and an arc to see how the graph sketches itself.
-          </div>
-          <div class="graph-chips" id="graphChips">
-            <!-- dynamic chips -->
-          </div>
-        </div>
-
-        <div style="margin-top: 10px;">
-          <div class="section-label">Journey sketch</div>
-          <div class="section-hint">
-            Rough story of how Whyld World will support you next.
-          </div>
-          <ol class="journey-list" id="journeyList">
-            <!-- dynamic list -->
-          </ol>
-        </div>
-
-        <div class="last-saved" id="lastSavedLabel">Profile not saved yet.</div>
       </section>
-    </main>
+    </div>
+
+    <!-- EXPLAINER -->
+    <section class="explainer-card">
+      <div class="card-header" style="padding:0; margin-bottom:4px;">
+        <div class="card-title">How this prototype works</div>
+        <div class="card-tag">Lenses · Layers · Locations</div>
+      </div>
+      <div class="explainer-steps">
+        <div class="explainer-step">
+          <div class="step-pill">1</div>
+          <div class="step-text">
+            <strong>Set your arc here.</strong>  
+            Tell Whyld World what feels meaningful, which lens should lead, and how intense
+            you want the signal. That becomes your temporary <em>meaning profile</em>.
+          </div>
+        </div>
+        <div class="explainer-step">
+          <div class="step-pill">2</div>
+          <div class="step-text">
+            <strong>Step into AR.</strong>  
+            On the next screen (<code>ar.html</code>), pointing your device at the marker or
+            walking into a zone pops up a card. The content in that card is shaped by:
+            <em>lens</em> (Explore / Serve / Create / Inspire / Reflect),
+            <em>layer</em> (World / Community / Personal), and your meaning profile.
+          </div>
+        </div>
+        <div class="explainer-step">
+          <div class="step-pill">3</div>
+          <div class="step-text">
+            <strong>Feel your story against the world.</strong>  
+            World layer tells a place-anchored story, Community layer shows reflections
+            from others, and Personal layer folds your arc, question, and “notice more of”
+            into a short prompt aimed at your next small move.
+          </div>
+        </div>
+      </div>
+      <div class="explainer-footnote">
+        In the full vision, this home view becomes your evolving <strong>Meaning Graph</strong>:
+        trends over time, new arcs as your life shifts, and deeper ways of weaving in your
+        reflections, quests, and collaborations.
+      </div>
+    </section>
   </div>
 
   <script>
-    // ============================
-    // CONFIG
-    // ============================
-    const STORAGE_KEY = "whyldProfile";
+    // ----- shared config (must stay aligned with ar.html) -----
 
     const DRIVER_OPTIONS = [
-      { id: "Growth",      label: "Growth" },
-      { id: "Mastery",     label: "Mastery" },
-      { id: "Belonging",   label: "Belonging" },
-      { id: "Joy",         label: "Joy" },
-      { id: "Wonder",      label: "Wonder" },
-      { id: "Freedom",     label: "Freedom" },
-      { id: "Service",     label: "Service" },
-      { id: "Purpose",     label: "Purpose" },
-      { id: "Creativity",  label: "Creativity" },
-      { id: "Clarity",     label: "Clarity" }
+      "Growth & mastery",
+      "Belonging & connection",
+      "Impact & service",
+      "Wonder & curiosity",
+      "Creativity & play",
+      "Stability & grounding"
     ];
+
+    const LENS_OPTIONS = ["Explore", "Serve", "Create", "Inspire", "Reflect"];
 
     const ARC_OPTIONS = [
-      { id: "courage",   emoji: "🧗‍♂️", title: "Courageous", desc: "Taking more honest, brave steps into the unknown." },
-      { id: "creative",  emoji: "🎨",   title: "Creative",    desc: "Letting ideas get weirder, wilder, and more alive." },
-      { id: "connected", emoji: "🤝",   title: "Connected",   desc: "Deepening ties with people, places, and communities." },
-      { id: "clear",     emoji: "🧠",   title: "Clear",       desc: "Seeing patterns and making sense of your story." },
-      { id: "grounded",  emoji: "🌲",   title: "Grounded",    desc: "Living from a steadier, more present center." },
-      { id: "impactful", emoji: "🚀",   title: "Impactful",   desc: "Aiming your energy at things that truly move the needle." }
+      { id: "courage",   label: "Courageous" },
+      { id: "creative",  label: "Creative" },
+      { id: "connected", label: "Connected" },
+      { id: "clear",     label: "Clear" },
+      { id: "grounded",  label: "Grounded" },
+      { id: "impactful", label: "Impactful" }
     ];
 
-    const FOCUS_LENSES = [
-      { id: "Explore", label: "Explore" },
-      { id: "Serve",   label: "Serve" },
-      { id: "Create",  label: "Create" },
-      { id: "Inspire", label: "Inspire" },
-      { id: "Reflect", label: "Reflect" }
-    ];
+    // For AR page reference
+    const ARC_LABELS = {
+      courage:   "Courageous",
+      creative:  "Creative",
+      connected: "Connected",
+      clear:     "Clear",
+      grounded:  "Grounded",
+      impactful: "Impactful"
+    };
 
-    const INTENSITY_OPTIONS = [
-      { id: "low",    label: "Soft" },
-      { id: "medium", label: "Balanced" },
-      { id: "high",   label: "Bold" }
-    ];
+    // ----- DOM helpers -----
+    const $ = (id) => document.getElementById(id);
 
-    let CURRENT_PROFILE = null;
+    // ----- Initialize chips, radios, graph bars -----
+    function initDriversChips() {
+      const container = $("drivers-chips");
+      container.innerHTML = "";
+      DRIVER_OPTIONS.forEach((label) => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.textContent = label;
+        chip.dataset.value = label;
+        chip.addEventListener("click", () => toggleDriverChip(chip));
+        container.appendChild(chip);
+      });
+    }
 
-    // ============================
-    // RENDER HELPERS
-    // ============================
-    function renderDriversRow(selected = []) {
-      const row = document.getElementById("driversRow");
+    function toggleDriverChip(chip) {
+      const selected = Array.from(
+        document.querySelectorAll("#drivers-chips .chip.selected")
+      );
+      const max = 3;
+
+      if (chip.classList.contains("selected")) {
+        chip.classList.remove("selected");
+        return;
+      }
+
+      if (selected.length >= max) {
+        // remove the oldest selection (first in DOM)
+        selected[0].classList.remove("selected");
+      }
+      chip.classList.add("selected");
+    }
+
+    function initLensRadios() {
+      const row = $("focus-lens-row");
       row.innerHTML = "";
-      DRIVER_OPTIONS.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "pill";
-        btn.textContent = opt.label;
-        if (selected.includes(opt.id)) {
-          btn.classList.add("selected");
+      LENS_OPTIONS.forEach((lens) => {
+        const id = "lens-" + lens.toLowerCase();
+        const wrapper = document.createElement("div");
+        wrapper.className = "pill-radio";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "focusLens";
+        input.id = id;
+        input.value = lens;
+
+        const label = document.createElement("label");
+        label.htmlFor = id;
+        label.textContent = lens;
+
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+        row.appendChild(wrapper);
+      });
+    }
+
+    function initArcRadios() {
+      const row = $("arc-row");
+      row.innerHTML = "";
+      ARC_OPTIONS.forEach((arc) => {
+        const id = "arc-" + arc.id;
+        const wrapper = document.createElement("div");
+        wrapper.className = "pill-radio";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = "arcId";
+        input.id = id;
+        input.value = arc.id;
+        input.addEventListener("change", updateMeaningGraphFromArc);
+
+        const label = document.createElement("label");
+        label.htmlFor = id;
+        label.textContent = arc.label;
+
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+        row.appendChild(wrapper);
+      });
+    }
+
+    function initIntensityRadios() {
+      // default to medium
+      $("int-med").checked = true;
+      updateIntensitySummary();
+      document
+        .querySelectorAll("input[name='intensity']")
+        .forEach((el) => el.addEventListener("change", updateIntensitySummary));
+    }
+
+    function updateIntensitySummary() {
+      const summary = $("intensity-summary");
+      const selected = document.querySelector(
+        "input[name='intensity']:checked"
+      );
+      const value = selected ? selected.value : "medium";
+      let label = "Balanced";
+      if (value === "low") label = "Gentle";
+      if (value === "high") label = "Turned up";
+
+      summary.innerHTML = `Current setting: <strong>${label}</strong>.`;
+    }
+
+    // Meaning Graph: simple mapping from chosen arc -> bar heights
+    const GRAPH_BASE_HEIGHTS = {
+      courage:   80,
+      creative:  80,
+      connected: 80,
+      clear:     80,
+      grounded:  80,
+      impactful: 80
+    };
+
+    function initMeaningGraphBars() {
+      const container = $("graph-bars");
+      // Clear any existing bars (leaving grid lines)
+      const children = Array.from(container.children);
+      children.forEach((child) => {
+        if (!child.classList.contains("graph-grid-line")) {
+          container.removeChild(child);
         }
-        btn.onclick = () => {
-          btn.classList.toggle("selected");
-          saveProfile(false);
-        };
-        row.appendChild(btn);
       });
+
+      ARC_OPTIONS.forEach((arc) => {
+        const bar = document.createElement("div");
+        bar.className = "graph-bar";
+        bar.dataset.arcId = arc.id;
+
+        const inner = document.createElement("div");
+        inner.className = "graph-bar-inner";
+        inner.style.height = GRAPH_BASE_HEIGHTS[arc.id] + "%";
+
+        const dot = document.createElement("div");
+        dot.className = "graph-bar-dot";
+
+        const label = document.createElement("div");
+        label.className = "graph-bar-label";
+        label.textContent = arc.label.split(" ")[0];
+
+        bar.appendChild(inner);
+        bar.appendChild(dot);
+        bar.appendChild(label);
+        container.appendChild(bar);
+      });
+
+      updateMeaningGraphFromArc();
     }
 
-    function renderArcGrid(selectedArcId = null) {
-      const grid = document.getElementById("arcGrid");
-      grid.innerHTML = "";
-      ARC_OPTIONS.forEach(opt => {
-        const card = document.createElement("div");
-        card.className = "arc-card";
-        if (opt.id === selectedArcId) {
-          card.classList.add("selected");
+    function updateMeaningGraphFromArc() {
+      const selectedArcInput = document.querySelector(
+        "input[name='arcId']:checked"
+      );
+      const chosenArcId = selectedArcInput ? selectedArcInput.value : null;
+
+      const bars = document.querySelectorAll(".graph-bar");
+      bars.forEach((bar) => {
+        const arcId = bar.dataset.arcId;
+        const inner = bar.querySelector(".graph-bar-inner");
+        const isChosen = chosenArcId && arcId === chosenArcId;
+
+        let factor = 0.55;
+        if (isChosen) {
+          factor = 1.0;
+        } else if (
+          // treat "neighbors" as slightly higher
+          (chosenArcId === "courage"   && (arcId === "creative" || arcId === "impactful")) ||
+          (chosenArcId === "creative"  && (arcId === "courage"  || arcId === "connected")) ||
+          (chosenArcId === "connected" && (arcId === "creative" || arcId === "clear")) ||
+          (chosenArcId === "clear"     && (arcId === "connected"|| arcId === "grounded")) ||
+          (chosenArcId === "grounded"  && (arcId === "clear"    || arcId === "impactful")) ||
+          (chosenArcId === "impactful" && (arcId === "courage"  || arcId === "grounded"))
+        ) {
+          factor = 0.78;
         }
-        card.onclick = () => {
-          document.querySelectorAll(".arc-card").forEach(c => c.classList.remove("selected"));
-          card.classList.add("selected");
-          saveProfile(false);
-        };
 
-        const title = document.createElement("div");
-        title.className = "arc-card-title";
-        const emoji = document.createElement("span");
-        emoji.className = "emoji";
-        emoji.textContent = opt.emoji;
-        const text = document.createElement("span");
-        text.textContent = opt.title;
-        title.appendChild(emoji);
-        title.appendChild(text);
+        const base = GRAPH_BASE_HEIGHTS[arcId] || 70;
+        const height = chosenArcId ? base * factor : base * 0.7;
+        inner.style.height = Math.max(18, Math.min(110, height)) + "%";
 
-        const desc = document.createElement("div");
-        desc.className = "arc-card-desc";
-        desc.textContent = opt.desc;
-
-        card.appendChild(title);
-        card.appendChild(desc);
-        grid.appendChild(card);
+        if (isChosen) {
+          bar.classList.add("active");
+        } else {
+          bar.classList.remove("active");
+        }
       });
+
+      const caption = $("graph-caption");
+      if (!chosenArcId) {
+        caption.textContent =
+          "Choose an arc above to see a rough weighting. This is just a sketch for now.";
+      } else {
+        const label = ARC_LABELS[chosenArcId] || chosenArcId;
+        caption.textContent =
+          label +
+          " is getting extra weight right now — nearby arcs lean up, others stay present in the background.";
+      }
     }
 
-    function renderFocusLensRow(selectedId = null) {
-      const row = document.getElementById("focusLensRow");
-      row.innerHTML = "";
-      FOCUS_LENSES.forEach(opt => {
-        const pill = document.createElement("button");
-        pill.type = "button";
-        pill.className = "pill";
-        pill.textContent = opt.label;
-        if (opt.id === selectedId) pill.classList.add("selected");
-        pill.onclick = () => {
-          document.querySelectorAll("#focusLensRow .pill").forEach(p => p.classList.remove("selected"));
-          pill.classList.add("selected");
-          saveProfile(false);
-        };
-        row.appendChild(pill);
-      });
+    // ----- Profile load/save -----
+    function loadProfileFromStorage() {
+      try {
+        const raw = localStorage.getItem("whyldProfile");
+        if (!raw) return;
+        const profile = JSON.parse(raw);
+
+        if (profile.name) $("name-input").value = profile.name;
+        if (Array.isArray(profile.drivers)) {
+          const chips = document.querySelectorAll("#drivers-chips .chip");
+          chips.forEach((chip) => {
+            if (profile.drivers.includes(chip.dataset.value)) {
+              chip.classList.add("selected");
+            }
+          });
+        }
+        if (profile.focusLens) {
+          const input = document.querySelector(
+            `input[name='focusLens'][value='${profile.focusLens}']`
+          );
+          if (input) input.checked = true;
+        }
+        if (profile.arcId) {
+          const input = document.querySelector(
+            `input[name='arcId'][value='${profile.arcId}']`
+          );
+          if (input) input.checked = true;
+        }
+        if (profile.bigQuestion) {
+          $("big-question-input").value = profile.bigQuestion;
+        }
+        if (profile.noticeMore) {
+          $("notice-more-input").value = profile.noticeMore;
+        }
+        if (profile.intensity) {
+          const intInput = document.querySelector(
+            `input[name='intensity'][value='${profile.intensity}']`
+          );
+          if (intInput) intInput.checked = true;
+        }
+
+        updateIntensitySummary();
+        updateMeaningGraphFromArc();
+      } catch (e) {
+        console.warn("Failed to load whyldProfile:", e);
+      }
     }
 
-    function renderIntensityRow(selectedId = "medium") {
-      const row = document.getElementById("intensityRow");
-      row.innerHTML = "";
-      INTENSITY_OPTIONS.forEach(opt => {
-        const pill = document.createElement("button");
-        pill.type = "button";
-        pill.className = "pill";
-        pill.textContent = opt.label;
-        if (opt.id === selectedId) pill.classList.add("selected");
-        pill.onclick = () => {
-          document.querySelectorAll("#intensityRow .pill").forEach(p => p.classList.remove("selected"));
-          pill.classList.add("selected");
-          saveProfile(false);
-        };
-        row.appendChild(pill);
-      });
-    }
+    function gatherProfileFromForm() {
+      const name = $("name-input").value.trim() || "";
+      const driverChips = document.querySelectorAll("#drivers-chips .chip.selected");
+      const drivers = Array.from(driverChips).map((chip) => chip.dataset.value);
 
-    // ============================
-    // COLLECT & SAVE PROFILE
-    // ============================
-    function collectProfile() {
-      const name = document.getElementById("userName").value.trim();
-      const noticeMore = document.getElementById("noticeMore").value.trim();
-      const missing = document.getElementById("missing").value.trim();
-      const bigQuestion = document.getElementById("bigQuestion").value.trim();
+      const focusLensInput = document.querySelector(
+        "input[name='focusLens']:checked"
+      );
+      const focusLens = focusLensInput ? focusLensInput.value : null;
 
-      // Drivers
-      const drivers = Array.from(document.querySelectorAll("#driversRow .pill.selected"))
-        .map(el => el.textContent.trim());
+      const arcInput = document.querySelector("input[name='arcId']:checked");
+      const arcId = arcInput ? arcInput.value : null;
 
-      // Arc
-      let arcId = null;
-      const arcCards = Array.from(document.querySelectorAll(".arc-card"));
-      const selectedArcIndex = arcCards.findIndex(c => c.classList.contains("selected"));
-      if (selectedArcIndex >= 0) {
-        arcId = ARC_OPTIONS[selectedArcIndex].id;
-      }
+      const bigQuestion = $("big-question-input").value.trim();
+      const noticeMore = $("notice-more-input").value.trim();
 
-      // Focus lens
-      let focusLens = null;
-      const focusSelected = document.querySelector("#focusLensRow .pill.selected");
-      if (focusSelected) {
-        focusLens = focusSelected.textContent.trim();
-      }
-
-      // Intensity
-      let intensity = "medium";
-      const intensitySelected = document.querySelector("#intensityRow .pill.selected");
-      if (intensitySelected) {
-        const label = intensitySelected.textContent.trim();
-        const map = { "Soft": "low", "Balanced": "medium", "Bold": "high" };
-        intensity = map[label] || "medium";
-      }
+      const intensityInput = document.querySelector(
+        "input[name='intensity']:checked"
+      );
+      const intensity = intensityInput ? intensityInput.value : "medium";
 
       return {
         name,
         drivers,
-        arcId,
         focusLens,
-        intensity,
-        noticeMore,
-        missing,
+        arcId,
         bigQuestion,
-        updatedAt: new Date().toISOString()
+        noticeMore,
+        intensity
       };
     }
 
-    function saveProfile(updateTimestamp = true) {
-      let profile = collectProfile();
-      if (!updateTimestamp && CURRENT_PROFILE && CURRENT_PROFILE.updatedAt) {
-        // preserve previous timestamp if user is just toggling UI
-        profile.updatedAt = CURRENT_PROFILE.updatedAt;
+    function validateProfile(profile) {
+      const errors = [];
+      if (!profile.focusLens) {
+        errors.push("Pick at least one focus lens.");
       }
-      CURRENT_PROFILE = profile;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-      updateDerivedUI();
+      if (!profile.arcId) {
+        errors.push("Choose the arc that feels most true right now.");
+      }
+      return errors;
     }
 
-    // ============================
-    // LOAD PROFILE
-    // ============================
-    function loadProfile() {
+    function saveProfileToStorage(profile) {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          // Render fresh UI with defaults
-          renderDriversRow([]);
-          renderArcGrid(null);
-          renderFocusLensRow(null);
-          renderIntensityRow("medium");
-          updateDerivedUI();
-          return;
-        }
-
-        const profile = JSON.parse(raw);
-        CURRENT_PROFILE = profile;
-
-        document.getElementById("userName").value = profile.name || "";
-        document.getElementById("noticeMore").value = profile.noticeMore || "";
-        document.getElementById("missing").value = profile.missing || "";
-        document.getElementById("bigQuestion").value = profile.bigQuestion || "";
-
-        renderDriversRow(profile.drivers || []);
-        renderArcGrid(profile.arcId || null);
-        renderFocusLensRow(profile.focusLens || null);
-        renderIntensityRow(profile.intensity || "medium");
-        updateDerivedUI();
+        localStorage.setItem("whyldProfile", JSON.stringify(profile));
       } catch (e) {
-        console.warn("Failed to load profile:", e);
-        renderDriversRow([]);
-        renderArcGrid(null);
-        renderFocusLensRow(null);
-        renderIntensityRow("medium");
-        updateDerivedUI();
+        console.warn("Failed to store whyldProfile:", e);
       }
     }
 
-    // ============================
-    // DERIVED UI: GRAPH & JOURNEY
-    // ============================
-    function updateDerivedUI() {
-      const profile = CURRENT_PROFILE || collectProfile();
-      CURRENT_PROFILE = profile;
+    function handleEnterWorldClick() {
+      const errorBox = $("profile-error");
+      errorBox.style.display = "none";
+      errorBox.textContent = "";
 
-      // Arc badge
-      const arcBadge = document.getElementById("arc-badge");
-      if (profile.arcId) {
-        const arc = ARC_OPTIONS.find(a => a.id === profile.arcId);
-        if (arc) {
-          arcBadge.textContent = "Arc: " + arc.title;
-        } else {
-          arcBadge.textContent = "Arc: custom";
-        }
-      } else {
-        arcBadge.textContent = "Arc: not set";
+      const profile = gatherProfileFromForm();
+      const errors = validateProfile(profile);
+
+      if (errors.length > 0) {
+        errorBox.textContent = errors.join(" ");
+        errorBox.style.display = "block";
+        return;
       }
 
-      // Graph summary
-      const summary = document.getElementById("graphSummary");
-      const chipsContainer = document.getElementById("graphChips");
-      chipsContainer.innerHTML = "";
-
-      if (!profile.drivers.length && !profile.arcId && !profile.focusLens) {
-        summary.textContent =
-          "No profile loaded yet. Choose a few drivers and an arc to see how the graph sketches itself.";
-      } else {
-        const parts = [];
-        if (profile.drivers.length) {
-          parts.push("Amplifying " + profile.drivers.join(", "));
-        }
-        if (profile.arcId) {
-          const arc = ARC_OPTIONS.find(a => a.id === profile.arcId);
-          if (arc) parts.push("You’re in a " + arc.title + " chapter");
-        }
-        if (profile.focusLens) {
-          parts.push("Leading with the " + profile.focusLens + " lens");
-        }
-        summary.textContent = parts.join(" · ");
-      }
-
-      // Graph chips
-      (profile.drivers || []).forEach(d => {
-        const chip = document.createElement("div");
-        chip.className = "graph-chip";
-        chip.textContent = "Driver: " + d;
-        chipsContainer.appendChild(chip);
-      });
-      if (profile.focusLens) {
-        const chip = document.createElement("div");
-        chip.className = "graph-chip";
-        chip.textContent = "Focus lens: " + profile.focusLens;
-        chipsContainer.appendChild(chip);
-      }
-      if (profile.arcId) {
-        const arc = ARC_OPTIONS.find(a => a.id === profile.arcId);
-        const chip = document.createElement("div");
-        chip.className = "graph-chip";
-        chip.textContent = "Arc: " + (arc ? arc.title : profile.arcId);
-        chipsContainer.appendChild(chip);
-      }
-      if (profile.intensity) {
-        const chip = document.createElement("div");
-        chip.className = "graph-chip";
-        chip.textContent = "Intensity: " + profile.intensity;
-        chipsContainer.appendChild(chip);
-      }
-
-      // Journey list
-      const list = document.getElementById("journeyList");
-      list.innerHTML = "";
-
-      const lensWord = profile.focusLens || "Explore";
-      const arc = ARC_OPTIONS.find(a => a.id === profile.arcId);
-      const arcTitle = arc ? arc.title.toLowerCase() : "undefined";
-
-      const li1 = document.createElement("li");
-      li1.textContent =
-        "World layer: tunes stories in to highlight " +
-        (profile.drivers[0] || "what feels most alive for you") + ".";
-      list.appendChild(li1);
-
-      const li2 = document.createElement("li");
-      li2.textContent =
-        "Community layer: surfaces reflections so you can feel more " +
-        (profile.drivers.includes("Belonging") ? "connected" : "in dialogue with others") + ".";
-      list.appendChild(li2);
-
-      const li3 = document.createElement("li");
-      li3.textContent =
-        "Personal layer: uses your " + lensWord +
-        " lens to ask questions that fit a more " + arcTitle + " chapter.";
-      list.appendChild(li3);
-
-      if (profile.bigQuestion) {
-        const li4 = document.createElement("li");
-        li4.textContent =
-          "Each stop lightly nudges your big question: “" + profile.bigQuestion + "”.";
-        list.appendChild(li4);
-      }
-
-      // Last saved
-      const lastSaved = document.getElementById("lastSavedLabel");
-      if (profile.updatedAt) {
-        const d = new Date(profile.updatedAt);
-        lastSaved.textContent = "Last updated: " + d.toLocaleString();
-      } else {
-        lastSaved.textContent = "Profile not saved yet.";
-      }
+      saveProfileToStorage(profile);
+      window.location.href = "ar.html";
     }
 
-    // ============================
-    // NAVIGATION
-    // ============================
-    function enterWorld() {
-      saveProfile(true);
-      window.location.href = "ar.html"; // case-sensitive, matches your AR file
-    }
-
-    // ============================
-    // INIT
-    // ============================
+    // ----- init -----
     window.addEventListener("DOMContentLoaded", function () {
-      loadProfile();
+      initDriversChips();
+      initLensRadios();
+      initArcRadios();
+      initIntensityRadios();
+      initMeaningGraphBars();
+      loadProfileFromStorage();
 
-      // Also save on blur for textareas/inputs
-      ["userName", "noticeMore", "missing", "bigQuestion"].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener("blur", function () {
-          saveProfile(false);
-        });
-      });
+      $("enter-world-btn").addEventListener("click", handleEnterWorldClick);
     });
   </script>
 </body>
