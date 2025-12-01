@@ -260,6 +260,72 @@
       box-shadow: 0 0 0 1px rgba(79,209,197,0.35);
     }
 
+    /* Arc cards with icons */
+    .arc-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .arc-card {
+      position: relative;
+      width: calc(50% - 4px);
+      min-width: 120px;
+      max-width: 160px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: radial-gradient(circle at top, rgba(79,209,197,0.16), rgba(15,23,42,0.96));
+      padding: 8px 9px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.18s ease;
+    }
+
+    @media (min-width: 880px) {
+      .arc-card {
+        width: calc(33.33% - 6px);
+      }
+    }
+
+    .arc-card-icon {
+      font-size: 18px;
+    }
+
+    .arc-card-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .arc-card-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .arc-card input {
+      display: none;
+    }
+
+    .arc-card.selected {
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 1px rgba(79,209,197,0.5),
+        0 14px 24px rgba(15,23,42,0.9);
+      transform: translateY(-1px);
+    }
+
+    .arc-card.selected::after {
+      content: "●";
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 10px;
+      color: var(--accent);
+    }
+
     /* Meaning graph */
     .graph-container {
       margin-top: 6px;
@@ -275,7 +341,7 @@
       height: 120px;
       padding: 6px 2px 2px;
       border-radius: 12px;
-      background: radial-gradient(circle at top, rgba(79,209,197,0.12), rgba(15,23,42,0.9));
+      background: radial-gradient(circle at top, rgba(79,209,197,0.14), rgba(15,23,42,0.9));
       border: 1px solid rgba(148,163,184,0.45);
       position: relative;
       overflow: hidden;
@@ -471,6 +537,50 @@
       font-weight: 500;
     }
 
+    .explainer-columns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+      border-top: 1px solid var(--divider);
+      padding-top: 8px;
+    }
+
+    @media (min-width: 720px) {
+      .explainer-columns {
+        flex-direction: row;
+      }
+    }
+
+    .explainer-col {
+      flex: 1;
+    }
+
+    .explainer-col-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+    }
+
+    .explainer-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .explainer-col li {
+      margin-bottom: 3px;
+    }
+
+    .explainer-col strong {
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+
     .explainer-footnote {
       font-size: 12px;
       color: var(--text-muted);
@@ -490,7 +600,7 @@
         <div class="hero-pill">Prototype · Meaning Lens</div>
       </div>
       <p class="hero-subtitle">
-        Choose the <strong>chapter of your life</strong> you’re in, what feels meaningful,
+        Choose the <strong>chapter of your life</strong>, what feels meaningful,
         and how intense you want the signal to be. Then step into the world and let
         locations, stories, and reflections <strong>refract through your lenses</strong>.
       </p>
@@ -517,7 +627,7 @@
           <div class="field-group">
             <label class="field-label">
               What feels most meaningful right now?
-              <span class="hint">(tap 1–3)</span>
+              <span class="hint">(tap up to 3)</span>
             </label>
             <div class="chips-row" id="drivers-chips">
               <!-- chips injected by JS -->
@@ -537,10 +647,10 @@
           <div class="field-group">
             <label class="field-label">
               Which arc are you in?
-              <span class="hint">(this shapes the Meaning Graph)</span>
+              <span class="hint">(pick the chapter that feels most true)</span>
             </label>
-            <div class="radio-row" id="arc-row">
-              <!-- radios injected by JS -->
+            <div class="arc-row" id="arc-row">
+              <!-- arc cards injected by JS -->
             </div>
           </div>
 
@@ -604,13 +714,13 @@
       <section class="card">
         <div class="card-header">
           <div class="card-title">Meaning Graph</div>
-          <div class="card-tag">Prototype view</div>
+          <div class="card-tag">Depth sketch</div>
         </div>
 
         <div class="card-body">
           <p>
-            A quick sketch of how your current chapter leans across six arcs.
-            This doesn’t lock you in; it just gives the lenses a starting shape.
+            A first-pass visualization of how this chapter leans across six arcs.
+            In the fuller vision, this becomes a living “depth map” of your Whyld World.
           </p>
 
           <div class="graph-container">
@@ -621,7 +731,7 @@
               <!-- bars injected by JS -->
             </div>
             <div class="graph-caption" id="graph-caption">
-              Choose an arc on the left to see how your current chapter is weighted.
+              Pick an arc on the left. This graph shows how strongly each arc is pulsing in this chapter.
             </div>
           </div>
         </div>
@@ -632,21 +742,22 @@
     <section class="explainer-card">
       <div class="card-header" style="padding:0; margin-bottom:4px;">
         <div class="card-title">How this prototype works</div>
-        <div class="card-tag">Lenses · Layers · Locations</div>
+        <div class="card-tag">Lenses · Layers · Modes</div>
       </div>
       <div class="explainer-steps">
         <div class="explainer-step">
           <div class="step-pill">1</div>
           <div class="step-text">
-            <strong>Set your arc here.</strong>  
-            Tell Whyld World what feels meaningful, which lens should lead, and how intense
-            you want the signal. That becomes your temporary <em>meaning profile</em>.
+            <strong>Set your arc here.</strong>
+            This screen is your staging area. You tell Whyld World what feels meaningful,
+            which lens should lead, and how intense you want the signal. That becomes your temporary
+            <em>meaning profile</em>.
           </div>
         </div>
         <div class="explainer-step">
           <div class="step-pill">2</div>
           <div class="step-text">
-            <strong>Step into AR.</strong>  
+            <strong>Step into AR.</strong>
             On the next screen (<code>ar.html</code>), pointing your device at the marker or
             walking into a zone pops up a card. The content in that card is shaped by:
             <em>lens</em> (Explore / Serve / Create / Inspire / Reflect),
@@ -656,17 +767,47 @@
         <div class="explainer-step">
           <div class="step-pill">3</div>
           <div class="step-text">
-            <strong>Feel your story against the world.</strong>  
-            World layer tells a place-anchored story, Community layer shows reflections
-            from others, and Personal layer folds your arc, question, and “notice more of”
-            into a short prompt aimed at your next small move.
+            <strong>Swap modes.</strong>
+            In <em>Discovery mode</em>, it behaves like a smarter tour guide:
+            finding stories and reflections tied to place. In <em>Meaning mode</em>,
+            it leans harder on your arc, drivers, and questions to surface personal prompts
+            and “next small moves”.
           </div>
         </div>
       </div>
+
+      <div class="explainer-columns">
+        <div class="explainer-col">
+          <div class="explainer-col-title">Lenses</div>
+          <ul>
+            <li><strong>Explore</strong> — notice, wander, see with fresh eyes.</li>
+            <li><strong>Serve</strong> — who or what could you lift up here?</li>
+            <li><strong>Create</strong> — ideas, prototypes, playful experiments.</li>
+            <li><strong>Inspire</strong> — stories, role models, signals of hope.</li>
+            <li><strong>Reflect</strong> — sense-making, integration, choosing next moves.</li>
+          </ul>
+        </div>
+        <div class="explainer-col">
+          <div class="explainer-col-title">Layers</div>
+          <ul>
+            <li><strong>World</strong> — the place itself: its stories, signals, context.</li>
+            <li><strong>Community</strong> — reflections from others who were here.</li>
+            <li><strong>Personal</strong> — your arc, drivers, and questions folded into a prompt.</li>
+          </ul>
+        </div>
+        <div class="explainer-col">
+          <div class="explainer-col-title">Modes</div>
+          <ul>
+            <li><strong>Discovery</strong> — “show me what’s here.” Low-friction, story-led.</li>
+            <li><strong>Meaning</strong> — “help me work on my arc.” Deeper, more intentional.</li>
+          </ul>
+        </div>
+      </div>
+
       <div class="explainer-footnote">
-        In the full vision, this home view becomes your evolving <strong>Meaning Graph</strong>:
-        trends over time, new arcs as your life shifts, and deeper ways of weaving in your
-        reflections, quests, and collaborations.
+        Over time, this home view becomes your evolving <strong>Meaning Graph</strong>:
+        arcs rising and falling, new threads emerging, and a deeper way of visualizing how
+        your story and the world’s story are entangled.
       </div>
     </section>
   </div>
@@ -674,24 +815,31 @@
   <script>
     // ----- shared config (must stay aligned with ar.html) -----
 
+    // Now separated: single drivers instead of "A & B"
     const DRIVER_OPTIONS = [
-      "Growth & mastery",
-      "Belonging & connection",
-      "Impact & service",
-      "Wonder & curiosity",
-      "Creativity & play",
-      "Stability & grounding"
+      "Growth",
+      "Mastery",
+      "Belonging",
+      "Connection",
+      "Impact",
+      "Service",
+      "Wonder",
+      "Curiosity",
+      "Creativity",
+      "Play",
+      "Stability",
+      "Grounding"
     ];
 
     const LENS_OPTIONS = ["Explore", "Serve", "Create", "Inspire", "Reflect"];
 
     const ARC_OPTIONS = [
-      { id: "courage",   label: "Courageous" },
-      { id: "creative",  label: "Creative" },
-      { id: "connected", label: "Connected" },
-      { id: "clear",     label: "Clear" },
-      { id: "grounded",  label: "Grounded" },
-      { id: "impactful", label: "Impactful" }
+      { id: "courage",   label: "Courageous", icon: "🛡️", sub: "Facing edges, choosing brave moves." },
+      { id: "creative",  label: "Creative",   icon: "✨", sub: "Making, remixing, experimenting." },
+      { id: "connected", label: "Connected",  icon: "🕸️", sub: "Belonging, relationships, community." },
+      { id: "clear",     label: "Clear",      icon: "🎯", sub: "Focus, priorities, inner alignment." },
+      { id: "grounded",  label: "Grounded",   icon: "🌱", sub: "Stability, health, foundations." },
+      { id: "impactful", label: "Impactful",  icon: "🌊", sub: "Ripples you’re sending into the world." }
     ];
 
     // For AR page reference
@@ -707,7 +855,7 @@
     // ----- DOM helpers -----
     const $ = (id) => document.getElementById(id);
 
-    // ----- Initialize chips, radios, graph bars -----
+    // ----- Initialize chips, radios, arc cards, graph bars -----
     function initDriversChips() {
       const container = $("drivers-chips");
       container.innerHTML = "";
@@ -764,28 +912,53 @@
       });
     }
 
-    function initArcRadios() {
+    function initArcCards() {
       const row = $("arc-row");
       row.innerHTML = "";
       ARC_OPTIONS.forEach((arc) => {
-        const id = "arc-" + arc.id;
-        const wrapper = document.createElement("div");
-        wrapper.className = "pill-radio";
+        const card = document.createElement("div");
+        card.className = "arc-card";
+        card.dataset.arcId = arc.id;
 
         const input = document.createElement("input");
         input.type = "radio";
         input.name = "arcId";
-        input.id = id;
         input.value = arc.id;
-        input.addEventListener("change", updateMeaningGraphFromArc);
 
-        const label = document.createElement("label");
-        label.htmlFor = id;
-        label.textContent = arc.label;
+        const topRow = document.createElement("div");
+        topRow.style.display = "flex";
+        topRow.style.alignItems = "center";
+        topRow.style.gap = "6px";
 
-        wrapper.appendChild(input);
-        wrapper.appendChild(label);
-        row.appendChild(wrapper);
+        const iconEl = document.createElement("div");
+        iconEl.className = "arc-card-icon";
+        iconEl.textContent = arc.icon;
+
+        const titleEl = document.createElement("div");
+        titleEl.className = "arc-card-title";
+        titleEl.textContent = arc.label;
+
+        topRow.appendChild(iconEl);
+        topRow.appendChild(titleEl);
+
+        const subEl = document.createElement("div");
+        subEl.className = "arc-card-sub";
+        subEl.textContent = arc.sub || "";
+
+        card.appendChild(input);
+        card.appendChild(topRow);
+        card.appendChild(subEl);
+
+        card.addEventListener("click", () => {
+          document
+            .querySelectorAll(".arc-card")
+            .forEach((c) => c.classList.remove("selected"));
+          card.classList.add("selected");
+          input.checked = true;
+          updateMeaningGraphFromArc();
+        });
+
+        row.appendChild(card);
       });
     }
 
@@ -897,7 +1070,7 @@
       const caption = $("graph-caption");
       if (!chosenArcId) {
         caption.textContent =
-          "Choose an arc above to see a rough weighting. This is just a sketch for now.";
+          "Pick an arc above. This sketch shows a rough weighting across your six arcs.";
       } else {
         const label = ARC_LABELS[chosenArcId] || chosenArcId;
         caption.textContent =
@@ -929,10 +1102,14 @@
           if (input) input.checked = true;
         }
         if (profile.arcId) {
-          const input = document.querySelector(
-            `input[name='arcId'][value='${profile.arcId}']`
+          const card = document.querySelector(
+            `.arc-card[data-arc-id='${profile.arcId}']`
           );
-          if (input) input.checked = true;
+          const input = card ? card.querySelector("input[name='arcId']") : null;
+          if (card && input) {
+            card.classList.add("selected");
+            input.checked = true;
+          }
         }
         if (profile.bigQuestion) {
           $("big-question-input").value = profile.bigQuestion;
@@ -1027,7 +1204,7 @@
     window.addEventListener("DOMContentLoaded", function () {
       initDriversChips();
       initLensRadios();
-      initArcRadios();
+      initArcCards();
       initIntensityRadios();
       initMeaningGraphBars();
       loadProfileFromStorage();
