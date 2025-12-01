@@ -1,27 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Whyld World · Home</title>
-
-  <meta name="viewport"
-        content="width=device-width,
-                 initial-scale=1,
-                 maximum-scale=1,
-                 user-scalable=no,
-                 viewport-fit=cover">
-
+  <meta charset="UTF-8" />
+  <title>Whyld World · Meet Clara</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #050816;
-      --card-bg: rgba(15, 20, 40, 0.96);
-      --card-border: rgba(120, 140, 220, 0.5);
-      --accent: #3a86ff;
-      --accent-soft: rgba(58, 134, 255, 0.25);
-      --text-main: #f7f8ff;
-      --text-sub: #c4c7ff;
-      --pill-bg: rgba(255,255,255,0.04);
-      --pill-border: rgba(255,255,255,0.14);
+      --ww-bg: #050816;
+      --ww-bg-soft: #0b1020;
+      --ww-accent: #ffb347;
+      --ww-accent-soft: rgba(255, 179, 71, 0.18);
+      --ww-card: #0f172a;
+      --ww-card-soft: #111827;
+      --ww-border: rgba(148, 163, 184, 0.4);
+      --ww-text: #e5e7eb;
+      --ww-text-soft: #9ca3af;
+      --ww-pill: #020617;
     }
 
     * {
@@ -32,947 +26,1178 @@
       margin: 0;
       padding: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at top,
-                  #182544 0,
-                  #050816 55%,
-                  #02030a 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
+        Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0%, #020617 52%, #020617 100%);
+      color: var(--ww-text);
+      min-height: 100vh;
     }
 
     body {
-      min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
     }
 
-    .shell {
-      width: 100%;
-      max-width: 640px;
-      padding: 18px 16px 24px;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    header {
-      margin-bottom: 18px;
+    /* Top bar */
+    .ww-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .app-pill {
+    .ww-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ww-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ww-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #ffffff 0, #f97316 12%, #7c3aed 46%, #0ea5e9 100%);
+      box-shadow: 0 0 28px rgba(96, 165, 250, 0.5);
+      position: relative;
+    }
+
+    .ww-logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      border: 1px solid rgba(15, 23, 42, 0.4);
+    }
+
+    .ww-logo-text-main {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .ww-logo-text-sub {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .ww-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ww-chip {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      background: rgba(15, 23, 42, 0.85);
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
+    }
+
+    .ww-chip span {
+      opacity: 0.9;
+    }
+
+    .ww-link-button {
       border-radius: 999px;
-      background: rgba(20, 28, 64, 0.9);
-      border: 1px solid rgba(120, 140, 220, 0.5);
-      font-size: 11px;
-      color: var(--text-sub);
-      margin-bottom: 8px;
-    }
-
-    .app-pill span.emoji {
+      padding: 7px 14px;
       font-size: 13px;
-    }
-
-    .title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 8px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 26px;
-      letter-spacing: 0.04em;
-    }
-
-    .subtitle {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: var(--text-sub);
-      max-width: 420px;
-      line-height: 1.4;
-    }
-
-    /* Card layout */
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      border: 1px solid var(--card-border);
-      padding: 14px 14px 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-    }
-
-    .card h2 {
-      margin: 0 0 4px;
-      font-size: 18px;
-    }
-
-    .card p.help {
-      margin: 0 0 10px;
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    label.small-label {
-      font-size: 12px;
-      color: var(--text-sub);
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    input[type="text"],
-    textarea,
-    select {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(161, 172, 250, 0.7);
-      background: rgba(4, 7, 20, 0.96);
-      color: var(--text-main);
-      padding: 7px 9px;
-      font-size: 13px;
-      outline: none;
-    }
-
-    textarea {
-      min-height: 58px;
-      resize: vertical;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: rgba(180,188,255,0.55);
-    }
-
-    /* Arc picker */
-
-    .arc-picker {
-      margin-top: 4px;
-    }
-
-    .arc-picker-title {
-      margin: 0 0 4px;
-      font-size: 14px;
-    }
-
-    .arc-picker-subtitle {
-      margin: 0 0 10px;
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    .arc-picker-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .arc-btn {
-      border-radius: 16px;
-      border: 1px solid rgba(120, 140, 220, 0.55);
-      background: rgba(6, 10, 32, 0.95);
-      padding: 8px 6px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--ww-text);
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ww-link-button:hover {
+      border-color: #f97316;
+      background: rgba(15, 23, 42, 1);
+    }
+
+    /* Main layout */
+    .ww-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      gap: 22px;
+    }
+
+    @media (max-width: 880px) {
+      .ww-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Clara panel */
+    .ww-clara {
+      background: radial-gradient(circle at top left, #1e293b 0%, #020617 60%);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      padding: 18px 18px 16px;
       display: flex;
       flex-direction: column;
+      gap: 16px;
+    }
+
+    .ww-clara-header {
+      display: flex;
+      gap: 14px;
       align-items: center;
+    }
+
+    .ww-clara-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #fefce8 0, #fecaca 20%, #f59e0b 60%, #4f46e5 100%);
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.5);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .ww-clara-avatar::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: inherit;
+      border: 1px solid rgba(15, 23, 42, 0.45);
+    }
+
+    .ww-clara-title {
+      display: flex;
+      flex-direction: column;
       gap: 2px;
-      font-size: 11px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.35);
-      transition:
-        transform 0.12s ease,
-        box-shadow 0.12s ease,
-        border-color 0.12s ease,
-        background 0.12s ease;
-      color: var(--text-main);
     }
 
-    .arc-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-
-    .arc-btn.active-arc {
-      border-color: var(--accent);
-      box-shadow: 0 6px 16px rgba(58,134,255,0.55);
-      background: radial-gradient(circle at top,
-                  rgba(58,134,255,0.35),
-                  rgba(6,10,32,1));
-    }
-
-    .arc-icon {
+    .ww-clara-title-main {
       font-size: 18px;
+      font-weight: 600;
     }
 
-    .arc-label {
-      font-size: 11px;
+    .ww-clara-title-sub {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--ww-text-soft);
     }
 
-    /* Meaning drivers */
+    .ww-clara-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ww-text-soft);
+    }
 
-    .drivers-grid {
+    .ww-clara-body strong {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .ww-clara-callout {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-pill-row {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       margin-top: 6px;
     }
 
-    .driver-btn {
+    .ww-pill {
       border-radius: 999px;
-      border: 1px solid rgba(150, 164, 255, 0.7);
-      background: rgba(5, 10, 30, 0.95);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+    /* Meaning Field panel */
+    .ww-meaning-panel {
+      margin-top: 4px;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at 20% 0%, #1d283a 0, #020617 55%, #020617 100%);
+      padding: 10px 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ww-meaning-header-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ww-meaning-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-meaning-sub {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-meaning-visual {
+      margin-top: 4px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 50%, rgba(52, 211, 153, 0.35), rgba(129, 140, 248, 0) 60%);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    .ww-meaning-tag {
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.86);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-meaning-tag strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .ww-meaning-note {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      margin-top: 4px;
+    }
+
+    /* Form side */
+    .ww-form-card {
+      border-radius: 18px;
+      border: 1px solid var(--ww-border);
+      background: rgba(15, 23, 42, 0.96);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.9);
+      padding: 18px 18px 16px;
+    }
+
+    .ww-form-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .ww-form-subtitle {
+      font-size: 13px;
+      color: var(--ww-text-soft);
+      margin-bottom: 12px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ww-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ww-field-label {
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ww-field-hint {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--ww-text);
+      padding: 7px 9px;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #f97316;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.3);
+    }
+
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    /* Chapter buttons */
+    .ww-chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ww-chip-option {
+      position: relative;
+    }
+
+    .ww-chip-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-chip-btn span.icon {
+      font-size: 15px;
+    }
+
+    .ww-chip-btn span.label {
+      font-weight: 500;
+      color: var(--ww-text);
+    }
+
+    .ww-chip-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .ww-chip-btn.selected {
+      border-color: #f97316;
+      background: rgba(249, 115, 22, 0.12);
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.4);
+      color: #fed7aa;
+    }
+
+    /* Drivers (checkbox pills) */
+    .ww-driver-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ww-driver-pill {
+      position: relative;
+    }
+
+    .ww-driver-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
       padding: 4px 9px;
       font-size: 11px;
       cursor: pointer;
-      color: var(--text-main);
+      color: var(--ww-text-soft);
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      transition:
-        background 0.12s ease,
-        border-color 0.12s ease,
-        transform 0.08s ease;
+      gap: 6px;
     }
 
-    .driver-btn span.dot {
-      width: 6px;
-      height: 6px;
+    .ww-driver-btn.selected {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+      color: #bbf7d0;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.5);
+    }
+
+    .ww-driver-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Intensity / focus */
+    .ww-radio-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .ww-radio-pill {
       border-radius: 999px;
-      background: rgba(180, 188, 255, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 4px 9px;
+      font-size: 11px;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--ww-text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
     }
 
-    .driver-btn.active-driver {
-      background: linear-gradient(
-        135deg,
-        rgba(114, 193, 255, 0.7),
-        rgba(30, 52, 120, 0.95)
-      );
-      border-color: rgba(180, 230, 255, 0.9);
-      transform: translateY(-0.5px);
+    .ww-radio-pill.selected {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      color: #e0f2fe;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
     }
 
-    /* Intensity + focus lens row */
-
-    .row-two {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 8px;
+    .ww-radio-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .row-two > .col {
-      flex: 1 1 160px;
+    /* Explanation block */
+    .ww-explain {
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 11px;
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      line-height: 1.5;
     }
 
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
+    .ww-explain strong {
+      color: #e5e7eb;
+    }
+
+    .ww-explain-heading {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 4px;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-explain-columns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
       margin-top: 4px;
     }
 
-    .pill-radio {
-      border-radius: 999px;
-      border: 1px solid rgba(140, 152, 255, 0.7);
-      padding: 4px 8px;
+    @media (max-width: 880px) {
+      .ww-explain-columns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .ww-explain-item {
+      padding: 6px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .ww-explain-item-title {
       font-size: 11px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(5, 10, 28, 0.95);
-      color: var(--text-main);
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #e5e7eb;
     }
 
-    .pill-radio input {
-      margin: 0;
-    }
-
-    .pill-radio.active-intensity {
-      border-color: var(--accent);
-      background: rgba(58,134,255,0.18);
-    }
-
-    select#focusLens {
-      font-size: 12px;
-      padding: 6px 8px;
-    }
-
-    /* Meaning graph */
-
-    .meaning-graph-shell {
-      margin: 8px auto 4px;
-      max-width: 420px;
-      padding: 12px 12px 16px;
-      border-radius: 18px;
-      background: radial-gradient(circle at top,
-                  rgba(255,255,255,0.05),
-                  rgba(10, 18, 48, 0.98));
-      border: 1px solid rgba(120, 140, 220, 0.7);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-    }
-
-    .mg-heading {
-      margin: 0 0 4px;
-      font-size: 16px;
-    }
-
-    .mg-tagline {
-      margin: 0 0 8px;
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-
-    #meaning-graph {
-      margin: 6px auto 6px;
-      max-width: 320px;
-    }
-
-    .mg-caption {
-      margin: 4px 0 0;
+    .ww-explain-item-body {
       font-size: 11px;
-      color: var(--text-sub);
-      line-height: 1.4;
     }
 
-    .meaning-graph-svg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .mg-ring {
-      stroke: rgba(160, 175, 255, 0.35);
-      stroke-width: 0.7;
-      fill: none;
-    }
-
-    .mg-axis {
-      stroke: rgba(130, 150, 240, 0.45);
-      stroke-width: 0.8;
-    }
-
-    .mg-label {
-      font-size: 9px;
-      fill: #e3e5ff;
-    }
-
-    .mg-current {
-      fill: rgba(80, 180, 255, 0.25);
-      stroke: rgba(80, 180, 255, 0.95);
-      stroke-width: 1.6;
-    }
-
-    .mg-previous {
-      fill: none;
-      stroke: rgba(200, 200, 200, 0.8);
-      stroke-width: 1;
-      stroke-dasharray: 4 3;
-    }
-
-    /* Explanation card */
-
-    .explain-list {
-      margin: 6px 0 0;
-      padding-left: 14px;
-      font-size: 12px;
-      color: var(--text-sub);
-      line-height: 1.4;
-    }
-
-    .explain-list li {
-      margin-bottom: 4px;
-    }
-
-    /* Footer / Enter button */
-
-    .footer-row {
-      margin-top: 12px;
+    /* Actions */
+    .ww-actions-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
+      margin-top: 4px;
       flex-wrap: wrap;
-      font-size: 11px;
-      color: var(--text-sub);
     }
 
-    .enter-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 16px;
+    .ww-primary {
       border-radius: 999px;
       border: none;
-      background: linear-gradient(
-        135deg,
-        #3a86ff,
-        #7b2ff7
-      );
-      color: #fff;
-      font-size: 14px;
-      text-decoration: none;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.6);
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #0b1120;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 12px 36px rgba(248, 250, 252, 0.2);
     }
 
-    .enter-btn span.icon {
-      font-size: 15px;
+    .ww-primary:hover {
+      filter: brightness(1.05);
     }
 
-    .footer-small {
-      max-width: 260px;
+    .ww-secondary-text {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-secondary-text a {
+      color: #facc15;
+      text-decoration: underline;
+      text-decoration-style: dotted;
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <div class="app-pill">
-        <span class="emoji">🌀</span>
-        <span>Whyld World · Meaning Mode</span>
-      </div>
-      <div class="title-row">
+  <div class="ww-shell">
+    <header class="ww-top-bar">
+      <div class="ww-logo">
+        <div class="ww-logo-mark"></div>
         <div>
-          <h1>Set your chapter</h1>
-          <p class="subtitle">
-            Tell Whyld World what this chapter of your life is about so your AR lenses
-            can feel like a superpower instead of just a tour guide.
-          </p>
+          <div class="ww-logo-text-main">Whyld World</div>
+          <div class="ww-logo-text-sub">Meaning · Lenses · Frontiers</div>
         </div>
+      </div>
+      <div class="ww-top-actions">
+        <div class="ww-chip">
+          <span>🧭</span>
+          <span>Two modes: Meaning &amp; Discovery</span>
+        </div>
+        <a href="ar.html" class="ww-link-button">
+          <span>Skip setup &amp; jump into Discovery Mode</span>
+          <span>↗</span>
+        </a>
       </div>
     </header>
 
-    <!-- Profile card -->
-    <section class="card">
-      <h2>Who&rsquo;s wearing the lenses?</h2>
-      <p class="help">
-        Just enough to shape the story of this chapter. You can change this anytime.
-      </p>
-
-      <label class="small-label" for="userName">Name (optional)</label>
-      <input id="userName" type="text" placeholder="What should we call you?" />
-
-      <div class="arc-picker">
-        <h3 class="arc-picker-title">What chapter are you in?</h3>
-        <p class="arc-picker-subtitle">
-          Choose the arc that best describes where you are right now.
-        </p>
-
-        <div class="arc-picker-grid">
-          <button type="button"
-                  class="arc-btn"
-                  data-arc-id="courageous">
-            <span class="arc-icon">🗻</span>
-            <span class="arc-label">Courageous</span>
-          </button>
-
-          <button type="button"
-                  class="arc-btn"
-                  data-arc-id="creative">
-            <span class="arc-icon">🎨</span>
-            <span class="arc-label">Creative</span>
-          </button>
-
-          <button type="button"
-                  class="arc-btn"
-                  data-arc-id="connected">
-            <span class="arc-icon">🤝</span>
-            <span class="arc-label">Connected</span>
-          </button>
-
-          <button type="button"
-                  class="arc-btn"
-                  data-arc-id="clear">
-            <span class="arc-icon">🔍</span>
-            <span class="arc-label">Clear</span>
-          </button>
-
-          <button type="button"
-                  class="arc-btn"
-                  data-arc-id="grounded">
-            <span class="arc-icon">🌱</span>
-            <span class="arc-label">Grounded</span>
-          </button>
-
-          <button type="button"
-                  class="arc-btn"
-                  data-arc-id="impactful">
-            <span class="arc-icon">✨</span>
-            <span class="arc-label">Impactful</span>
-          </button>
-        </div>
-
-        <input type="hidden" id="arcId" />
-      </div>
-
-      <div style="margin-top: 10px;">
-        <label class="small-label">What feels most meaningful in this chapter?</label>
-        <p class="help" style="margin-bottom: 4px;">
-          Pick a few drivers that matter most right now. These nudge how the lenses behave.
-        </p>
-        <div class="drivers-grid">
-          <button type="button" class="driver-btn" data-driver-label="Discovery & learning">
-            <span class="dot"></span><span>Discovery & learning</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Service & contribution">
-            <span class="dot"></span><span>Service & contribution</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Family & relationships">
-            <span class="dot"></span><span>Family & relationships</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Creative work">
-            <span class="dot"></span><span>Creative work</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Mastery & growth">
-            <span class="dot"></span><span>Mastery & growth</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Adventure & frontiers">
-            <span class="dot"></span><span>Adventure & frontiers</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Stewardship & care">
-            <span class="dot"></span><span>Stewardship & care</span>
-          </button>
-          <button type="button" class="driver-btn" data-driver-label="Wonder & awe">
-            <span class="dot"></span><span>Wonder & awe</span>
-          </button>
-        </div>
-      </div>
-
-      <div style="margin-top: 10px;">
-        <label class="small-label" for="bigQuestion">
-          If this chapter had one big question, what would it be?
-        </label>
-        <textarea id="bigQuestion"
-                  placeholder='e.g., "How do I weave all of this into one coherent path?"'></textarea>
-      </div>
-
-      <div style="margin-top: 8px;">
-        <label class="small-label" for="noticeMore">
-          What do you want to notice more of in your everyday life?
-        </label>
-        <textarea id="noticeMore"
-                  placeholder='e.g., "Moments of quiet courage, small ripples of impact, people who light up when they talk about what matters."'></textarea>
-      </div>
-
-      <div class="row-two">
-        <div class="col">
-          <label class="small-label">How intense do you want this chapter to feel?</label>
-          <div class="pill-row" id="intensityRow">
-            <label class="pill-radio">
-              <input type="radio" name="intensity" value="low" /> Gentle
-            </label>
-            <label class="pill-radio">
-              <input type="radio" name="intensity" value="medium" /> Balanced
-            </label>
-            <label class="pill-radio">
-              <input type="radio" name="intensity" value="high" /> Turn it up
-            </label>
+    <main class="ww-main">
+      <!-- LEFT: Clara & Meaning Field -->
+      <section class="ww-clara">
+        <div class="ww-clara-header">
+          <div class="ww-clara-avatar">✨</div>
+          <div class="ww-clara-title">
+            <div class="ww-clara-title-main">Hi, I’m Clara.</div>
+            <div class="ww-clara-title-sub">Your meaning guide inside Whyld World</div>
           </div>
         </div>
 
-        <div class="col">
-          <label class="small-label" for="focusLens">
-            Which lens should lead by default?
-          </label>
-          <select id="focusLens">
-            <option value="">Let Whyld World choose</option>
-            <option value="Explore">Explore</option>
-            <option value="Serve">Serve</option>
-            <option value="Create">Create</option>
-            <option value="Inspire">Inspire</option>
-            <option value="Reflect">Reflect</option>
-          </select>
+        <div class="ww-clara-body">
+          Whyld World is built for the coming era of <strong>AR glasses</strong>, <strong>AI</strong>, and
+          <strong>spatial computing</strong>. It’s not just a tour guide — it’s a way to see your life
+          as a story with <strong>chapters</strong>, <strong>lenses</strong>, and <strong>frontiers</strong>.
+          <br /><br />
+          My job is to learn how you’re living your story right now, where you want to grow next,
+          and what truly matters to you — then quietly shape what you notice in the world so that
+          it all feels like a <strong>coherent journey</strong>, not just random moments.
         </div>
-      </div>
-    </section>
 
-    <!-- Meaning Graph -->
-    <section class="meaning-graph-shell">
-      <h2 class="mg-heading">Your Meaning Graph</h2>
-      <p class="mg-tagline">
-        A snapshot of what this chapter of your life is tuned to.
-      </p>
+        <div class="ww-clara-callout">
+          <strong>Three core ideas:</strong>
+          <div class="ww-pill-row">
+            <div class="ww-pill">🧩 <strong>Chapters</strong>: the phase of life you’re in</div>
+            <div class="ww-pill">🎨 <strong>Lenses</strong>: Explore / Serve / Create / Inspire / Reflect</div>
+            <div class="ww-pill">📍 <strong>Layers</strong>: World / Community / Personal</div>
+          </div>
+          <div style="margin-top: 6px; font-size: 11px;">
+            In <strong>Meaning Mode</strong>, I get to know you and adjust your “Meaning Field.”<br />
+            In <strong>Discovery Mode</strong>, you point your device at places and Whyld World overlays
+            stories, reflections, and prompts that fit your journey.
+          </div>
+        </div>
 
-      <div id="meaning-graph"></div>
+        <div class="ww-meaning-panel">
+          <div class="ww-meaning-header-row">
+            <div class="ww-meaning-title">Meaning Field</div>
+            <div class="ww-meaning-sub" id="meaning-summary">
+              Choose a chapter and I’ll start shaping this.
+            </div>
+          </div>
+          <div class="ww-meaning-visual" id="meaning-visual">
+            <!-- Tags injected by JS -->
+          </div>
+          <div class="ww-meaning-note">
+            Think of this as a living snapshot of your story: <strong>where you are now</strong>,
+            <strong>where you’re leaning next</strong>, and <strong>what pulls you</strong>. Over time,
+            Clara could animate how this field changes as you explore Whyld World in AR.
+          </div>
+        </div>
 
-      <p class="mg-caption">
-        Each spoke is one arc: <strong>Courageous</strong>, <strong>Creative</strong>,
-        <strong>Connected</strong>, <strong>Clear</strong>, <strong>Grounded</strong>,
-        <strong>Impactful</strong>. The filled shape shows what you said matters most
-        <em>right now</em>. As you update your chapter, a faint outline will remember
-        where you were.
-      </p>
-    </section>
+        <div class="ww-explain">
+          <div class="ww-explain-heading">Why this structure?</div>
+          <p>
+            Whyld World exists to help people feel like <strong>superheroes in their own story</strong>,
+            not just passive tourists. The structure is simple:
+          </p>
+          <div class="ww-explain-columns">
+            <div class="ww-explain-item">
+              <div class="ww-explain-item-title">Chapters (Now &amp; Next)</div>
+              <div class="ww-explain-item-body">
+                You choose the <strong>chapter you’re in</strong> (Exploring, Building, Healing, Transforming,
+                Mastering, Leading, Living) and where you want to lean next. That gives Clara a story arc.
+              </div>
+            </div>
+            <div class="ww-explain-item">
+              <div class="ww-explain-item-title">Meaning Drivers</div>
+              <div class="ww-explain-item-body">
+                You highlight what genuinely matters (family, creativity, nature, impact…). These become
+                the <strong>gravity wells</strong> that bend what you notice.
+              </div>
+            </div>
+            <div class="ww-explain-item">
+              <div class="ww-explain-item-title">Modes &amp; Lenses</div>
+              <div class="ww-explain-item-body">
+                In Meaning Mode, Clara tunes your field. In Discovery Mode, AR overlays stories and
+                reflections through different <strong>lenses</strong> and <strong>layers</strong>, so
+                the physical world becomes a canvas for your inner journey.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <!-- Explanation of lenses / layers / modes -->
-    <section class="card">
-      <h2>How Whyld World will feel on your face</h2>
-      <p class="help">
-        When you tap <em>Enter the World</em>, the AR prototype uses this profile
-        to subtly change what it shows you.
-      </p>
-      <ul class="explain-list">
-        <li><strong>Lenses</strong> (Explore, Serve, Create, Inspire, Reflect) change
-            <em>how</em> you look at the same place: curiosity, service, creativity,
-            inspiration, or meaning-making.</li>
-        <li><strong>Layers</strong> (World, Community, Personal) change
-            <em>who&rsquo;s story</em> you&rsquo;re seeing: the place itself, the people
-            around you, or your own inner arc.</li>
-        <li><strong>Modes</strong>:
-          <ul style="margin: 4px 0 0; padding-left: 14px;">
-            <li><strong>Discovery</strong> mode surfaces stories, history, quests and
-                “wow, I never knew that” moments.</li>
-            <li><strong>Meaning</strong> mode nudges you to connect those stories back
-                to your chapter, your drivers, and your next small move.</li>
-          </ul>
-        </li>
-      </ul>
-    </section>
+      <!-- RIGHT: Setup form -->
+      <section class="ww-form-card">
+        <div class="ww-form-title">Let Clara learn your story</div>
+        <div class="ww-form-subtitle">
+          This takes about a minute. You can change any of it later. I’ll quietly use it to
+          shape the prompts and stories you see in Discovery Mode.
+        </div>
 
-    <!-- Footer / enter -->
-    <div class="footer-row">
-      <div class="footer-small">
-        Your profile is stored locally in this browser. Change it anytime; your lenses
-        will adapt next time you enter.
-      </div>
-      <a href="ar.html" class="enter-btn" id="enterWorldBtn">
-        <span class="icon">🕶️</span>
-        <span>Enter the world</span>
-      </a>
-    </div>
+        <form id="profile-form">
+          <!-- Name -->
+          <div class="ww-field">
+            <label class="ww-field-label" for="name">
+              Your name (or what you’d like Clara to call you)
+            </label>
+            <input type="text" id="name" name="name" placeholder="Optional, but it makes things feel more human" />
+          </div>
+
+          <!-- Now chapter -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              1. Which chapter are you in <strong>right now</strong>?
+            </div>
+            <div class="ww-field-hint">
+              Pick the one that feels closest. This doesn’t lock you in — it just gives Clara a starting point.
+            </div>
+            <div class="ww-chip-grid" id="now-chapter-group">
+              <!-- Each option is a button + hidden radio -->
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowExploring">
+                  <span class="icon">🧭</span><span class="label">Exploring</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowExploring" value="Exploring" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowBuilding">
+                  <span class="icon">🏗️</span><span class="label">Building</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowBuilding" value="Building" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowHealing">
+                  <span class="icon">💚</span><span class="label">Healing</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowHealing" value="Healing" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowTransforming">
+                  <span class="icon">🦋</span><span class="label">Transforming</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowTransforming" value="Transforming" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowMastering">
+                  <span class="icon">🎯</span><span class="label">Mastering</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowMastering" value="Mastering" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowLeading">
+                  <span class="icon">🌟</span><span class="label">Leading</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowLeading" value="Leading" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="nowLiving">
+                  <span class="icon">🌿</span><span class="label">Living</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="nowChapter" id="nowLiving" value="Living" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Future chapter -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              2. Where do you feel drawn <strong>next</strong>?
+            </div>
+            <div class="ww-field-hint">
+              Optional. If you skip this, Clara will just focus on deepening the chapter you’re already in.
+            </div>
+            <div class="ww-chip-grid" id="future-chapter-group">
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureExploring">
+                  <span class="icon">🧭</span><span class="label">Exploring</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureExploring" value="Exploring" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureBuilding">
+                  <span class="icon">🏗️</span><span class="label">Building</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureBuilding" value="Building" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureHealing">
+                  <span class="icon">💚</span><span class="label">Healing</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureHealing" value="Healing" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureTransforming">
+                  <span class="icon">🦋</span><span class="label">Transforming</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureTransforming" value="Transforming" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureMastering">
+                  <span class="icon">🎯</span><span class="label">Mastering</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureMastering" value="Mastering" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureLeading">
+                  <span class="icon">🌟</span><span class="label">Leading</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureLeading" value="Leading" />
+              </div>
+
+              <div class="ww-chip-option">
+                <button type="button" class="ww-chip-btn" data-target="futureLiving">
+                  <span class="icon">🌿</span><span class="label">Living</span>
+                </button>
+                <input class="ww-chip-input" type="radio" name="futureChapter" id="futureLiving" value="Living" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Meaning drivers -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              3. What feels most meaningful <strong>right now</strong>?
+            </div>
+            <div class="ww-field-hint">
+              Choose a few. These are the themes Clara will gently highlight in the world around you.
+            </div>
+            <div class="ww-driver-grid" id="drivers-group">
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Family & close relationships" />
+                <span class="ww-driver-btn">👨‍👩‍👧 Family &amp; close relationships</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Creativity & expression" />
+                <span class="ww-driver-btn">🎨 Creativity &amp; expression</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Learning & discovery" />
+                <span class="ww-driver-btn">📚 Learning &amp; discovery</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Work & impact" />
+                <span class="ww-driver-btn">💼 Work &amp; impact</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Nature & wild places" />
+                <span class="ww-driver-btn">🌲 Nature &amp; wild places</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Community & belonging" />
+                <span class="ww-driver-btn">🏡 Community &amp; belonging</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Spirituality & inner life" />
+                <span class="ww-driver-btn">🕊️ Spirituality &amp; inner life</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Adventure & challenge" />
+                <span class="ww-driver-btn">⛰️ Adventure &amp; challenge</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Play & joy" />
+                <span class="ww-driver-btn">🎈 Play &amp; joy</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Big question -->
+          <div class="ww-field">
+            <label class="ww-field-label" for="bigQuestion">
+              4. Is there a big question you’re carrying right now?
+            </label>
+            <div class="ww-field-hint">
+              Optional, but powerful. For example: “How do I combine my work with what I really care about?”
+            </div>
+            <textarea id="bigQuestion" name="bigQuestion" placeholder="Type it in your own words. I’ll use this as a compass for prompts and reflections."></textarea>
+          </div>
+
+          <!-- Notice more -->
+          <div class="ww-field">
+            <label class="ww-field-label" for="noticeMore">
+              5. What do you want to notice more of in your life?
+            </label>
+            <div class="ww-field-hint">
+              Maybe it’s small moments of joy, chance connections, possibilities, kindness, or something else.
+            </div>
+            <textarea id="noticeMore" name="noticeMore" placeholder="This becomes one of the main filters I’ll use when I shape what stands out to you."></textarea>
+          </div>
+
+          <!-- Intensity -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              6. How intense do you want Whyld World to feel right now?
+            </div>
+            <div class="ww-field-hint">
+              You can always change this. It controls how strong the “aura” feels in Discovery Mode.
+            </div>
+            <div class="ww-radio-row" id="intensity-group">
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="intensity" value="low" />
+                <span>🌙 Gentle</span>
+              </label>
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="intensity" value="medium" checked />
+                <span>🌤 Balanced</span>
+              </label>
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="intensity" value="high" />
+                <span>⚡ Bold</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Focus lens -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              7. If you had to start with <strong>one lens</strong>, which would it be?
+            </div>
+            <div class="ww-field-hint">
+              This just sets your initial “view.” In Discovery Mode you can still freely switch between Explore, Serve, Create, Inspire, and Reflect.
+            </div>
+            <div class="ww-radio-row" id="focus-lens-group">
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="focusLens" value="Explore" checked />
+                <span>🧭 Explore</span>
+              </label>
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="focusLens" value="Serve" />
+                <span>🤝 Serve</span>
+              </label>
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="focusLens" value="Create" />
+                <span>🎨 Create</span>
+              </label>
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="focusLens" value="Inspire" />
+                <span>✨ Inspire</span>
+              </label>
+              <label class="ww-radio-pill">
+                <input class="ww-radio-input" type="radio" name="focusLens" value="Reflect" />
+                <span>🪞 Reflect</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="ww-actions-row">
+            <button type="submit" class="ww-primary">
+              <span>Save &amp; Enter Discovery Mode</span>
+              <span>➡</span>
+            </button>
+            <div class="ww-secondary-text">
+              Prefer to skip Meaning Mode for now?
+              <a href="ar.html">Go straight to Discovery Mode</a>.
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
   </div>
 
   <script>
-    const ARC_KEYS = ["courageous", "creative", "connected", "clear", "grounded", "impactful"];
-    const ARC_LABELS = {
-      courageous: "Courageous",
-      creative:   "Creative",
-      connected:  "Connected",
-      clear:      "Clear",
-      grounded:   "Grounded",
-      impactful:  "Impactful"
-    };
+    // Helper to update selection styles for chapter chips
+    function setupChipGroup(groupId, inputName, meaningUpdateFn) {
+      var groupEl = document.getElementById(groupId);
+      if (!groupEl) return;
 
-    // ---- Profile storage helpers ----
-    function loadProfileFromLocalStorage() {
-      try {
-        const raw = localStorage.getItem("whyldProfile");
-        if (!raw) return null;
-        return JSON.parse(raw);
-      } catch (e) {
-        console.warn("Failed to parse whyldProfile:", e);
-        return null;
-      }
-    }
-
-    function saveProfileToLocalStorage(profile) {
-      try {
-        localStorage.setItem("whyldProfile", JSON.stringify(profile || {}));
-      } catch (e) {
-        console.warn("Failed to save whyldProfile:", e);
-      }
-    }
-
-    function loadPreviousGraphValues() {
-      try {
-        const raw = localStorage.getItem("whyldGraphPrev");
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed) || parsed.length !== ARC_KEYS.length) return null;
-        return parsed;
-      } catch (e) {
-        console.warn("Failed to load previous meaning graph:", e);
-        return null;
-      }
-    }
-
-    function savePreviousGraphValues(values) {
-      try {
-        localStorage.setItem("whyldGraphPrev", JSON.stringify(values));
-      } catch (e) {
-        console.warn("Failed to save previous meaning graph:", e);
-      }
-    }
-
-    // ---- Map profile -> spoke values (0..1) ----
-    function computeSpokeValues(profile) {
-      const base = 0.35;
-      let values = ARC_KEYS.map(() => base);
-
-      if (!profile) return values;
-
-      if (profile.arcId) {
-        const i = ARC_KEYS.indexOf(profile.arcId);
-        if (i >= 0) values[i] = 1.0;
-      }
-
-      const drivers = profile.drivers || [];
-      drivers.forEach(d => {
-        const text = String(d).toLowerCase();
-        bumpFromDriver(text, values);
-      });
-
-      let scale = 1.0;
-      if (profile.intensity === "low") scale = 0.8;
-      if (profile.intensity === "high") scale = 1.1;
-      values = values.map(v => Math.min(1.0, v * scale));
-
-      return values;
-    }
-
-    function bumpFromDriver(text, values) {
-      function bump(key, amount) {
-        const idx = ARC_KEYS.indexOf(key);
-        if (idx >= 0) values[idx] = Math.min(1.0, values[idx] + amount);
-      }
-
-      if (text.includes("courage") || text.includes("risk") || text.includes("frontier")) {
-        bump("courageous", 0.2);
-      }
-      if (text.includes("create") || text.includes("creative") || text.includes("innovation")) {
-        bump("creative", 0.2);
-      }
-      if (text.includes("family") || text.includes("community") || text.includes("relationship") || text.includes("belong")) {
-        bump("connected", 0.2);
-      }
-      if (text.includes("clarity") || text.includes("clear") || text.includes("understand") || text.includes("focus")) {
-        bump("clear", 0.2);
-      }
-      if (text.includes("grounded") || text.includes("stability") || text.includes("balance") || text.includes("stewardship")) {
-        bump("grounded", 0.2);
-      }
-      if (text.includes("impact") || text.includes("service") || text.includes("contribution") || text.includes("legacy")) {
-        bump("impactful", 0.2);
-      }
-    }
-
-    // ---- Render radar SVG ----
-    function renderMeaningGraph(profile) {
-      const container = document.getElementById("meaning-graph");
-      if (!container) return;
-
-      const currentValues = computeSpokeValues(profile || {});
-      const prevValues = loadPreviousGraphValues();
-
-      const size = 220;
-      const cx = size / 2;
-      const cy = size / 2;
-      const maxR = 80;
-
-      function pointFor(index, value) {
-        const angle = (-90 + (360 / ARC_KEYS.length) * index) * Math.PI / 180;
-        const r = value * maxR;
-        const x = cx + r * Math.cos(angle);
-        const y = cy + r * Math.sin(angle);
-        return { x, y };
-      }
-
-      const ringRadii = [maxR * 0.35, maxR * 0.7, maxR];
-      const ringsSvg = ringRadii.map(r =>
-        `<circle class="mg-ring" cx="${cx}" cy="${cy}" r="${r}"></circle>`
-      ).join("");
-
-      const axesSvg = ARC_KEYS.map((key, i) => {
-        const end = pointFor(i, 1.0);
-        return `<line class="mg-axis" x1="${cx}" y1="${cy}" x2="${end.x}" y2="${end.y}"></line>`;
-      }).join("");
-
-      const labelsSvg = ARC_KEYS.map((key, i) => {
-        const p = pointFor(i, 1.16);
-        return `<text class="mg-label" x="${p.x}" y="${p.y}"
-                     text-anchor="middle" dominant-baseline="middle">
-                  ${ARC_LABELS[key]}
-                </text>`;
-      }).join("");
-
-      const currentPoints = currentValues
-        .map((v, i) => {
-          const p = pointFor(i, v);
-          return `${p.x},${p.y}`;
-        })
-        .join(" ");
-
-      const currentPoly = `<polygon class="mg-current" points="${currentPoints}"></polygon>`;
-
-      let prevPoly = "";
-      if (prevValues && prevValues.length === ARC_KEYS.length) {
-        const prevPoints = prevValues
-          .map((v, i) => {
-            const p = pointFor(i, v);
-            return `${p.x},${p.y}`;
-          })
-          .join(" ");
-        prevPoly = `<polygon class="mg-previous" points="${prevPoints}"></polygon>`;
-      }
-
-      const svg = `
-        <svg class="meaning-graph-svg" viewBox="0 0 ${size} ${size}">
-          <g>
-            ${ringsSvg}
-            ${axesSvg}
-            ${prevPoly}
-            ${currentPoly}
-            ${labelsSvg}
-          </g>
-        </svg>
-      `;
-
-      container.innerHTML = svg;
-    }
-
-    // ---- Form <-> profile wiring ----
-    function applyProfileToForm(profile) {
-      profile = profile || {};
-
-      const nameEl = document.getElementById("userName");
-      const bigQEl = document.getElementById("bigQuestion");
-      const noticeEl = document.getElementById("noticeMore");
-      const focusEl = document.getElementById("focusLens");
-      const arcHidden = document.getElementById("arcId");
-
-      if (nameEl) nameEl.value = profile.name || "";
-      if (bigQEl) bigQEl.value = profile.bigQuestion || "";
-      if (noticeEl) noticeEl.value = profile.noticeMore || "";
-      if (focusEl && profile.focusLens) focusEl.value = profile.focusLens;
-
-      const arcButtons = document.querySelectorAll(".arc-btn");
-      if (arcButtons.length && profile.arcId) {
-        arcButtons.forEach(btn => {
-          const id = btn.getAttribute("data-arc-id");
-          btn.classList.toggle("active-arc", id === profile.arcId);
-        });
-        if (arcHidden) arcHidden.value = profile.arcId;
-      }
-
-      const driverButtons = document.querySelectorAll(".driver-btn");
-      const selectedDrivers = profile.drivers || [];
-      driverButtons.forEach(btn => {
-        const label = btn.getAttribute("data-driver-label");
-        btn.classList.toggle("active-driver", selectedDrivers.includes(label));
-      });
-
-      const intensityInputs = document.querySelectorAll('input[name="intensity"]');
-      intensityInputs.forEach(r => {
-        r.checked = (r.value === (profile.intensity || "medium"));
-        r.parentElement.classList.toggle(
-          "active-intensity",
-          r.checked
-        );
-      });
-    }
-
-    function profileFromForm() {
-      const nameEl = document.getElementById("userName");
-      const bigQEl = document.getElementById("bigQuestion");
-      const noticeEl = document.getElementById("noticeMore");
-      const focusEl = document.getElementById("focusLens");
-      const arcHidden = document.getElementById("arcId");
-
-      const drivers = [];
-      document.querySelectorAll(".driver-btn.active-driver").forEach(btn => {
-        drivers.push(btn.getAttribute("data-driver-label"));
-      });
-
-      let intensity = "medium";
-      const checked = document.querySelector('input[name="intensity"]:checked');
-      if (checked) intensity = checked.value;
-
-      const profile = {
-        name: (nameEl && nameEl.value.trim()) || "",
-        arcId: arcHidden ? (arcHidden.value || "") : "",
-        drivers: drivers,
-        bigQuestion: (bigQEl && bigQEl.value.trim()) || "",
-        noticeMore: (noticeEl && noticeEl.value.trim()) || "",
-        intensity: intensity,
-        focusLens: (focusEl && focusEl.value) || ""
-      };
-
-      return profile;
-    }
-
-    function onProfileChanged() {
-      const oldProfile = loadProfileFromLocalStorage() || {};
-      const oldValues = computeSpokeValues(oldProfile);
-      savePreviousGraphValues(oldValues);
-
-      const newProfile = profileFromForm();
-      saveProfileToLocalStorage(newProfile);
-      renderMeaningGraph(newProfile);
-    }
-
-    // ---- Init interactive controls ----
-    document.addEventListener("DOMContentLoaded", () => {
-      const storedProfile = loadProfileFromLocalStorage() || {};
-
-      applyProfileToForm(storedProfile);
-      renderMeaningGraph(storedProfile);
-
-      // Arc buttons
-      const arcButtons = document.querySelectorAll(".arc-btn");
-      const arcHidden = document.getElementById("arcId");
-      arcButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const arcId = btn.getAttribute("data-arc-id");
-
-          arcButtons.forEach(b => {
-            b.classList.toggle("active-arc", b === btn);
-          });
-          if (arcHidden) arcHidden.value = arcId;
-
-          onProfileChanged();
-        });
-      });
-
-      // Driver buttons
-      const driverButtons = document.querySelectorAll(".driver-btn");
-      driverButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          btn.classList.toggle("active-driver");
-          onProfileChanged();
-        });
-      });
-
-      // Intensity pills
-      const intensityRow = document.getElementById("intensityRow");
-      if (intensityRow) {
-        intensityRow.querySelectorAll(".pill-radio").forEach(label => {
-          const input = label.querySelector("input[type=radio]");
+      var buttons = groupEl.querySelectorAll(".ww-chip-btn");
+      buttons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var targetId = btn.getAttribute("data-target");
+          var input = document.getElementById(targetId);
           if (!input) return;
-          input.addEventListener("change", () => {
-            intensityRow.querySelectorAll(".pill-radio").forEach(l => {
-              const inp = l.querySelector("input[type=radio]");
-              l.classList.toggle("active-intensity", inp && inp.checked);
-            });
-            onProfileChanged();
-          });
-        });
-      }
 
-      // Text inputs / textareas
-      const textIds = ["userName", "bigQuestion", "noticeMore", "focusLens"];
-      textIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const evt = (el.tagName === "SELECT") ? "change" : "input";
-        el.addEventListener(evt, () => {
-          onProfileChanged();
+          // Update radio
+          input.checked = true;
+
+          // Update visual state
+          buttons.forEach(function (b) {
+            b.classList.remove("selected");
+          });
+          btn.classList.add("selected");
+
+          if (typeof meaningUpdateFn === "function") {
+            meaningUpdateFn();
+          }
         });
       });
+    }
 
-      // Ensure we at least have a default intensity if nothing set
-      if (!storedProfile.intensity) {
-        const medium = document.querySelector('input[name="intensity"][value="medium"]');
-        if (medium && !medium.checked) {
-          medium.checked = true;
-          medium.parentElement.classList.add("active-intensity");
-          onProfileChanged();
-        }
+    // Drivers: toggle selected on click
+    function setupDriverPills() {
+      var group = document.getElementById("drivers-group");
+      if (!group) return;
+      var labels = group.querySelectorAll(".ww-driver-pill");
+      labels.forEach(function (label) {
+        var input = label.querySelector(".ww-driver-input");
+        var btn = label.querySelector(".ww-driver-btn");
+        if (!input || !btn) return;
+
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          input.checked = !input.checked;
+          if (input.checked) {
+            btn.classList.add("selected");
+          } else {
+            btn.classList.remove("selected");
+          }
+          updateMeaningVisual();
+        });
+      });
+    }
+
+    // Radio pill groups (intensity, focus lens)
+    function setupRadioPillGroup(groupId) {
+      var group = document.getElementById(groupId);
+      if (!group) return;
+      var pills = group.querySelectorAll(".ww-radio-pill");
+      pills.forEach(function (pill) {
+        var input = pill.querySelector(".ww-radio-input");
+        if (!input) return;
+
+        pill.addEventListener("click", function (e) {
+          e.preventDefault();
+          // Set this as checked
+          input.checked = true;
+          // Clear others
+          pills.forEach(function (p) {
+            p.classList.remove("selected");
+          });
+          pill.classList.add("selected");
+          if (groupId === "intensity-group") {
+            updateMeaningVisual();
+          }
+        });
+      });
+    }
+
+    // Meaning Field preview
+    function getSelectedRadio(name) {
+      var radios = document.querySelectorAll('input[name="' + name + '"]');
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) return radios[i].value;
       }
+      return null;
+    }
+
+    function getSelectedDrivers() {
+      var checked = document.querySelectorAll('input[name="drivers"]:checked');
+      var out = [];
+      checked.forEach(function (c) {
+        out.push(c.value);
+      });
+      return out;
+    }
+
+    function updateMeaningVisual() {
+      var visual = document.getElementById("meaning-visual");
+      var summary = document.getElementById("meaning-summary");
+      if (!visual || !summary) return;
+
+      var nowChapter = getSelectedRadio("nowChapter");
+      var futureChapter = getSelectedRadio("futureChapter");
+      var intensity = getSelectedRadio("intensity") || "medium";
+      var drivers = getSelectedDrivers();
+
+      visual.innerHTML = "";
+
+      if (nowChapter) {
+        var tagNow = document.createElement("div");
+        tagNow.className = "ww-meaning-tag";
+        tagNow.innerHTML = "<strong>Now</strong> · " + nowChapter;
+        visual.appendChild(tagNow);
+      }
+
+      if (futureChapter && futureChapter !== nowChapter) {
+        var tagNext = document.createElement("div");
+        tagNext.className = "ww-meaning-tag";
+        tagNext.innerHTML = "<strong>Leaning toward</strong> · " + futureChapter;
+        visual.appendChild(tagNext);
+      }
+
+      if (drivers.length > 0) {
+        var tagDrivers = document.createElement("div");
+        tagDrivers.className = "ww-meaning-tag";
+        var preview = drivers.slice(0, 3).join(" · ");
+        if (drivers.length > 3) {
+          preview += " +" + (drivers.length - 3);
+        }
+        tagDrivers.innerHTML = "<strong>Gravity</strong> · " + preview;
+        visual.appendChild(tagDrivers);
+      }
+
+      var intensityLabel = {
+        low: "Gentle",
+        medium: "Balanced",
+        high: "Bold"
+      }[intensity] || "Balanced";
+
+      var tagIntensity = document.createElement("div");
+      tagIntensity.className = "ww-meaning-tag";
+      tagIntensity.innerHTML = "<strong>Feel</strong> · " + intensityLabel;
+      visual.appendChild(tagIntensity);
+
+      // Summary text
+      if (!nowChapter && drivers.length === 0) {
+        summary.textContent = "Choose a chapter and a few drivers to sketch your Meaning Field.";
+      } else if (nowChapter && !futureChapter) {
+        summary.textContent =
+          "Clara will deepen your " + nowChapter.toLowerCase() +
+          " chapter and quietly highlight what you’ve said matters most.";
+      } else if (nowChapter && futureChapter) {
+        summary.textContent =
+          "Clara will help you move from " + nowChapter.toLowerCase() +
+          " toward " + futureChapter.toLowerCase() +
+          " while honoring your drivers.";
+      }
+    }
+
+    // Form submission
+    document.addEventListener("DOMContentLoaded", function () {
+      // Setup groups
+      setupChipGroup("now-chapter-group", "nowChapter", updateMeaningVisual);
+      setupChipGroup("future-chapter-group", "futureChapter", updateMeaningVisual);
+      setupDriverPills();
+      setupRadioPillGroup("intensity-group");
+      setupRadioPillGroup("focus-lens-group");
+
+      updateMeaningVisual();
+
+      var form = document.getElementById("profile-form");
+      if (!form) return;
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        var name = (document.getElementById("name") || {}).value || "";
+        var nowChapter = getSelectedRadio("nowChapter");
+        var futureChapter = getSelectedRadio("futureChapter");
+        var drivers = getSelectedDrivers();
+        var bigQuestion = (document.getElementById("bigQuestion") || {}).value || "";
+        var noticeMore = (document.getElementById("noticeMore") || {}).value || "";
+        var intensity = getSelectedRadio("intensity") || "medium";
+        var focusLens = getSelectedRadio("focusLens") || "Explore";
+
+        var profile = {
+          name: name.trim() || null,
+          nowChapter: nowChapter || null,
+          futureChapter: futureChapter || null,
+          drivers: drivers,
+          bigQuestion: bigQuestion.trim() || "",
+          noticeMore: noticeMore.trim() || "",
+          intensity: intensity,
+          focusLens: focusLens
+        };
+
+        try {
+          localStorage.setItem("whyldProfile", JSON.stringify(profile));
+        } catch (err) {
+          console.warn("Failed to store whyldProfile:", err);
+        }
+
+        // Go to Discovery Mode (AR prototype)
+        window.location.href = "ar.html";
+      });
     });
   </script>
 </body>
