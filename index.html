@@ -285,59 +285,103 @@
       padding: 10px 10px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      min-height: 72px;
+      gap: 10px;
+      min-height: 80px;
     }
 
-    .ww-lifemap-track {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      align-items: stretch;
-    }
-
-    @media (max-width: 880px) {
-      .ww-lifemap-track {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .ww-lifemap-node {
-      border-radius: 12px;
-      padding: 8px 9px;
-      font-size: 12px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      background: rgba(15, 23, 42, 0.92);
+    /* Timeline */
+    .ww-lifemap-timeline {
+      position: relative;
+      padding: 12px 4px 4px;
       display: flex;
-      flex-direction: column;
-      gap: 2px;
+      justify-content: space-between;
+      gap: 8px;
     }
 
-    .ww-lifemap-node-label {
+    .ww-lifemap-line {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 24px;
+      height: 2px;
+      background: linear-gradient(
+        to right,
+        rgba(148, 163, 184, 0.3),
+        rgba(96, 165, 250, 0.8),
+        rgba(249, 115, 22, 0.7)
+      );
+      opacity: 0.9;
+    }
+
+    .ww-lifemap-point {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      max-width: 33%;
+      text-align: left;
+    }
+
+    .ww-lifemap-point-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 2px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.96);
+      margin-bottom: 4px;
+    }
+
+    .ww-lifemap-point.past .ww-lifemap-point-dot {
+      border-style: dashed;
+      opacity: 0.7;
+    }
+
+    .ww-lifemap-point.now .ww-lifemap-point-dot {
+      border-color: #60a5fa;
+      box-shadow: 0 0 16px rgba(96, 165, 250, 0.7);
+    }
+
+    .ww-lifemap-point.next .ww-lifemap-point-dot {
+      border-color: #f97316;
+      box-shadow: 0 0 12px rgba(249, 115, 22, 0.7);
+    }
+
+    .ww-lifemap-point-label {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--ww-text-soft);
     }
 
-    .ww-lifemap-node-sub {
+    .ww-lifemap-point-main {
       font-size: 13px;
       font-weight: 500;
       color: #e5e7eb;
+      margin-top: 2px;
     }
 
-    .ww-lifemap-node-past {
-      opacity: 0.8;
-      border-style: dashed;
+    .ww-lifemap-point-note {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      margin-top: 1px;
     }
 
-    .ww-lifemap-node-now {
-      box-shadow: 0 0 22px rgba(96, 165, 250, 0.35);
-      border-color: #60a5fa;
-    }
-
-    .ww-lifemap-node-next {
-      border-color: #f97316;
+    @media (max-width: 880px) {
+      .ww-lifemap-timeline {
+        flex-direction: column;
+        padding-top: 4px;
+      }
+      .ww-lifemap-line {
+        display: none;
+      }
+      .ww-lifemap-point {
+        max-width: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .ww-lifemap-point-dot {
+        margin-top: 4px;
+      }
     }
 
     .ww-lifemap-row-label {
@@ -345,7 +389,8 @@
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--ww-text-soft);
-      margin-bottom: 4px;
+      margin-top: 2px;
+      margin-bottom: 3px;
     }
 
     .ww-lifemap-pill-row {
@@ -727,11 +772,11 @@
           <div class="ww-meaning-header-row">
             <div class="ww-meaning-title">Life Map Snapshot</div>
             <div class="ww-meaning-sub" id="meaning-summary">
-              As you answer, I’ll sketch a simple map of where you are, where you’re leaning, and what ties it together.
+              As you answer, I’ll sketch a simple timeline of where you’ve been, where you are, and where you’re leaning.
             </div>
           </div>
           <div class="ww-meaning-visual" id="meaning-visual">
-            <!-- Life map injected by JS -->
+            <!-- Life map timeline injected by JS -->
           </div>
           <div class="ww-meaning-note">
             This is an early sketch of your journey: <strong>earlier chapters</strong> you may map later,
@@ -1303,7 +1348,7 @@
       return out;
     }
 
-    // Life Map preview
+    // Life Map timeline preview
     function updateLifeMap() {
       var visual = document.getElementById("meaning-visual");
       var summary = document.getElementById("meaning-summary");
@@ -1320,43 +1365,59 @@
 
       visual.innerHTML = "";
 
-      // Timeline / chapters row
-      var track = document.createElement("div");
-      track.className = "ww-lifemap-track";
+      // Timeline
+      var timeline = document.createElement("div");
+      timeline.className = "ww-lifemap-timeline";
 
-      var pastNode = document.createElement("div");
-      pastNode.className = "ww-lifemap-node ww-lifemap-node-past";
-      pastNode.innerHTML =
-        "<div class='ww-lifemap-node-label'>Earlier chapters</div>" +
-        "<div class='ww-lifemap-node-sub'>You’ll map these in more detail later</div>";
-      track.appendChild(pastNode);
+      var line = document.createElement("div");
+      line.className = "ww-lifemap-line";
+      timeline.appendChild(line);
 
-      var nowNode = document.createElement("div");
-      nowNode.className = "ww-lifemap-node ww-lifemap-node-now";
-      nowNode.innerHTML =
-        "<div class='ww-lifemap-node-label'>Now</div>" +
-        "<div class='ww-lifemap-node-sub'>" +
-        (nowChapter || "Choose a chapter") +
+      // Earlier
+      var pastPoint = document.createElement("div");
+      pastPoint.className = "ww-lifemap-point past";
+      pastPoint.innerHTML =
+        "<div class='ww-lifemap-point-dot'></div>" +
+        "<div>" +
+        "<div class='ww-lifemap-point-label'>Earlier</div>" +
+        "<div class='ww-lifemap-point-main'>Prior chapters</div>" +
+        "<div class='ww-lifemap-point-note'>You’ll map these in more detail later.</div>" +
         "</div>";
-      track.appendChild(nowNode);
+      timeline.appendChild(pastPoint);
 
-      var nextNode = document.createElement("div");
-      nextNode.className = "ww-lifemap-node ww-lifemap-node-next";
+      // Now
+      var nowLabel = nowChapter || "Choose a chapter";
+      var nowPoint = document.createElement("div");
+      nowPoint.className = "ww-lifemap-point now";
+      nowPoint.innerHTML =
+        "<div class='ww-lifemap-point-dot'></div>" +
+        "<div>" +
+        "<div class='ww-lifemap-point-label'>Now</div>" +
+        "<div class='ww-lifemap-point-main'>" + nowLabel + "</div>" +
+        "<div class='ww-lifemap-point-note'>How your life feels in this chapter.</div>" +
+        "</div>";
+      timeline.appendChild(nowPoint);
+
+      // Next
       var nextLabel = futureChapter ? futureChapter : "To be discovered";
-      nextNode.innerHTML =
-        "<div class='ww-lifemap-node-label'>Next</div>" +
-        "<div class='ww-lifemap-node-sub'>" +
-        nextLabel +
+      var nextPoint = document.createElement("div");
+      nextPoint.className = "ww-lifemap-point next";
+      nextPoint.innerHTML =
+        "<div class='ww-lifemap-point-dot'></div>" +
+        "<div>" +
+        "<div class='ww-lifemap-point-label'>Next</div>" +
+        "<div class='ww-lifemap-point-main'>" + nextLabel + "</div>" +
+        "<div class='ww-lifemap-point-note'>Where you feel pulled in the coming chapter.</div>" +
         "</div>";
-      track.appendChild(nextNode);
+      timeline.appendChild(nextPoint);
 
-      visual.appendChild(track);
+      visual.appendChild(timeline);
 
       // Themes row (meaning drivers)
       if (drivers.length > 0) {
         var themesLabel = document.createElement("div");
         themesLabel.className = "ww-lifemap-row-label";
-        themesLabel.textContent = "Themes pulling on your story";
+        themesLabel.textContent = "Themes pulling on your story right now";
         visual.appendChild(themesLabel);
 
         var themesRow = document.createElement("div");
@@ -1374,7 +1435,7 @@
       if (goalAreas.length > 0) {
         var goalsLabel = document.createElement("div");
         goalsLabel.className = "ww-lifemap-row-label";
-        goalsLabel.textContent = "Life areas in focus";
+        goalsLabel.textContent = "Life areas in focus for this stretch of the journey";
         visual.appendChild(goalsLabel);
 
         var goalsRow = document.createElement("div");
@@ -1392,7 +1453,7 @@
       if (purposeDraftText || purposeThreads.length > 0) {
         var purposeLabel = document.createElement("div");
         purposeLabel.className = "ww-lifemap-row-label";
-        purposeLabel.textContent = "Purpose draft (the thread connecting moments)";
+        purposeLabel.textContent = "Purpose draft (the thread connecting these moments)";
         visual.appendChild(purposeLabel);
 
         var purposeRow = document.createElement("div");
@@ -1447,7 +1508,7 @@
         purposeThreads.length === 0
       ) {
         summary.textContent =
-          "As you choose chapters, themes, life areas, and a purpose draft, this becomes a simple life map: where you are now, where you’re leaning next, what matters most, and why it all connects for you.";
+          "As you choose chapters, themes, life areas, and a purpose draft, this becomes a simple timeline: earlier chapters, your current act, and the next stretch you’re heading into.";
       } else if (nowChapter && !futureChapter) {
         summary.textContent =
           "Clara will deepen your " +
