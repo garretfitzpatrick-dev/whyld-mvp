@@ -716,7 +716,8 @@
             <div class="ww-pill">📍 <strong>Layers</strong>: World / Community / Personal</div>
           </div>
           <div style="margin-top: 6px; font-size: 11px;">
-            In <strong>Meaning Mode</strong>, I get to know you and sketch your <strong>Life Map</strong>.<br />
+            In <strong>Meaning Mode</strong>, I get to know you, sketch your <strong>Life Map</strong>,
+            and start to sense your <strong>Purpose Field</strong>.<br />
             In <strong>Discovery Mode</strong>, you point your device at places and Whyld World overlays
             stories, reflections, and prompts that fit your journey.
           </div>
@@ -726,7 +727,7 @@
           <div class="ww-meaning-header-row">
             <div class="ww-meaning-title">Life Map Snapshot</div>
             <div class="ww-meaning-sub" id="meaning-summary">
-              As you answer, I’ll sketch a simple map of where you are and where you’re leaning next.
+              As you answer, I’ll sketch a simple map of where you are, where you’re leaning, and what ties it together.
             </div>
           </div>
           <div class="ww-meaning-visual" id="meaning-visual">
@@ -735,8 +736,8 @@
           <div class="ww-meaning-note">
             This is an early sketch of your journey: <strong>earlier chapters</strong> you may map later,
             the <strong>chapter you’re in now</strong>, where you feel drawn next, plus the
-            <strong>themes</strong> and <strong>life areas</strong> that matter most. Over time,
-            Clara could animate how this map shifts as you explore Whyld World in AR.
+            <strong>themes</strong>, <strong>life areas</strong>, and a living <strong>purpose draft</strong>.
+            Over time, Clara could animate how this map shifts as you explore Whyld World in AR.
           </div>
         </div>
 
@@ -764,13 +765,13 @@
               </div>
             </div>
             <div class="ww-explain-item">
-              <div class="ww-explain-item-title">Filters &amp; lenses</div>
+              <div class="ww-explain-item-title">Filters, goals &amp; purpose</div>
               <div class="ww-explain-item-body">
                 You set how strong you want the experience to feel, what you want to notice more,
-                which life areas you are focused on, and which lens to start from (Explore, Serve,
-                Create, Inspire, Reflect). In Discovery Mode, Clara uses this to decide
-                <strong>how often</strong> to nudge you and <strong>what kind</strong> of stories
-                to surface first.
+                which life areas you are focused on, and a draft of why you are here.
+                In Discovery Mode, Clara uses this to decide <strong>how often</strong> to nudge you,
+                <strong>what kind</strong> of stories to surface first, and <strong>how moments connect</strong>
+                toward your purpose.
               </div>
             </div>
           </div>
@@ -1128,6 +1129,52 @@
             </div>
           </div>
 
+          <!-- Purpose thread + draft -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              9. When life is going well, what do you feel you are here to do more of?
+            </div>
+            <div class="ww-field-hint">
+              Choose one or two that feel close, then write a short “purpose draft.” This can change over time.
+            </div>
+            <div class="ww-driver-grid" id="purpose-thread-group">
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="purposeThreads" value="Grow potential" />
+                <span class="ww-driver-btn">🌱 Grow potential</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="purposeThreads" value="Build and protect what matters" />
+                <span class="ww-driver-btn">🛡️ Build and protect what matters</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="purposeThreads" value="Explore and understand" />
+                <span class="ww-driver-btn">🔭 Explore and understand</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="purposeThreads" value="Connect and uplift others" />
+                <span class="ww-driver-btn">🤝 Connect and uplift others</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="purposeThreads" value="Create new possibilities" />
+                <span class="ww-driver-btn">🚀 Create new possibilities</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="purposeThreads" value="Steward places and communities" />
+                <span class="ww-driver-btn">🏞️ Steward places and communities</span>
+              </label>
+            </div>
+            <textarea
+              id="purposeDraftText"
+              name="purposeDraftText"
+              placeholder="If you had to write a short purpose draft in your own words, how would you say it?"
+            ></textarea>
+          </div>
+
           <div class="ww-actions-row">
             <button type="submit" class="ww-primary">
               <span>Save &amp; Enter Discovery Mode</span>
@@ -1172,7 +1219,7 @@
       });
     }
 
-    // Drivers and goal areas: toggle selected on click
+    // Drivers and similar pill groups: toggle selected on click
     function setupDriverPills(groupId) {
       var group = document.getElementById(groupId);
       if (!group) return;
@@ -1247,6 +1294,15 @@
       return out;
     }
 
+    function getSelectedPurposeThreads() {
+      var checked = document.querySelectorAll('input[name="purposeThreads"]:checked');
+      var out = [];
+      checked.forEach(function (c) {
+        out.push(c.value);
+      });
+      return out;
+    }
+
     // Life Map preview
     function updateLifeMap() {
       var visual = document.getElementById("meaning-visual");
@@ -1258,6 +1314,9 @@
       var intensity = getSelectedRadio("intensity") || "low";
       var drivers = getSelectedDrivers();
       var goalAreas = getSelectedGoalAreas();
+      var purposeThreads = getSelectedPurposeThreads();
+      var purposeDraftTextEl = document.getElementById("purposeDraftText");
+      var purposeDraftText = purposeDraftTextEl ? purposeDraftTextEl.value.trim() : "";
 
       visual.innerHTML = "";
 
@@ -1329,6 +1388,41 @@
         visual.appendChild(goalsRow);
       }
 
+      // Purpose row
+      if (purposeDraftText || purposeThreads.length > 0) {
+        var purposeLabel = document.createElement("div");
+        purposeLabel.className = "ww-lifemap-row-label";
+        purposeLabel.textContent = "Purpose draft (the thread connecting moments)";
+        visual.appendChild(purposeLabel);
+
+        var purposeRow = document.createElement("div");
+        purposeRow.className = "ww-lifemap-pill-row";
+
+        if (purposeThreads.length > 0) {
+          var threadsPreview = purposeThreads.slice(0, 2).join(" · ");
+          if (purposeThreads.length > 2) {
+            threadsPreview += " +" + (purposeThreads.length - 2);
+          }
+          var threadTag = document.createElement("div");
+          threadTag.className = "ww-meaning-tag";
+          threadTag.innerHTML = "<strong>Thread</strong> · " + threadsPreview;
+          purposeRow.appendChild(threadTag);
+        }
+
+        if (purposeDraftText) {
+          var textPreview = purposeDraftText;
+          if (textPreview.length > 120) {
+            textPreview = textPreview.slice(0, 117) + "…";
+          }
+          var draftTag = document.createElement("div");
+          draftTag.className = "ww-meaning-tag";
+          draftTag.innerHTML = "<strong>Draft</strong> · " + textPreview;
+          purposeRow.appendChild(draftTag);
+        }
+
+        visual.appendChild(purposeRow);
+      }
+
       // Intensity tag
       var intensityLabelMap = {
         low: "Gentle",
@@ -1345,21 +1439,27 @@
       visual.appendChild(settingsRow);
 
       // Summary text
-      if (!nowChapter && drivers.length === 0 && goalAreas.length === 0) {
+      if (
+        !nowChapter &&
+        drivers.length === 0 &&
+        goalAreas.length === 0 &&
+        !purposeDraftText &&
+        purposeThreads.length === 0
+      ) {
         summary.textContent =
-          "As you choose chapters, themes, and life areas, this becomes a simple life map: where you are now, where you’re leaning next, and what matters most along the way.";
+          "As you choose chapters, themes, life areas, and a purpose draft, this becomes a simple life map: where you are now, where you’re leaning next, what matters most, and why it all connects for you.";
       } else if (nowChapter && !futureChapter) {
         summary.textContent =
           "Clara will deepen your " +
           nowChapter.toLowerCase() +
-          " chapter and use your themes and life areas as guides for what to surface in Discovery Mode.";
+          " chapter and use your themes, life areas, and purpose draft as guides for what to surface in Discovery Mode.";
       } else if (nowChapter && futureChapter) {
         summary.textContent =
           "Clara will help you move from " +
           nowChapter.toLowerCase() +
           " toward " +
           futureChapter.toLowerCase() +
-          " while keeping your themes and life areas in view.";
+          " while keeping your themes, life areas, and purpose draft in view.";
       }
     }
 
@@ -1370,8 +1470,15 @@
       setupChipGroup("future-chapter-group", "futureChapter", updateLifeMap);
       setupDriverPills("drivers-group");
       setupDriverPills("goal-areas-group");
+      setupDriverPills("purpose-thread-group");
       setupRadioPillGroup("intensity-group");
       setupRadioPillGroup("focus-lens-group");
+
+      // Update life map when purpose draft text changes
+      var purposeDraftTextEl = document.getElementById("purposeDraftText");
+      if (purposeDraftTextEl) {
+        purposeDraftTextEl.addEventListener("input", updateLifeMap);
+      }
 
       // Initialize life map
       updateLifeMap();
@@ -1391,6 +1498,8 @@
         var intensity = getSelectedRadio("intensity") || "low";
         var focusLens = getSelectedRadio("focusLens") || "Explore";
         var goalAreas = getSelectedGoalAreas();
+        var purposeThreads = getSelectedPurposeThreads();
+        var purposeDraftTextVal = purposeDraftTextEl ? purposeDraftTextEl.value.trim() : "";
 
         var profile = {
           name: name.trim() || null,
@@ -1401,7 +1510,9 @@
           noticeMore: noticeMore.trim() || "",
           intensity: intensity,
           focusLens: focusLens,
-          goalAreas: goalAreas
+          goalAreas: goalAreas,
+          purposeThreads: purposeThreads,
+          purposeDraft: purposeDraftTextVal
         };
 
         try {
