@@ -35,6 +35,7 @@
     body {
       display: flex;
       flex-direction: column;
+      font-size: 15px; /* slightly larger base text */
     }
 
     a {
@@ -83,14 +84,14 @@
     }
 
     .ww-logo-text-main {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
     .ww-logo-text-sub {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ww-text-soft);
       text-transform: uppercase;
       letter-spacing: 0.16em;
@@ -107,7 +108,7 @@
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.45);
       padding: 4px 10px;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ww-text-soft);
       background: rgba(15, 23, 42, 0.85);
       display: inline-flex;
@@ -121,7 +122,7 @@
 
     .ww-link-button {
       border-radius: 999px;
-      padding: 7px 14px;
+      padding: 8px 15px;
       font-size: 13px;
       border: 1px solid rgba(148, 163, 184, 0.6);
       background: rgba(15, 23, 42, 0.9);
@@ -169,8 +170,8 @@
     }
 
     .ww-clara-avatar {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 999px;
       background: radial-gradient(circle at 30% 20%, #fefce8 0, #fecaca 20%, #f59e0b 60%, #4f46e5 100%);
       box-shadow: 0 0 24px rgba(251, 191, 36, 0.5);
@@ -178,7 +179,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
     }
 
     .ww-clara-avatar::after {
@@ -196,20 +197,20 @@
     }
 
     .ww-clara-title-main {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 600;
     }
 
     .ww-clara-title-sub {
-      font-size: 12px;
+      font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--ww-text-soft);
     }
 
     .ww-clara-body {
-      font-size: 14px;
-      line-height: 1.5;
+      font-size: 15px;
+      line-height: 1.6;
       color: var(--ww-text-soft);
     }
 
@@ -244,7 +245,7 @@
       color: var(--ww-text-soft);
     }
 
-    /* Meaning Field panel */
+    /* Life Map panel */
     .ww-meaning-panel {
       margin-top: 4px;
       border-radius: 16px;
@@ -272,28 +273,92 @@
     }
 
     .ww-meaning-sub {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ww-text-soft);
     }
 
     .ww-meaning-visual {
       margin-top: 4px;
-      border-radius: 999px;
+      border-radius: 14px;
       background: radial-gradient(circle at 30% 50%, rgba(52, 211, 153, 0.35), rgba(129, 140, 248, 0) 60%);
       border: 1px solid rgba(148, 163, 184, 0.6);
-      padding: 6px 10px;
+      padding: 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 72px;
+    }
+
+    .ww-lifemap-track {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 880px) {
+      .ww-lifemap-track {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ww-lifemap-node {
+      border-radius: 12px;
+      padding: 8px 9px;
+      font-size: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.92);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ww-lifemap-node-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ww-text-soft);
+    }
+
+    .ww-lifemap-node-sub {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .ww-lifemap-node-past {
+      opacity: 0.8;
+      border-style: dashed;
+    }
+
+    .ww-lifemap-node-now {
+      box-shadow: 0 0 22px rgba(96, 165, 250, 0.35);
+      border-color: #60a5fa;
+    }
+
+    .ww-lifemap-node-next {
+      border-color: #f97316;
+    }
+
+    .ww-lifemap-row-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ww-text-soft);
+      margin-bottom: 4px;
+    }
+
+    .ww-lifemap-pill-row {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      align-items: center;
-      min-height: 44px;
     }
 
     .ww-meaning-tag {
       border-radius: 999px;
       padding: 4px 8px;
       font-size: 11px;
-      background: rgba(15, 23, 42, 0.86);
+      background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(148, 163, 184, 0.6);
       display: inline-flex;
       gap: 6px;
@@ -322,13 +387,13 @@
     }
 
     .ww-form-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
       margin-bottom: 4px;
     }
 
     .ww-form-subtitle {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--ww-text-soft);
       margin-bottom: 12px;
     }
@@ -346,7 +411,7 @@
     }
 
     .ww-field-label {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       display: flex;
       align-items: center;
@@ -354,7 +419,7 @@
     }
 
     .ww-field-hint {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ww-text-soft);
     }
 
@@ -365,8 +430,8 @@
       border: 1px solid rgba(148, 163, 184, 0.7);
       background: rgba(15, 23, 42, 0.9);
       color: var(--ww-text);
-      padding: 7px 9px;
-      font-size: 13px;
+      padding: 8px 10px;
+      font-size: 14px;
       outline: none;
       width: 100%;
     }
@@ -379,7 +444,7 @@
     }
 
     textarea {
-      min-height: 60px;
+      min-height: 70px;
       resize: vertical;
     }
 
@@ -398,8 +463,8 @@
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.7);
       background: rgba(15, 23, 42, 0.9);
-      padding: 6px 10px;
-      font-size: 12px;
+      padding: 7px 11px;
+      font-size: 13px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -408,7 +473,7 @@
     }
 
     .ww-chip-btn span.icon {
-      font-size: 15px;
+      font-size: 16px;
     }
 
     .ww-chip-btn span.label {
@@ -445,8 +510,8 @@
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.6);
       background: rgba(15, 23, 42, 0.9);
-      padding: 4px 9px;
-      font-size: 11px;
+      padding: 5px 10px;
+      font-size: 12px;
       cursor: pointer;
       color: var(--ww-text-soft);
       display: inline-flex;
@@ -478,8 +543,8 @@
     .ww-radio-pill {
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.6);
-      padding: 4px 9px;
-      font-size: 11px;
+      padding: 5px 10px;
+      font-size: 12px;
       cursor: pointer;
       background: rgba(15, 23, 42, 0.9);
       color: var(--ww-text-soft);
@@ -510,7 +575,7 @@
       border: 1px solid rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.9);
       padding: 10px 11px;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ww-text-soft);
       line-height: 1.5;
     }
@@ -556,7 +621,7 @@
     }
 
     .ww-explain-item-body {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     /* Actions */
@@ -572,8 +637,8 @@
     .ww-primary {
       border-radius: 999px;
       border: none;
-      padding: 8px 16px;
-      font-size: 13px;
+      padding: 9px 18px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       background: linear-gradient(135deg, #f97316, #facc15);
@@ -589,7 +654,7 @@
     }
 
     .ww-secondary-text {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ww-text-soft);
     }
 
@@ -623,7 +688,7 @@
     </header>
 
     <main class="ww-main">
-      <!-- LEFT: Clara & Meaning Field -->
+      <!-- LEFT: Clara & Life Map -->
       <section class="ww-clara">
         <div class="ww-clara-header">
           <div class="ww-clara-avatar">✨</div>
@@ -635,12 +700,12 @@
 
         <div class="ww-clara-body">
           Whyld World is built for the coming era of <strong>AR glasses</strong>, <strong>AI</strong>, and
-          <strong>spatial computing</strong>. It’s not just a tour guide — it’s a way to see your life
-          as a story with <strong>chapters</strong>, <strong>lenses</strong>, and <strong>frontiers</strong>.
+          <strong>spatial computing</strong>. It works like a quiet layer on top of your life that helps you
+          see your days as a story with <strong>chapters</strong>, <strong>lenses</strong>, and <strong>frontiers</strong>.
           <br /><br />
-          My job is to learn how you’re living your story right now, where you want to grow next,
-          and what truly matters to you — then quietly shape what you notice in the world so that
-          it all feels like a <strong>coherent journey</strong>, not just random moments.
+          My job is to learn how you are living your story right now, where you want to grow next,
+          and what truly matters to you. Then I use that to shape what stands out in the world around you
+          so the next part of your journey feels like a <strong>coherent arc</strong> instead of disconnected moments.
         </div>
 
         <div class="ww-clara-callout">
@@ -651,7 +716,7 @@
             <div class="ww-pill">📍 <strong>Layers</strong>: World / Community / Personal</div>
           </div>
           <div style="margin-top: 6px; font-size: 11px;">
-            In <strong>Meaning Mode</strong>, I get to know you and adjust your “Meaning Field.”<br />
+            In <strong>Meaning Mode</strong>, I get to know you and sketch your <strong>Life Map</strong>.<br />
             In <strong>Discovery Mode</strong>, you point your device at places and Whyld World overlays
             stories, reflections, and prompts that fit your journey.
           </div>
@@ -659,18 +724,19 @@
 
         <div class="ww-meaning-panel">
           <div class="ww-meaning-header-row">
-            <div class="ww-meaning-title">Meaning Field</div>
+            <div class="ww-meaning-title">Life Map Snapshot</div>
             <div class="ww-meaning-sub" id="meaning-summary">
-              Choose a chapter and I’ll start shaping this.
+              As you answer, I’ll sketch a simple map of where you are and where you’re leaning next.
             </div>
           </div>
           <div class="ww-meaning-visual" id="meaning-visual">
-            <!-- Tags injected by JS -->
+            <!-- Life map injected by JS -->
           </div>
           <div class="ww-meaning-note">
-            Think of this as a living snapshot of your story: <strong>where you are now</strong>,
-            <strong>where you’re leaning next</strong>, and <strong>what pulls you</strong>. Over time,
-            Clara could animate how this field changes as you explore Whyld World in AR.
+            This is an early sketch of your journey: <strong>earlier chapters</strong> you may map later,
+            the <strong>chapter you’re in now</strong>, where you feel drawn next, plus the
+            <strong>themes</strong> and <strong>life areas</strong> that matter most. Over time,
+            Clara could animate how this map shifts as you explore Whyld World in AR.
           </div>
         </div>
 
@@ -678,29 +744,33 @@
           <div class="ww-explain-heading">Why this structure?</div>
           <p>
             Whyld World exists to help people feel like <strong>superheroes in their own story</strong>,
-            not just passive tourists. The structure is simple:
+            active participants rather than spectators. The structure is simple and each part has a job:
           </p>
           <div class="ww-explain-columns">
             <div class="ww-explain-item">
-              <div class="ww-explain-item-title">Chapters (Now &amp; Next)</div>
+              <div class="ww-explain-item-title">Chapters (Story arc)</div>
               <div class="ww-explain-item-body">
-                You choose the <strong>chapter you’re in</strong> (Exploring, Building, Healing, Transforming,
-                Mastering, Leading, Living) and where you want to lean next. That gives Clara a story arc.
+                You choose the <strong>chapter you are in</strong> now (Exploring, Building, Healing,
+                Transforming, Mastering, Leading, Living) and where you feel drawn next.
+                That gives Clara a sense of your story arc: the act you are in and the direction you want to move.
               </div>
             </div>
             <div class="ww-explain-item">
-              <div class="ww-explain-item-title">Meaning Drivers</div>
+              <div class="ww-explain-item-title">Meaning drivers (Gravity)</div>
               <div class="ww-explain-item-body">
-                You highlight what genuinely matters (family, creativity, nature, impact…). These become
-                the <strong>gravity wells</strong> that bend what you notice.
+                You highlight what genuinely matters to you right now (for example: family, creativity,
+                nature, health, impact). These become <strong>gravity wells</strong>: themes that pull more
+                stories, prompts, and overlays into view when you move through the world.
               </div>
             </div>
             <div class="ww-explain-item">
-              <div class="ww-explain-item-title">Modes &amp; Lenses</div>
+              <div class="ww-explain-item-title">Filters &amp; lenses</div>
               <div class="ww-explain-item-body">
-                In Meaning Mode, Clara tunes your field. In Discovery Mode, AR overlays stories and
-                reflections through different <strong>lenses</strong> and <strong>layers</strong>, so
-                the physical world becomes a canvas for your inner journey.
+                You set how strong you want the experience to feel, what you want to notice more,
+                which life areas you are focused on, and which lens to start from (Explore, Serve,
+                Create, Inspire, Reflect). In Discovery Mode, Clara uses this to decide
+                <strong>how often</strong> to nudge you and <strong>what kind</strong> of stories
+                to surface first.
               </div>
             </div>
           </div>
@@ -851,52 +921,68 @@
               3. What feels most meaningful <strong>right now</strong>?
             </div>
             <div class="ww-field-hint">
-              Choose a few. These are the themes Clara will gently highlight in the world around you.
+              Choose a few (three is a good starting point). These are the themes Clara will gently highlight
+              in the world around you.
             </div>
             <div class="ww-driver-grid" id="drivers-group">
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Family & close relationships" />
-                <span class="ww-driver-btn">👨‍👩‍👧 Family &amp; close relationships</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Family" />
+                <span class="ww-driver-btn">👨‍👩‍👧 Family</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Creativity & expression" />
-                <span class="ww-driver-btn">🎨 Creativity &amp; expression</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Friendship" />
+                <span class="ww-driver-btn">🤝 Friendship</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Learning & discovery" />
-                <span class="ww-driver-btn">📚 Learning &amp; discovery</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Creativity" />
+                <span class="ww-driver-btn">🎨 Creativity</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Work & impact" />
-                <span class="ww-driver-btn">💼 Work &amp; impact</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Learning" />
+                <span class="ww-driver-btn">📚 Learning</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Nature & wild places" />
-                <span class="ww-driver-btn">🌲 Nature &amp; wild places</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Work" />
+                <span class="ww-driver-btn">💼 Work</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Community & belonging" />
-                <span class="ww-driver-btn">🏡 Community &amp; belonging</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Impact" />
+                <span class="ww-driver-btn">🌍 Impact</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Spirituality & inner life" />
-                <span class="ww-driver-btn">🕊️ Spirituality &amp; inner life</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Nature" />
+                <span class="ww-driver-btn">🌲 Nature</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Adventure & challenge" />
-                <span class="ww-driver-btn">⛰️ Adventure &amp; challenge</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Community" />
+                <span class="ww-driver-btn">🏡 Community</span>
               </label>
 
               <label class="ww-driver-pill">
-                <input class="ww-driver-input" type="checkbox" name="drivers" value="Play & joy" />
-                <span class="ww-driver-btn">🎈 Play &amp; joy</span>
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Spirituality" />
+                <span class="ww-driver-btn">🕊️ Spirituality</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Adventure" />
+                <span class="ww-driver-btn">⛰️ Adventure</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Play" />
+                <span class="ww-driver-btn">🎈 Play</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="drivers" value="Health" />
+                <span class="ww-driver-btn">🏃 Health</span>
               </label>
             </div>
           </div>
@@ -923,21 +1009,83 @@
             <textarea id="noticeMore" name="noticeMore" placeholder="This becomes one of the main filters I’ll use when I shape what stands out to you."></textarea>
           </div>
 
+          <!-- Goals / life areas -->
+          <div class="ww-field">
+            <div class="ww-field-label">
+              6. Which areas of life are you most focused on right now?
+            </div>
+            <div class="ww-field-hint">
+              Pick a few. Later, Clara can help you connect places and moments to these goals.
+            </div>
+            <div class="ww-driver-grid" id="goal-areas-group">
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Financial" />
+                <span class="ww-driver-btn">💸 Financial</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Career" />
+                <span class="ww-driver-btn">🏢 Career</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Health & fitness" />
+                <span class="ww-driver-btn">💪 Health &amp; fitness</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Mind & learning" />
+                <span class="ww-driver-btn">🧠 Mind &amp; learning</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Hobbies & creativity" />
+                <span class="ww-driver-btn">🎭 Hobbies &amp; creativity</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Family & parenting" />
+                <span class="ww-driver-btn">👨‍👩‍👧 Family &amp; parenting</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Friends & community" />
+                <span class="ww-driver-btn">🤝 Friends &amp; community</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Love & partnership" />
+                <span class="ww-driver-btn">❤️ Love &amp; partnership</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Spiritual" />
+                <span class="ww-driver-btn">✨ Spiritual</span>
+              </label>
+
+              <label class="ww-driver-pill">
+                <input class="ww-driver-input" type="checkbox" name="goalAreas" value="Adventure & play" />
+                <span class="ww-driver-btn">🎢 Adventure &amp; play</span>
+              </label>
+            </div>
+          </div>
+
           <!-- Intensity -->
           <div class="ww-field">
             <div class="ww-field-label">
-              6. How intense do you want Whyld World to feel right now?
+              7. How intense do you want Whyld World to feel right now?
             </div>
             <div class="ww-field-hint">
-              You can always change this. It controls how strong the “aura” feels in Discovery Mode.
+              You can always change this. It controls how often Clara nudges you and how vivid the “aura”
+              feels in Discovery Mode.
             </div>
             <div class="ww-radio-row" id="intensity-group">
-              <label class="ww-radio-pill">
+              <label class="ww-radio-pill selected">
                 <input class="ww-radio-input" type="radio" name="intensity" value="low" />
                 <span>🌙 Gentle</span>
               </label>
               <label class="ww-radio-pill">
-                <input class="ww-radio-input" type="radio" name="intensity" value="medium" checked />
+                <input class="ww-radio-input" type="radio" name="intensity" value="medium" />
                 <span>🌤 Balanced</span>
               </label>
               <label class="ww-radio-pill">
@@ -950,14 +1098,15 @@
           <!-- Focus lens -->
           <div class="ww-field">
             <div class="ww-field-label">
-              7. If you had to start with <strong>one lens</strong>, which would it be?
+              8. If you had to start with <strong>one lens</strong>, which would it be?
             </div>
             <div class="ww-field-hint">
-              This just sets your initial “view.” In Discovery Mode you can still freely switch between Explore, Serve, Create, Inspire, and Reflect.
+              This sets your initial “view.” In Discovery Mode you can still move freely between
+              Explore, Serve, Create, Inspire, and Reflect as you go.
             </div>
             <div class="ww-radio-row" id="focus-lens-group">
-              <label class="ww-radio-pill">
-                <input class="ww-radio-input" type="radio" name="focusLens" value="Explore" checked />
+              <label class="ww-radio-pill selected">
+                <input class="ww-radio-input" type="radio" name="focusLens" value="Explore" />
                 <span>🧭 Explore</span>
               </label>
               <label class="ww-radio-pill">
@@ -1023,9 +1172,9 @@
       });
     }
 
-    // Drivers: toggle selected on click
-    function setupDriverPills() {
-      var group = document.getElementById("drivers-group");
+    // Drivers and goal areas: toggle selected on click
+    function setupDriverPills(groupId) {
+      var group = document.getElementById(groupId);
       if (!group) return;
       var labels = group.querySelectorAll(".ww-driver-pill");
       labels.forEach(function (label) {
@@ -1041,7 +1190,7 @@
           } else {
             btn.classList.remove("selected");
           }
-          updateMeaningVisual();
+          updateLifeMap();
         });
       });
     }
@@ -1065,13 +1214,13 @@
           });
           pill.classList.add("selected");
           if (groupId === "intensity-group") {
-            updateMeaningVisual();
+            updateLifeMap();
           }
         });
       });
     }
 
-    // Meaning Field preview
+    // Helpers to read selections
     function getSelectedRadio(name) {
       var radios = document.querySelectorAll('input[name="' + name + '"]');
       for (var i = 0; i < radios.length; i++) {
@@ -1089,79 +1238,143 @@
       return out;
     }
 
-    function updateMeaningVisual() {
+    function getSelectedGoalAreas() {
+      var checked = document.querySelectorAll('input[name="goalAreas"]:checked');
+      var out = [];
+      checked.forEach(function (c) {
+        out.push(c.value);
+      });
+      return out;
+    }
+
+    // Life Map preview
+    function updateLifeMap() {
       var visual = document.getElementById("meaning-visual");
       var summary = document.getElementById("meaning-summary");
       if (!visual || !summary) return;
 
       var nowChapter = getSelectedRadio("nowChapter");
       var futureChapter = getSelectedRadio("futureChapter");
-      var intensity = getSelectedRadio("intensity") || "medium";
+      var intensity = getSelectedRadio("intensity") || "low";
       var drivers = getSelectedDrivers();
+      var goalAreas = getSelectedGoalAreas();
 
       visual.innerHTML = "";
 
-      if (nowChapter) {
-        var tagNow = document.createElement("div");
-        tagNow.className = "ww-meaning-tag";
-        tagNow.innerHTML = "<strong>Now</strong> · " + nowChapter;
-        visual.appendChild(tagNow);
-      }
+      // Timeline / chapters row
+      var track = document.createElement("div");
+      track.className = "ww-lifemap-track";
 
-      if (futureChapter && futureChapter !== nowChapter) {
-        var tagNext = document.createElement("div");
-        tagNext.className = "ww-meaning-tag";
-        tagNext.innerHTML = "<strong>Leaning toward</strong> · " + futureChapter;
-        visual.appendChild(tagNext);
-      }
+      var pastNode = document.createElement("div");
+      pastNode.className = "ww-lifemap-node ww-lifemap-node-past";
+      pastNode.innerHTML =
+        "<div class='ww-lifemap-node-label'>Earlier chapters</div>" +
+        "<div class='ww-lifemap-node-sub'>You’ll map these in more detail later</div>";
+      track.appendChild(pastNode);
 
+      var nowNode = document.createElement("div");
+      nowNode.className = "ww-lifemap-node ww-lifemap-node-now";
+      nowNode.innerHTML =
+        "<div class='ww-lifemap-node-label'>Now</div>" +
+        "<div class='ww-lifemap-node-sub'>" +
+        (nowChapter || "Choose a chapter") +
+        "</div>";
+      track.appendChild(nowNode);
+
+      var nextNode = document.createElement("div");
+      nextNode.className = "ww-lifemap-node ww-lifemap-node-next";
+      var nextLabel = futureChapter ? futureChapter : "To be discovered";
+      nextNode.innerHTML =
+        "<div class='ww-lifemap-node-label'>Next</div>" +
+        "<div class='ww-lifemap-node-sub'>" +
+        nextLabel +
+        "</div>";
+      track.appendChild(nextNode);
+
+      visual.appendChild(track);
+
+      // Themes row (meaning drivers)
       if (drivers.length > 0) {
-        var tagDrivers = document.createElement("div");
-        tagDrivers.className = "ww-meaning-tag";
-        var preview = drivers.slice(0, 3).join(" · ");
-        if (drivers.length > 3) {
-          preview += " +" + (drivers.length - 3);
-        }
-        tagDrivers.innerHTML = "<strong>Gravity</strong> · " + preview;
-        visual.appendChild(tagDrivers);
+        var themesLabel = document.createElement("div");
+        themesLabel.className = "ww-lifemap-row-label";
+        themesLabel.textContent = "Themes pulling on your story";
+        visual.appendChild(themesLabel);
+
+        var themesRow = document.createElement("div");
+        themesRow.className = "ww-lifemap-pill-row";
+        drivers.forEach(function (d) {
+          var tag = document.createElement("div");
+          tag.className = "ww-meaning-tag";
+          tag.innerHTML = "<strong>Theme</strong> · " + d;
+          themesRow.appendChild(tag);
+        });
+        visual.appendChild(themesRow);
       }
 
-      var intensityLabel = {
+      // Goals / life areas row
+      if (goalAreas.length > 0) {
+        var goalsLabel = document.createElement("div");
+        goalsLabel.className = "ww-lifemap-row-label";
+        goalsLabel.textContent = "Life areas in focus";
+        visual.appendChild(goalsLabel);
+
+        var goalsRow = document.createElement("div");
+        goalsRow.className = "ww-lifemap-pill-row";
+        goalAreas.forEach(function (g) {
+          var tag = document.createElement("div");
+          tag.className = "ww-meaning-tag";
+          tag.innerHTML = "<strong>Focus</strong> · " + g;
+          goalsRow.appendChild(tag);
+        });
+        visual.appendChild(goalsRow);
+      }
+
+      // Intensity tag
+      var intensityLabelMap = {
         low: "Gentle",
         medium: "Balanced",
         high: "Bold"
-      }[intensity] || "Balanced";
-
-      var tagIntensity = document.createElement("div");
-      tagIntensity.className = "ww-meaning-tag";
-      tagIntensity.innerHTML = "<strong>Feel</strong> · " + intensityLabel;
-      visual.appendChild(tagIntensity);
+      };
+      var intensityLabel = intensityLabelMap[intensity] || "Gentle";
+      var settingsRow = document.createElement("div");
+      settingsRow.className = "ww-lifemap-pill-row";
+      var intensityTag = document.createElement("div");
+      intensityTag.className = "ww-meaning-tag";
+      intensityTag.innerHTML = "<strong>Feel</strong> · " + intensityLabel;
+      settingsRow.appendChild(intensityTag);
+      visual.appendChild(settingsRow);
 
       // Summary text
-      if (!nowChapter && drivers.length === 0) {
-        summary.textContent = "Choose a chapter and a few drivers to sketch your Meaning Field.";
+      if (!nowChapter && drivers.length === 0 && goalAreas.length === 0) {
+        summary.textContent =
+          "As you choose chapters, themes, and life areas, this becomes a simple life map: where you are now, where you’re leaning next, and what matters most along the way.";
       } else if (nowChapter && !futureChapter) {
         summary.textContent =
-          "Clara will deepen your " + nowChapter.toLowerCase() +
-          " chapter and quietly highlight what you’ve said matters most.";
+          "Clara will deepen your " +
+          nowChapter.toLowerCase() +
+          " chapter and use your themes and life areas as guides for what to surface in Discovery Mode.";
       } else if (nowChapter && futureChapter) {
         summary.textContent =
-          "Clara will help you move from " + nowChapter.toLowerCase() +
-          " toward " + futureChapter.toLowerCase() +
-          " while honoring your drivers.";
+          "Clara will help you move from " +
+          nowChapter.toLowerCase() +
+          " toward " +
+          futureChapter.toLowerCase() +
+          " while keeping your themes and life areas in view.";
       }
     }
 
     // Form submission
     document.addEventListener("DOMContentLoaded", function () {
       // Setup groups
-      setupChipGroup("now-chapter-group", "nowChapter", updateMeaningVisual);
-      setupChipGroup("future-chapter-group", "futureChapter", updateMeaningVisual);
-      setupDriverPills();
+      setupChipGroup("now-chapter-group", "nowChapter", updateLifeMap);
+      setupChipGroup("future-chapter-group", "futureChapter", updateLifeMap);
+      setupDriverPills("drivers-group");
+      setupDriverPills("goal-areas-group");
       setupRadioPillGroup("intensity-group");
       setupRadioPillGroup("focus-lens-group");
 
-      updateMeaningVisual();
+      // Initialize life map
+      updateLifeMap();
 
       var form = document.getElementById("profile-form");
       if (!form) return;
@@ -1175,8 +1388,9 @@
         var drivers = getSelectedDrivers();
         var bigQuestion = (document.getElementById("bigQuestion") || {}).value || "";
         var noticeMore = (document.getElementById("noticeMore") || {}).value || "";
-        var intensity = getSelectedRadio("intensity") || "medium";
+        var intensity = getSelectedRadio("intensity") || "low";
         var focusLens = getSelectedRadio("focusLens") || "Explore";
+        var goalAreas = getSelectedGoalAreas();
 
         var profile = {
           name: name.trim() || null,
@@ -1186,7 +1400,8 @@
           bigQuestion: bigQuestion.trim() || "",
           noticeMore: noticeMore.trim() || "",
           intensity: intensity,
-          focusLens: focusLens
+          focusLens: focusLens,
+          goalAreas: goalAreas
         };
 
         try {
