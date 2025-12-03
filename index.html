@@ -1442,7 +1442,7 @@
     </main>
   </div>
 
-  <script>
+<script>
   // --- Helpers to read form state ---
 
   function getSelectedRadio(name) {
@@ -1489,10 +1489,10 @@
     });
   }
 
-  // --- Drivers (checkbox pills) ---
+  // --- Generic checkbox pill groups (drivers, goal areas, purpose threads) ---
 
-  function setupDriverPills() {
-    var group = document.getElementById("drivers-group");
+  function setupCheckboxPillGroup(groupId) {
+    var group = document.getElementById(groupId);
     if (!group) return;
     var labels = group.querySelectorAll(".ww-driver-pill");
     labels.forEach(function (label) {
@@ -1673,12 +1673,25 @@
     setupChipGroup("now-chapter-group");
     setupChipGroup("future-chapter-group");
 
-    // Drivers
-    setupDriverPills();
+    // Checkbox pill groups
+    setupCheckboxPillGroup("drivers-group");
+    setupCheckboxPillGroup("goal-areas-group");
+    setupCheckboxPillGroup("purpose-thread-group");
 
     // Radio pill groups (intensity + focus lens)
     setupRadioPillGroup("intensity-group");
     setupRadioPillGroup("focus-lens-group");
+
+    // If no intensity radio is checked yet, default to the first one
+    if (!getSelectedRadio("intensity")) {
+      var firstIntensity = document.querySelector("#intensity-group .ww-radio-input");
+      if (firstIntensity) firstIntensity.checked = true;
+    }
+    if (!getSelectedRadio("focusLens")) {
+      var firstLens = document.querySelector("#focus-lens-group .ww-radio-input");
+      if (firstLens) firstLens.checked = true;
+    }
+
     applyInitialRadioSelection("intensity-group");
     applyInitialRadioSelection("focus-lens-group");
 
@@ -1728,7 +1741,6 @@
     });
   });
 </script>
-
 
   
 </body>
