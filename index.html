@@ -708,6 +708,157 @@
       text-decoration: underline;
       text-decoration-style: dotted;
     }
+
+    /* --- Slightly larger base text for readability --- */
+    body {
+      font-size: 15px;
+    }
+    
+    .ww-clara-body,
+    .ww-form-subtitle,
+    .ww-field-hint {
+      font-size: 14px;
+    }
+    
+    .ww-field-label,
+    .ww-form-title {
+      font-size: 16px;
+    }
+    
+    /* --- Life Map Snapshot --- */
+    
+    .ww-life-map {
+      margin-top: 8px;
+      border-radius: 14px;
+      background: radial-gradient(circle at 10% 0%, rgba(148, 163, 184, 0.24), transparent 55%);
+      padding: 10px 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    /* Timeline / arc bar */
+    
+    .ww-life-map-timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.2fr 0.4fr 1.2fr 0.4fr 1.2fr;
+      align-items: flex-end;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    
+    /* curved-ish line behind points */
+    .ww-life-map-timeline::before {
+      content: "";
+      position: absolute;
+      left: 4%;
+      right: 4%;
+      bottom: 14px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      border-top-color: rgba(148, 163, 184, 0.9);
+      border-bottom-color: transparent;
+      transform: translateY(4px);
+    }
+    
+    /* Connectors between points */
+    
+    .ww-life-map-connector {
+      height: 1px;
+    }
+    
+    /* Points */
+    
+    .ww-life-map-point {
+      position: relative;
+      padding-bottom: 2px;
+    }
+    
+    .ww-life-map-point::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 2px solid rgba(148, 163, 184, 0.9);
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 1);
+    }
+    
+    .ww-life-map-earlier::after {
+      opacity: 0.6;
+    }
+    
+    .ww-life-map-now::after {
+      width: 18px;
+      height: 18px;
+      bottom: 8px;
+      border-color: #f97316;
+      box-shadow:
+        0 0 0 3px rgba(15, 23, 42, 1),
+        0 0 14px rgba(249, 115, 22, 0.7);
+    }
+    
+    .ww-life-map-next::after {
+      border-color: rgba(234, 179, 8, 0.95);
+    }
+    
+    /* Labels / values at each point */
+    
+    .ww-life-map-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ww-text-soft);
+      margin-bottom: 2px;
+    }
+    
+    .ww-life-map-value {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      min-height: 1.3em;
+    }
+    
+    /* Rows under the arc */
+    
+    .ww-life-map-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .ww-life-map-row {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr);
+      gap: 6px;
+      align-items: baseline;
+      font-size: 12px;
+    }
+    
+    .ww-life-map-row-label {
+      font-weight: 500;
+      color: var(--ww-text-soft);
+    }
+    
+    .ww-life-map-row-value {
+      color: var(--ww-text-soft);
+    }
+    
+    /* Responsive tweak */
+    
+    @media (max-width: 880px) {
+      .ww-life-map-row {
+        grid-template-columns: 72px minmax(0, 1fr);
+      }
+    }
+
+
+    
   </style>
 </head>
 <body>
@@ -768,23 +919,79 @@
           </div>
         </div>
 
-        <div class="ww-meaning-panel">
+       <div class="ww-meaning-panel">
           <div class="ww-meaning-header-row">
             <div class="ww-meaning-title">Life Map Snapshot</div>
-            <div class="ww-meaning-sub" id="meaning-summary">
-              As you answer, I’ll sketch a simple timeline of where you’ve been, where you are, and where you’re leaning.
+            <div class="ww-meaning-sub" id="life-map-summary">
+              Start by choosing the chapter you’re in now.
             </div>
           </div>
-          <div class="ww-meaning-visual" id="meaning-visual">
-            <!-- Life map timeline injected by JS -->
+        
+          <div class="ww-life-map">
+            <!-- Timeline / arc -->
+            <div class="ww-life-map-timeline">
+              <div class="ww-life-map-point ww-life-map-earlier">
+                <div class="ww-life-map-label">Earlier</div>
+                <div class="ww-life-map-value" id="life-map-earlier">
+                  You’ll be able to map this in more detail later.
+                </div>
+              </div>
+        
+              <div class="ww-life-map-connector"></div>
+        
+              <div class="ww-life-map-point ww-life-map-now">
+                <div class="ww-life-map-label">Now</div>
+                <div class="ww-life-map-value" id="life-map-now">
+                  Not set yet
+                </div>
+              </div>
+        
+              <div class="ww-life-map-connector"></div>
+        
+              <div class="ww-life-map-point ww-life-map-next">
+                <div class="ww-life-map-label">Next</div>
+                <div class="ww-life-map-value" id="life-map-next">
+                  Optional
+                </div>
+              </div>
+            </div>
+        
+            <!-- Rows under the arc -->
+            <div class="ww-life-map-rows">
+              <div class="ww-life-map-row">
+                <div class="ww-life-map-row-label">Themes</div>
+                <div class="ww-life-map-row-value" id="life-map-themes">
+                  Choose a few meaning drivers on the right.
+                </div>
+              </div>
+              <div class="ww-life-map-row">
+                <div class="ww-life-map-row-label">Big question</div>
+                <div class="ww-life-map-row-value" id="life-map-big-question">
+                  Add a big question and I’ll keep it in the background.
+                </div>
+              </div>
+              <div class="ww-life-map-row">
+                <div class="ww-life-map-row-label">Notice more</div>
+                <div class="ww-life-map-row-value" id="life-map-notice-more">
+                  Tell me what you want to notice more of in your life.
+                </div>
+              </div>
+              <div class="ww-life-map-row">
+                <div class="ww-life-map-row-label">Feel</div>
+                <div class="ww-life-map-row-value" id="life-map-feel">
+                  Gentle, balanced, or bold — your call.
+                </div>
+              </div>
+            </div>
           </div>
+        
           <div class="ww-meaning-note">
-            This is an early sketch of your journey: <strong>earlier chapters</strong> you may map later,
-            the <strong>chapter you’re in now</strong>, where you feel drawn next, plus the
-            <strong>themes</strong>, <strong>life areas</strong>, and a living <strong>purpose draft</strong>.
-            Over time, Clara could animate how this map shifts as you explore Whyld World in AR.
+            Think of this as a small slice of a bigger life map: <strong>where you are now</strong>,
+            <strong>where you’re leaning next</strong>, and <strong>what’s tugging on your attention</strong>.
+            Later, a full Life Map view will let you sketch earlier chapters and major turning points.
           </div>
         </div>
+
 
         <div class="ww-explain">
           <div class="ww-explain-heading">Why this structure?</div>
@@ -1236,356 +1443,326 @@
   </div>
 
   <script>
-    // Helper to update selection styles for chapter chips
-    function setupChipGroup(groupId, inputName, meaningUpdateFn) {
-      var groupEl = document.getElementById(groupId);
-      if (!groupEl) return;
+  // Helper: clickable chapter chips (Now / Next)
+  function setupChipGroup(groupId, inputName, onChangeFn) {
+    var groupEl = document.getElementById(groupId);
+    if (!groupEl) return;
 
-      var buttons = groupEl.querySelectorAll(".ww-chip-btn");
-      buttons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var targetId = btn.getAttribute("data-target");
-          var input = document.getElementById(targetId);
-          if (!input) return;
-
-          // Update radio
-          input.checked = true;
-
-          // Update visual state
-          buttons.forEach(function (b) {
-            b.classList.remove("selected");
-          });
-          btn.classList.add("selected");
-
-          if (typeof meaningUpdateFn === "function") {
-            meaningUpdateFn();
-          }
-        });
-      });
-    }
-
-    // Drivers and similar pill groups: toggle selected on click
-    function setupDriverPills(groupId) {
-      var group = document.getElementById(groupId);
-      if (!group) return;
-      var labels = group.querySelectorAll(".ww-driver-pill");
-      labels.forEach(function (label) {
-        var input = label.querySelector(".ww-driver-input");
-        var btn = label.querySelector(".ww-driver-btn");
-        if (!input || !btn) return;
-
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          input.checked = !input.checked;
-          if (input.checked) {
-            btn.classList.add("selected");
-          } else {
-            btn.classList.remove("selected");
-          }
-          updateLifeMap();
-        });
-      });
-    }
-
-    // Radio pill groups (intensity, focus lens)
-    function setupRadioPillGroup(groupId) {
-      var group = document.getElementById(groupId);
-      if (!group) return;
-      var pills = group.querySelectorAll(".ww-radio-pill");
-      pills.forEach(function (pill) {
-        var input = pill.querySelector(".ww-radio-input");
+    var buttons = groupEl.querySelectorAll(".ww-chip-btn");
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var targetId = btn.getAttribute("data-target");
+        var input = document.getElementById(targetId);
         if (!input) return;
 
-        pill.addEventListener("click", function (e) {
-          e.preventDefault();
-          // Set this as checked
-          input.checked = true;
-          // Clear others
-          pills.forEach(function (p) {
-            p.classList.remove("selected");
-          });
-          pill.classList.add("selected");
-          if (groupId === "intensity-group") {
-            updateLifeMap();
-          }
+        // Update radio
+        input.checked = true;
+
+        // Update visual state
+        buttons.forEach(function (b) {
+          b.classList.remove("selected");
         });
-      });
-    }
+        btn.classList.add("selected");
 
-    // Helpers to read selections
-    function getSelectedRadio(name) {
-      var radios = document.querySelectorAll('input[name="' + name + '"]');
-      for (var i = 0; i < radios.length; i++) {
-        if (radios[i].checked) return radios[i].value;
-      }
-      return null;
-    }
-
-    function getSelectedDrivers() {
-      var checked = document.querySelectorAll('input[name="drivers"]:checked');
-      var out = [];
-      checked.forEach(function (c) {
-        out.push(c.value);
-      });
-      return out;
-    }
-
-    function getSelectedGoalAreas() {
-      var checked = document.querySelectorAll('input[name="goalAreas"]:checked');
-      var out = [];
-      checked.forEach(function (c) {
-        out.push(c.value);
-      });
-      return out;
-    }
-
-    function getSelectedPurposeThreads() {
-      var checked = document.querySelectorAll('input[name="purposeThreads"]:checked');
-      var out = [];
-      checked.forEach(function (c) {
-        out.push(c.value);
-      });
-      return out;
-    }
-
-    // Life Map timeline preview
-    function updateLifeMap() {
-      var visual = document.getElementById("meaning-visual");
-      var summary = document.getElementById("meaning-summary");
-      if (!visual || !summary) return;
-
-      var nowChapter = getSelectedRadio("nowChapter");
-      var futureChapter = getSelectedRadio("futureChapter");
-      var intensity = getSelectedRadio("intensity") || "low";
-      var drivers = getSelectedDrivers();
-      var goalAreas = getSelectedGoalAreas();
-      var purposeThreads = getSelectedPurposeThreads();
-      var purposeDraftTextEl = document.getElementById("purposeDraftText");
-      var purposeDraftText = purposeDraftTextEl ? purposeDraftTextEl.value.trim() : "";
-
-      visual.innerHTML = "";
-
-      // Timeline
-      var timeline = document.createElement("div");
-      timeline.className = "ww-lifemap-timeline";
-
-      var line = document.createElement("div");
-      line.className = "ww-lifemap-line";
-      timeline.appendChild(line);
-
-      // Earlier
-      var pastPoint = document.createElement("div");
-      pastPoint.className = "ww-lifemap-point past";
-      pastPoint.innerHTML =
-        "<div class='ww-lifemap-point-dot'></div>" +
-        "<div>" +
-        "<div class='ww-lifemap-point-label'>Earlier</div>" +
-        "<div class='ww-lifemap-point-main'>Prior chapters</div>" +
-        "<div class='ww-lifemap-point-note'>You’ll map these in more detail later.</div>" +
-        "</div>";
-      timeline.appendChild(pastPoint);
-
-      // Now
-      var nowLabel = nowChapter || "Choose a chapter";
-      var nowPoint = document.createElement("div");
-      nowPoint.className = "ww-lifemap-point now";
-      nowPoint.innerHTML =
-        "<div class='ww-lifemap-point-dot'></div>" +
-        "<div>" +
-        "<div class='ww-lifemap-point-label'>Now</div>" +
-        "<div class='ww-lifemap-point-main'>" + nowLabel + "</div>" +
-        "<div class='ww-lifemap-point-note'>How your life feels in this chapter.</div>" +
-        "</div>";
-      timeline.appendChild(nowPoint);
-
-      // Next
-      var nextLabel = futureChapter ? futureChapter : "To be discovered";
-      var nextPoint = document.createElement("div");
-      nextPoint.className = "ww-lifemap-point next";
-      nextPoint.innerHTML =
-        "<div class='ww-lifemap-point-dot'></div>" +
-        "<div>" +
-        "<div class='ww-lifemap-point-label'>Next</div>" +
-        "<div class='ww-lifemap-point-main'>" + nextLabel + "</div>" +
-        "<div class='ww-lifemap-point-note'>Where you feel pulled in the coming chapter.</div>" +
-        "</div>";
-      timeline.appendChild(nextPoint);
-
-      visual.appendChild(timeline);
-
-      // Themes row (meaning drivers)
-      if (drivers.length > 0) {
-        var themesLabel = document.createElement("div");
-        themesLabel.className = "ww-lifemap-row-label";
-        themesLabel.textContent = "Themes pulling on your story right now";
-        visual.appendChild(themesLabel);
-
-        var themesRow = document.createElement("div");
-        themesRow.className = "ww-lifemap-pill-row";
-        drivers.forEach(function (d) {
-          var tag = document.createElement("div");
-          tag.className = "ww-meaning-tag";
-          tag.innerHTML = "<strong>Theme</strong> · " + d;
-          themesRow.appendChild(tag);
-        });
-        visual.appendChild(themesRow);
-      }
-
-      // Goals / life areas row
-      if (goalAreas.length > 0) {
-        var goalsLabel = document.createElement("div");
-        goalsLabel.className = "ww-lifemap-row-label";
-        goalsLabel.textContent = "Life areas in focus for this stretch of the journey";
-        visual.appendChild(goalsLabel);
-
-        var goalsRow = document.createElement("div");
-        goalsRow.className = "ww-lifemap-pill-row";
-        goalAreas.forEach(function (g) {
-          var tag = document.createElement("div");
-          tag.className = "ww-meaning-tag";
-          tag.innerHTML = "<strong>Focus</strong> · " + g;
-          goalsRow.appendChild(tag);
-        });
-        visual.appendChild(goalsRow);
-      }
-
-      // Purpose row
-      if (purposeDraftText || purposeThreads.length > 0) {
-        var purposeLabel = document.createElement("div");
-        purposeLabel.className = "ww-lifemap-row-label";
-        purposeLabel.textContent = "Purpose draft (the thread connecting these moments)";
-        visual.appendChild(purposeLabel);
-
-        var purposeRow = document.createElement("div");
-        purposeRow.className = "ww-lifemap-pill-row";
-
-        if (purposeThreads.length > 0) {
-          var threadsPreview = purposeThreads.slice(0, 2).join(" · ");
-          if (purposeThreads.length > 2) {
-            threadsPreview += " +" + (purposeThreads.length - 2);
-          }
-          var threadTag = document.createElement("div");
-          threadTag.className = "ww-meaning-tag";
-          threadTag.innerHTML = "<strong>Thread</strong> · " + threadsPreview;
-          purposeRow.appendChild(threadTag);
+        if (typeof onChangeFn === "function") {
+          onChangeFn();
         }
-
-        if (purposeDraftText) {
-          var textPreview = purposeDraftText;
-          if (textPreview.length > 120) {
-            textPreview = textPreview.slice(0, 117) + "…";
-          }
-          var draftTag = document.createElement("div");
-          draftTag.className = "ww-meaning-tag";
-          draftTag.innerHTML = "<strong>Draft</strong> · " + textPreview;
-          purposeRow.appendChild(draftTag);
-        }
-
-        visual.appendChild(purposeRow);
-      }
-
-      // Intensity tag
-      var intensityLabelMap = {
-        low: "Gentle",
-        medium: "Balanced",
-        high: "Bold"
-      };
-      var intensityLabel = intensityLabelMap[intensity] || "Gentle";
-      var settingsRow = document.createElement("div");
-      settingsRow.className = "ww-lifemap-pill-row";
-      var intensityTag = document.createElement("div");
-      intensityTag.className = "ww-meaning-tag";
-      intensityTag.innerHTML = "<strong>Feel</strong> · " + intensityLabel;
-      settingsRow.appendChild(intensityTag);
-      visual.appendChild(settingsRow);
-
-      // Summary text
-      if (
-        !nowChapter &&
-        drivers.length === 0 &&
-        goalAreas.length === 0 &&
-        !purposeDraftText &&
-        purposeThreads.length === 0
-      ) {
-        summary.textContent =
-          "As you choose chapters, themes, life areas, and a purpose draft, this becomes a simple timeline: earlier chapters, your current act, and the next stretch you’re heading into.";
-      } else if (nowChapter && !futureChapter) {
-        summary.textContent =
-          "Clara will deepen your " +
-          nowChapter.toLowerCase() +
-          " chapter and use your themes, life areas, and purpose draft as guides for what to surface in Discovery Mode.";
-      } else if (nowChapter && futureChapter) {
-        summary.textContent =
-          "Clara will help you move from " +
-          nowChapter.toLowerCase() +
-          " toward " +
-          futureChapter.toLowerCase() +
-          " while keeping your themes, life areas, and purpose draft in view.";
-      }
-    }
-
-    // Form submission
-    document.addEventListener("DOMContentLoaded", function () {
-      // Setup groups
-      setupChipGroup("now-chapter-group", "nowChapter", updateLifeMap);
-      setupChipGroup("future-chapter-group", "futureChapter", updateLifeMap);
-      setupDriverPills("drivers-group");
-      setupDriverPills("goal-areas-group");
-      setupDriverPills("purpose-thread-group");
-      setupRadioPillGroup("intensity-group");
-      setupRadioPillGroup("focus-lens-group");
-
-      // Update life map when purpose draft text changes
-      var purposeDraftTextEl = document.getElementById("purposeDraftText");
-      if (purposeDraftTextEl) {
-        purposeDraftTextEl.addEventListener("input", updateLifeMap);
-      }
-
-      // Initialize life map
-      updateLifeMap();
-
-      var form = document.getElementById("profile-form");
-      if (!form) return;
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        var name = (document.getElementById("name") || {}).value || "";
-        var nowChapter = getSelectedRadio("nowChapter");
-        var futureChapter = getSelectedRadio("futureChapter");
-        var drivers = getSelectedDrivers();
-        var bigQuestion = (document.getElementById("bigQuestion") || {}).value || "";
-        var noticeMore = (document.getElementById("noticeMore") || {}).value || "";
-        var intensity = getSelectedRadio("intensity") || "low";
-        var focusLens = getSelectedRadio("focusLens") || "Explore";
-        var goalAreas = getSelectedGoalAreas();
-        var purposeThreads = getSelectedPurposeThreads();
-        var purposeDraftTextVal = purposeDraftTextEl ? purposeDraftTextEl.value.trim() : "";
-
-        var profile = {
-          name: name.trim() || null,
-          nowChapter: nowChapter || null,
-          futureChapter: futureChapter || null,
-          drivers: drivers,
-          bigQuestion: bigQuestion.trim() || "",
-          noticeMore: noticeMore.trim() || "",
-          intensity: intensity,
-          focusLens: focusLens,
-          goalAreas: goalAreas,
-          purposeThreads: purposeThreads,
-          purposeDraft: purposeDraftTextVal
-        };
-
-        try {
-          localStorage.setItem("whyldProfile", JSON.stringify(profile));
-        } catch (err) {
-          console.warn("Failed to store whyldProfile:", err);
-        }
-
-        // Go to Discovery Mode (AR prototype)
-        window.location.href = "ar.html";
       });
     });
-  </script>
+  }
+
+  // Drivers: toggle selected on click
+  function setupDriverPills(onChangeFn) {
+    var group = document.getElementById("drivers-group");
+    if (!group) return;
+    var labels = group.querySelectorAll(".ww-driver-pill");
+    labels.forEach(function (label) {
+      var input = label.querySelector(".ww-driver-input");
+      var btn = label.querySelector(".ww-driver-btn");
+      if (!input || !btn) return;
+
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        input.checked = !input.checked;
+        if (input.checked) {
+          btn.classList.add("selected");
+        } else {
+          btn.classList.remove("selected");
+        }
+        if (typeof onChangeFn === "function") {
+          onChangeFn();
+        }
+      });
+    });
+  }
+
+  // Radio pill groups (intensity, focus lens)
+  function setupRadioPillGroup(groupId, onChangeFn) {
+    var group = document.getElementById(groupId);
+    if (!group) return;
+    var pills = group.querySelectorAll(".ww-radio-pill");
+    pills.forEach(function (pill) {
+      var input = pill.querySelector(".ww-radio-input");
+      if (!input) return;
+
+      pill.addEventListener("click", function (e) {
+        e.preventDefault();
+        // Set this as checked
+        input.checked = true;
+        // Clear others
+        pills.forEach(function (p) {
+          p.classList.remove("selected");
+        });
+        pill.classList.add("selected");
+        if (typeof onChangeFn === "function") {
+          onChangeFn();
+        }
+      });
+    });
+  }
+
+  // --- Helpers to read form state ---
+
+  function getSelectedRadio(name) {
+    var radios = document.querySelectorAll('input[name="' + name + '"]');
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked) return radios[i].value;
+    }
+    return null;
+  }
+
+  function getSelectedDrivers() {
+    var checked = document.querySelectorAll('input[name="drivers"]:checked');
+    var out = [];
+    checked.forEach(function (c) {
+      out.push(c.value);
+    });
+    return out;
+  }
+
+  // --- Main visual updater: Life Map Snapshot (with safe fallback) ---
+
+  function updateLifeMap() {
+    // Prefer the new Life Map snapshot if present
+    var summaryEl    = document.getElementById("life-map-summary");
+    var earlierEl    = document.getElementById("life-map-earlier");
+    var nowEl        = document.getElementById("life-map-now");
+    var nextEl       = document.getElementById("life-map-next");
+    var themesEl     = document.getElementById("life-map-themes");
+    var bigQEl       = document.getElementById("life-map-big-question");
+    var noticeMoreEl = document.getElementById("life-map-notice-more");
+    var feelEl       = document.getElementById("life-map-feel");
+
+    var nowChapter    = getSelectedRadio("nowChapter");
+    var futureChapter = getSelectedRadio("futureChapter");
+    var intensity     = getSelectedRadio("intensity") || "medium";
+    var drivers       = getSelectedDrivers();
+    var bigQuestion   = (document.getElementById("bigQuestion") || {}).value || "";
+    var noticeMore    = (document.getElementById("noticeMore") || {}).value || "";
+
+    // If the Life Map snapshot elements exist, use the new timeline view
+    if (summaryEl) {
+      // --- Timeline points (Earlier / Now / Next) ---
+      if (nowEl) {
+        nowEl.textContent = nowChapter ? nowChapter : "Not set yet";
+      }
+
+      if (nextEl) {
+        if (futureChapter && futureChapter !== nowChapter) {
+          nextEl.textContent = futureChapter;
+        } else if (futureChapter && futureChapter === nowChapter) {
+          nextEl.textContent = "Deepening " + futureChapter.toLowerCase();
+        } else {
+          nextEl.textContent = "Optional";
+        }
+      }
+
+      if (earlierEl) {
+        earlierEl.textContent =
+          "You’ll be able to sketch earlier chapters in a full Life Map.";
+      }
+
+      // --- Themes row ---
+      if (themesEl) {
+        if (drivers.length === 0) {
+          themesEl.textContent = "Choose a few meaning drivers on the right.";
+        } else {
+          var preview = drivers.slice(0, 3).join(", ");
+          if (drivers.length > 3) {
+            preview += " +" + (drivers.length - 3) + " more";
+          }
+          themesEl.textContent = preview;
+        }
+      }
+
+      // --- Big question row ---
+      if (bigQEl) {
+        if (!bigQuestion.trim()) {
+          bigQEl.textContent =
+            "Add a big question and I’ll keep it in the background.";
+        } else {
+          var q = bigQuestion.trim();
+          if (q.length > 120) q = q.slice(0, 117) + "…";
+          bigQEl.textContent = '"' + q + '"';
+        }
+      }
+
+      // --- Notice more row ---
+      if (noticeMoreEl) {
+        if (!noticeMore.trim()) {
+          noticeMoreEl.textContent =
+            "Tell me what you want to notice more of in your life.";
+        } else {
+          var n = noticeMore.trim();
+          if (n.length > 120) n = n.slice(0, 117) + "…";
+          noticeMoreEl.textContent = n;
+        }
+      }
+
+      // --- Feel row ---
+      if (feelEl) {
+        var intensityLabel = {
+          low: "Gentle",
+          medium: "Balanced",
+          high: "Bold"
+        }[intensity] || "Balanced";
+        feelEl.textContent = intensityLabel;
+      }
+
+      // --- Summary line at the top ---
+      if (!nowChapter && drivers.length === 0) {
+        summaryEl.textContent =
+          "Start by choosing the chapter you’re in now, and a few themes that feel true.";
+      } else if (nowChapter && !futureChapter) {
+        summaryEl.textContent =
+          "Clara will deepen your " + nowChapter.toLowerCase() +
+          " chapter and gently tune what stands out to you.";
+      } else if (nowChapter && futureChapter) {
+        summaryEl.textContent =
+          "Clara will help you move from " + nowChapter.toLowerCase() +
+          " toward " + futureChapter.toLowerCase() +
+          " while honoring what matters most.";
+      }
+
+      return; // done with Life Map snapshot
+    }
+
+    // --- Fallback: if the older Meaning Field tags exist, keep them working ---
+
+    var visual = document.getElementById("meaning-visual");
+    var summary = document.getElementById("meaning-summary");
+    if (!visual || !summary) return;
+
+    visual.innerHTML = "";
+
+    if (nowChapter) {
+      var tagNow = document.createElement("div");
+      tagNow.className = "ww-meaning-tag";
+      tagNow.innerHTML = "<strong>Now</strong> · " + nowChapter;
+      visual.appendChild(tagNow);
+    }
+
+    if (futureChapter && futureChapter !== nowChapter) {
+      var tagNext = document.createElement("div");
+      tagNext.className = "ww-meaning-tag";
+      tagNext.innerHTML = "<strong>Leaning toward</strong> · " + futureChapter;
+      visual.appendChild(tagNext);
+    }
+
+    if (drivers.length > 0) {
+      var tagDrivers = document.createElement("div");
+      tagDrivers.className = "ww-meaning-tag";
+      var preview2 = drivers.slice(0, 3).join(" · ");
+      if (drivers.length > 3) {
+        preview2 += " +" + (drivers.length - 3);
+      }
+      tagDrivers.innerHTML = "<strong>Gravity</strong> · " + preview2;
+      visual.appendChild(tagDrivers);
+    }
+
+    var intensityLabel2 = {
+      low: "Gentle",
+      medium: "Balanced",
+      high: "Bold"
+    }[intensity] || "Balanced";
+
+    var tagIntensity = document.createElement("div");
+    tagIntensity.className = "ww-meaning-tag";
+    tagIntensity.innerHTML = "<strong>Feel</strong> · " + intensityLabel2;
+    visual.appendChild(tagIntensity);
+
+    if (!nowChapter && drivers.length === 0) {
+      summary.textContent =
+        "Choose a chapter and a few drivers to sketch your Meaning Field.";
+    } else if (nowChapter && !futureChapter) {
+      summary.textContent =
+        "Clara will deepen your " + nowChapter.toLowerCase() +
+        " chapter and quietly highlight what you’ve said matters most.";
+    } else if (nowChapter && futureChapter) {
+      summary.textContent =
+        "Clara will help you move from " + nowChapter.toLowerCase() +
+        " toward " + futureChapter.toLowerCase() +
+        " while honoring your drivers.";
+    }
+  }
+
+  // --- Init on DOM ready ---
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Setup groups
+    setupChipGroup("now-chapter-group", "nowChapter", updateLifeMap);
+    setupChipGroup("future-chapter-group", "futureChapter", updateLifeMap);
+    setupDriverPills(updateLifeMap);
+    setupRadioPillGroup("intensity-group", updateLifeMap);
+    setupRadioPillGroup("focus-lens-group", null); // lens choice doesn't affect snapshot directly
+
+    // Run once on load
+    updateLifeMap();
+
+    var form = document.getElementById("profile-form");
+    if (!form) return;
+
+    // Update snapshot as user types / clicks anything in the form
+    form.addEventListener("input", function () {
+      updateLifeMap();
+    });
+
+    // Form submission: store profile and go to AR (Discovery Mode)
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var name = (document.getElementById("name") || {}).value || "";
+      var nowChapter = getSelectedRadio("nowChapter");
+      var futureChapter = getSelectedRadio("futureChapter");
+      var drivers = getSelectedDrivers();
+      var bigQuestion = (document.getElementById("bigQuestion") || {}).value || "";
+      var noticeMore = (document.getElementById("noticeMore") || {}).value || "";
+      var intensity = getSelectedRadio("intensity") || "medium";
+      var focusLens = getSelectedRadio("focusLens") || "Explore";
+
+      var profile = {
+        name: name.trim() || null,
+        nowChapter: nowChapter || null,
+        futureChapter: futureChapter || null,
+        drivers: drivers,
+        bigQuestion: bigQuestion.trim() || "",
+        noticeMore: noticeMore.trim() || "",
+        intensity: intensity,
+        focusLens: focusLens
+      };
+
+      try {
+        localStorage.setItem("whyldProfile", JSON.stringify(profile));
+      } catch (err) {
+        console.warn("Failed to store whyldProfile:", err);
+      }
+
+      // Go to Discovery Mode (AR prototype)
+      window.location.href = "ar.html";
+    });
+  });
+</script>
+
+  
 </body>
 </html>
