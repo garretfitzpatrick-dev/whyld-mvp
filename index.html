@@ -399,6 +399,49 @@
       gap: 6px;
     }
 
+    /* Life Map Mode CTA under the snapshot */
+    
+    .ww-life-map-cta {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+    }
+    
+    .ww-life-map-cta-button {
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      border: 1px solid rgba(250, 204, 21, 0.85);
+      background: rgba(15, 23, 42, 0.96);
+      color: #facc15;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.8);
+    }
+    
+    .ww-life-map-cta-button span.icon {
+      font-size: 14px;
+    }
+    
+    .ww-life-map-cta-button:hover {
+      border-color: #f97316;
+      background: radial-gradient(circle at 20% 0%, #1e293b 0, #020617 60%);
+      color: #fef9c3;
+    }
+    
+    .ww-life-map-cta-text {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+
+
+    
     .ww-meaning-tag {
       border-radius: 999px;
       padding: 4px 8px;
@@ -994,6 +1037,17 @@
             <strong>where you’re leaning next</strong>, and <strong>what’s tugging on your attention</strong>.
             Later, a full Life Map view will let you sketch earlier chapters and major turning points.
           </div>
+         <div class="ww-life-map-cta">
+            <a href="life-map.html" class="ww-life-map-cta-button">
+              <span class="icon">🗺️</span>
+              <span>Open Life Map Mode</span>
+            </a>
+            <div class="ww-life-map-cta-text">
+              Sketch earlier chapters, map turning points, and refine your arc.
+              Your snapshot here will update automatically from what you save there.
+            </div>
+          </div>
+
         </div>
 
 
