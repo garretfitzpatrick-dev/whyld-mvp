@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Whyld World · Life Map Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --ww-bg: #050816;
+      --ww-bg-soft: #0b1020;
+      --ww-accent: #ffb347;
+      --ww-accent-soft: rgba(255, 179, 71, 0.18);
+      --ww-card: #0f172a;
+      --ww-card-soft: #111827;
+      --ww-border: rgba(148, 163, 184, 0.4);
+      --ww-text: #e5e7eb;
+      --ww-text-soft: #9ca3af;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0%, #020617 52%, #020617 100%);
+      color: var(--ww-text);
+    }
+
+    body {
+      font-size: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .lm-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Top bar */
+    .lm-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .lm-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lm-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #ffffff 0, #f97316 12%, #7c3aed 46%, #0ea5e9 100%);
+      box-shadow: 0 0 28px rgba(96, 165, 250, 0.5);
+      position: relative;
+    }
+
+    .lm-logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      border: 1px solid rgba(15, 23, 42, 0.4);
+    }
+
+    .lm-logo-text-main {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .lm-logo-text-sub {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .lm-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .lm-nav-link {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 6px 12px;
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--ww-text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lm-nav-link span.icon {
+      font-size: 14px;
+    }
+
+    .lm-nav-link.active {
+      border-color: #f97316;
+      background: rgba(249, 115, 22, 0.12);
+      color: #fed7aa;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35);
+    }
+
+    /* Clara intro */
+    .lm-intro {
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: radial-gradient(circle at top left, #1e293b 0%, #020617 60%);
+      padding: 14px 16px 14px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .lm-intro-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #fefce8 0, #fecaca 20%, #f59e0b 60%, #4f46e5 100%);
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .lm-intro-avatar::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: inherit;
+      border: 1px solid rgba(15, 23, 42, 0.45);
+    }
+
+    .lm-intro-body {
+      font-size: 14px;
+      color: var(--ww-text-soft);
+      line-height: 1.6;
+    }
+
+    .lm-intro-body strong {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .lm-intro-name {
+      font-size: 13px;
+      color: var(--ww-text-soft);
+      margin-bottom: 2px;
+    }
+
+    /* Main layout */
+    .lm-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .lm-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lm-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .lm-card {
+      border-radius: 16px;
+      border: 1px solid var(--ww-border);
+      background: rgba(15, 23, 42, 0.96);
+      padding: 12px 12px 10px;
+    }
+
+    .lm-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .lm-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ww-text-soft);
+    }
+
+    .lm-card-sub {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+    }
+
+    /* Chapters timeline */
+    .lm-chapters-layout {
+      display: grid;
+      grid-template-columns: 0.9fr minmax(0, 1.1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .lm-chapters-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lm-chapter-list {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.98), #020617);
+      padding: 8px 8px 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .lm-chapter-list-empty {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      padding: 4px 2px 2px;
+    }
+
+    .lm-chapter-item {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 6px;
+      padding: 6px;
+      border-radius: 10px;
+      cursor: pointer;
+      align-items: flex-start;
+    }
+
+    .lm-chapter-item + .lm-chapter-item {
+      margin-top: 2px;
+    }
+
+    .lm-chapter-item-dot-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 4px;
+    }
+
+    .lm-chapter-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 2px solid rgba(148, 163, 184, 0.7);
+      background: #020617;
+    }
+
+    .lm-chapter-item.earlier .lm-chapter-dot {
+      opacity: 0.6;
+      border-style: dashed;
+    }
+
+    .lm-chapter-item.current .lm-chapter-dot {
+      border-color: #f97316;
+      box-shadow: 0 0 10px rgba(249, 115, 22, 0.7);
+    }
+
+    .lm-chapter-item.future .lm-chapter-dot {
+      border-color: #22c55e;
+    }
+
+    .lm-chapter-item.selected {
+      background: rgba(55, 65, 81, 0.65);
+      box-shadow: 0 0 0 1px rgba(156, 163, 175, 0.6);
+    }
+
+    .lm-chapter-mainline {
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+
+    .lm-chapter-mainline span.chapter-label {
+      font-weight: 500;
+    }
+
+    .lm-chapter-subline {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      margin-top: 1px;
+    }
+
+    .lm-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 3px 7px;
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+    .lm-chip strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .lm-button-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .lm-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      padding: 6px 11px;
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lm-btn.primary {
+      border-color: #f97316;
+      background: linear-gradient(135deg, #f97316, #facc15);
+      color: #0b1120;
+      box-shadow: 0 10px 26px rgba(248, 250, 252, 0.15);
+      font-weight: 500;
+    }
+
+    .lm-btn.danger {
+      border-color: rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+    }
+
+    .lm-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+
+    .lm-label {
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .lm-label span.hint {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      font-weight: 400;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--ww-text);
+      padding: 7px 9px;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #f97316;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.3);
+    }
+
+    /* Turning points */
+    .lm-turning-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .lm-turning-item {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 6px 8px 6px;
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .lm-turning-title {
+      font-weight: 500;
+      color: #e5e7eb;
+    }
+
+    .lm-turning-meta {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      margin-top: 1px;
+    }
+
+    /* Goals constellation */
+    .lm-goal-areas-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    @media (max-width: 840px) {
+      .lm-goal-areas-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .lm-goal-tile {
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.95);
+      padding: 6px 7px 6px;
+      font-size: 12px;
+    }
+
+    .lm-goal-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: #e5e7eb;
+      margin-bottom: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .lm-goal-title span.tagline {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      font-weight: 400;
+    }
+
+    .lm-goal-input {
+      width: 100%;
+      font-size: 12px;
+      padding: 6px 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--ww-text);
+      resize: vertical;
+      min-height: 44px;
+    }
+
+    .lm-goal-input:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.4);
+    }
+
+    /* Purpose */
+    .lm-purpose-note {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      margin-bottom: 6px;
+    }
+
+    .lm-purpose-text {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--ww-text);
+      padding: 8px 9px;
+      font-size: 13px;
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .lm-purpose-text:focus {
+      border-color: #facc15;
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.4);
+    }
+
+    .lm-footer-note {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--ww-text-soft);
+    }
+
+    .lm-status {
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      text-align: right;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="lm-shell">
+    <!-- Top bar -->
+    <header class="lm-top-bar">
+      <div class="lm-logo">
+        <div class="lm-logo-mark"></div>
+        <div>
+          <div class="lm-logo-text-main">Whyld World</div>
+          <div class="lm-logo-text-sub">Life Map Mode</div>
+        </div>
+      </div>
+      <nav class="lm-nav">
+        <a href="index.html" class="lm-nav-link">
+          <span class="icon">🌱</span><span>Meaning Mode</span>
+        </a>
+        <a href="life-map.html" class="lm-nav-link active">
+          <span class="icon">🗺️</span><span>Life Map Mode</span>
+        </a>
+        <a href="ar.html" class="lm-nav-link">
+          <span class="icon">📍</span><span>Discovery Mode</span>
+        </a>
+      </nav>
+    </header>
+
+    <!-- Clara intro -->
+    <section class="lm-intro">
+      <div class="lm-intro-avatar">✨</div>
+      <div class="lm-intro-body">
+        <div class="lm-intro-name" id="lm-intro-name">
+          Hi, I’m Clara. Let’s zoom out and look at your life as a map of chapters, turning points, and goals.
+        </div>
+        <div>
+          This is the deeper <strong>Life Map Mode</strong>. The quick profile you set in Meaning Mode gave me a snapshot
+          of where you are now. Here, you can:
+          <br /><br />
+          • Sketch the <strong>chapters of your life</strong> along a timeline<br />
+          • Capture a few <strong>turning points</strong> and what changed<br />
+          • Map a small <strong>constellation of goals</strong> across different areas of life<br /><br />
+          I’ll use all of this to understand how your moments connect, so Discovery Mode highlights things
+          that fit the story you are actually living.
+        </div>
+      </div>
+    </section>
+
+    <main class="lm-main">
+      <!-- LEFT: Chapters & turning points -->
+      <section class="lm-column">
+        <!-- Chapters -->
+        <div class="lm-card">
+          <div class="lm-card-header">
+            <div class="lm-card-title">Chapters of your life</div>
+            <div class="lm-card-sub">Rough phases, not perfect labels.</div>
+          </div>
+
+          <div class="lm-chapters-layout">
+            <!-- Chapter list -->
+            <div>
+              <div class="lm-chapter-list" id="chapter-list">
+                <div class="lm-chapter-list-empty" id="chapter-list-empty">
+                  Add a few chapters to see your life arc. You might start with childhood, a big move, a career shift, or a recent season.
+                </div>
+              </div>
+              <div class="lm-button-row">
+                <button type="button" class="lm-btn" id="add-chapter-btn">
+                  <span>➕ Add chapter</span>
+                </button>
+                <button type="button" class="lm-btn danger" id="delete-chapter-btn" disabled>
+                  <span>🗑 Remove selected</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Chapter editor -->
+            <div>
+              <div class="lm-field">
+                <label class="lm-label" for="chapter-title">
+                  Chapter title
+                  <span class="hint">Short name you’ll recognize later.</span>
+                </label>
+                <input type="text" id="chapter-title" placeholder="e.g. Early days in Boston, First big exploration, Raising little kids" />
+              </div>
+
+              <div class="lm-field">
+                <label class="lm-label" for="chapter-timeframe">
+                  Approx. timeframe
+                  <span class="hint">Years or ages are enough.</span>
+                </label>
+                <input type="text" id="chapter-timeframe" placeholder="e.g. 2008–2012, Age 18–22" />
+              </div>
+
+              <div class="lm-field">
+                <label class="lm-label" for="chapter-archetype">
+                  Rough chapter type
+                  <span class="hint">Borrowing from your “Now / Next” chapters.</span>
+                </label>
+                <select id="chapter-archetype">
+                  <option value="">Not sure</option>
+                  <option value="Exploring">Exploring</option>
+                  <option value="Building">Building</option>
+                  <option value="Healing">Healing</option>
+                  <option value="Transforming">Transforming</option>
+                  <option value="Mastering">Mastering</option>
+                  <option value="Leading">Leading</option>
+                  <option value="Living">Living</option>
+                </select>
+              </div>
+
+              <div class="lm-field">
+                <label class="lm-label" for="chapter-themes">
+                  What was this chapter mostly about?
+                  <span class="hint">A few words about people, places, or themes.</span>
+                </label>
+                <textarea id="chapter-themes" placeholder="e.g. Learning how to lead teams, exploring new cities, starting a family."></textarea>
+              </div>
+
+              <div class="lm-field">
+                <label class="lm-label" for="chapter-notes">
+                  Why does this chapter matter to you?
+                  <span class="hint">Optional reflection you might revisit later.</span>
+                </label>
+                <textarea id="chapter-notes" placeholder="What changed for you in this phase? What did you gain or leave behind?"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Turning points -->
+        <div class="lm-card">
+          <div class="lm-card-header">
+            <div class="lm-card-title">Turning points</div>
+            <div class="lm-card-sub">Moments where the story bent in a clear way.</div>
+          </div>
+
+          <div class="lm-field">
+            <label class="lm-label" for="tp-title">
+              Add a turning point
+              <span class="hint">Big move, decision, win, loss, or realization.</span>
+            </label>
+            <input type="text" id="tp-title" placeholder="Short name for the moment (e.g. Moved to Tanzania, Left my job, Became a parent)" />
+          </div>
+
+          <div class="lm-field">
+            <label class="lm-label" for="tp-when">
+              Rough timing
+              <span class="hint">Year, season, or age.</span>
+            </label>
+            <input type="text" id="tp-when" placeholder="e.g. 2019, Spring 2021, Age 30" />
+          </div>
+
+          <div class="lm-field">
+            <label class="lm-label" for="tp-what">
+              What happened?
+            </label>
+            <textarea id="tp-what" placeholder="A sentence or two about what actually happened."></textarea>
+          </div>
+
+          <div class="lm-field">
+            <label class="lm-label" for="tp-shift">
+              What shifted because of it?
+            </label>
+            <textarea id="tp-shift" placeholder="What did this change in how you see yourself, other people, or the path you were on?"></textarea>
+          </div>
+
+          <div class="lm-button-row">
+            <button type="button" class="lm-btn" id="add-tp-btn">
+              <span>➕ Add turning point</span>
+            </button>
+          </div>
+
+          <div class="lm-turning-list" id="tp-list" style="margin-top:6px;"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Goals & purpose -->
+      <section class="lm-column">
+        <!-- Goals constellation -->
+        <div class="lm-card">
+          <div class="lm-card-header">
+            <div class="lm-card-title">Goal constellation</div>
+            <div class="lm-card-sub">Small, honest goals across a few areas of life.</div>
+          </div>
+          <div class="lm-card-sub" style="margin-bottom:6px;">
+            Pick a few tiles that feel alive for you right now and jot one or two things you’d like to move toward.
+            These can be gentle nudges, not grand resolutions.
+          </div>
+
+          <div class="lm-goal-areas-grid" id="goal-grid">
+            <!-- Tiles will be injected by JS so state is easier to manage -->
+          </div>
+        </div>
+
+        <!-- Purpose thread -->
+        <div class="lm-card">
+          <div class="lm-card-header">
+            <div class="lm-card-title">Purpose draft</div>
+            <div class="lm-card-sub">A working “why” that can evolve with you.</div>
+          </div>
+          <div class="lm-purpose-note">
+            In the white book version of Whyld World we said:
+            <br />
+            <strong>“Meaning is how we make sense of the moment. Purpose is how those moments connect.”</strong>
+            <br /><br />
+            If you had to describe the thread that runs through your best moments, how would you say it right now?
+          </div>
+          <textarea
+            id="purpose-draft"
+            class="lm-purpose-text"
+            placeholder="For now, I think I am here to..."
+          ></textarea>
+          <div class="lm-footer-note">
+            This is not carved in stone. I’ll treat it as a working hypothesis and keep adjusting as your story unfolds.
+          </div>
+        </div>
+
+        <!-- Save status -->
+        <div class="lm-button-row">
+          <button type="button" class="lm-btn primary" id="save-all-btn">
+            <span>💾 Save Life Map</span>
+          </button>
+          <a href="ar.html" class="lm-btn">
+            <span>➡ Use this in Discovery Mode</span>
+          </a>
+        </div>
+        <div class="lm-status" id="lm-status">
+          Nothing saved yet.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Data model
+    // -----------------------------
+    var lifeMapState = {
+      chapters: [],        // {id, title, timeframe, archetype, themes, notes}
+      turningPoints: [],   // {id, title, when, what, shift}
+      goals: {},           // areaKey -> { label, note }
+      purposeDraft: ""
+    };
+
+    var currentChapterId = null;
+    var lmStatusEl = null;
+
+    var GOAL_AREAS = [
+      { key: "financial",     label: "💸 Financial",        tagline: "Security, breathing room, or a specific target." },
+      { key: "career",        label: "🏢 Career",           tagline: "Work, projects, or roles that matter to you." },
+      { key: "health",        label: "💪 Health & fitness", tagline: "Energy, strength, or feeling at home in your body." },
+      { key: "mind",          label: "🧠 Mind & learning",  tagline: "Curiosity, skills, or things you want to understand." },
+      { key: "hobbies",       label: "🎭 Hobbies & creativity", tagline: "Making things, playing, or creative outlets." },
+      { key: "family",        label: "👨‍👩‍👧 Family & parenting", tagline: "Time, presence, or projects with family." },
+      { key: "friends",       label: "🤝 Friends & community", tagline: "Connection, belonging, or local impact." },
+      { key: "love",          label: "❤️ Love & partnership", tagline: "Growing or tending to close relationships." },
+      { key: "spiritual",     label: "✨ Spiritual",        tagline: "Perspective, practices, or deeper grounding." },
+      { key: "adventurePlay", label: "🎢 Adventure & play", tagline: "Trips, experiments, or playful risks." }
+    ];
+
+    // -----------------------------
+    // LocalStorage helpers
+    // -----------------------------
+    function loadProfileAndLifeMap() {
+      // Intro: personalize Clara line if we know the name
+      try {
+        var introNameEl = document.getElementById("lm-intro-name");
+        var rawProfile = localStorage.getItem("whyldProfile");
+        if (rawProfile) {
+          var profile = JSON.parse(rawProfile);
+          if (profile && profile.name && introNameEl) {
+            introNameEl.textContent =
+              "Hi " + profile.name + ". Let’s zoom out and look at your life as a map of chapters, turning points, and goals.";
+          }
+        }
+      } catch (e) {
+        console.warn("Could not read whyldProfile:", e);
+      }
+
+      // Life map state
+      try {
+        var rawLife = localStorage.getItem("whyldLifeMap");
+        if (rawLife) {
+          var parsed = JSON.parse(rawLife);
+          if (parsed && typeof parsed === "object") {
+            lifeMapState = Object.assign(lifeMapState, parsed);
+          }
+        }
+      } catch (e) {
+        console.warn("Could not read whyldLifeMap:", e);
+      }
+
+      // If no chapters yet, seed a couple from the quick profile
+      try {
+        var rawProfile2 = localStorage.getItem("whyldProfile");
+        if (lifeMapState.chapters.length === 0 && rawProfile2) {
+          var profile2 = JSON.parse(rawProfile2);
+          if (profile2) {
+            var seedChapters = [];
+            if (profile2.nowChapter) {
+              seedChapters.push({
+                id: "now",
+                title: profile2.nowChapter + " (now)",
+                timeframe: "Now",
+                archetype: profile2.nowChapter,
+                themes: (profile2.drivers || []).join(", "),
+                notes: ""
+              });
+            }
+            if (profile2.futureChapter && profile2.futureChapter !== profile2.nowChapter) {
+              seedChapters.push({
+                id: "next",
+                title: profile2.futureChapter + " (next)",
+                timeframe: "Next chapter",
+                archetype: profile2.futureChapter,
+                themes: "",
+                notes: ""
+              });
+            }
+            lifeMapState.chapters = seedChapters;
+            if (seedChapters.length > 0) {
+              currentChapterId = seedChapters[0].id;
+            }
+          }
+        }
+
+        // Seed purpose draft if empty and profile has one
+        if (!lifeMapState.purposeDraft) {
+          var profile3Raw = localStorage.getItem("whyldProfile");
+          if (profile3Raw) {
+            var profile3 = JSON.parse(profile3Raw);
+            if (profile3 && profile3.bigQuestion) {
+              lifeMapState.purposeDraft =
+                "A rough starting point could be: respond to the question \"" +
+                profile3.bigQuestion.trim() +
+                "\" in a way that feels true over time.";
+            }
+          }
+        }
+      } catch (e) {
+        console.warn("Failed while seeding life map:", e);
+      }
+    }
+
+    function saveLifeMapState() {
+      try {
+        localStorage.setItem("whyldLifeMap", JSON.stringify(lifeMapState));
+        setStatus("Life Map saved.", true);
+      } catch (e) {
+        console.warn("Could not save whyldLifeMap:", e);
+        setStatus("Could not save Life Map (storage issue).", false);
+      }
+    }
+
+    function setStatus(msg, ok) {
+      if (!lmStatusEl) return;
+      lmStatusEl.textContent = msg;
+      lmStatusEl.style.color = ok ? "#9ca3af" : "#fecaca";
+    }
+
+    // -----------------------------
+    // Chapters
+    // -----------------------------
+    function renderChapterList() {
+      var listEl = document.getElementById("chapter-list");
+      var emptyEl = document.getElementById("chapter-list-empty");
+      var deleteBtn = document.getElementById("delete-chapter-btn");
+      if (!listEl) return;
+
+      listEl.innerHTML = "";
+      if (!lifeMapState.chapters || lifeMapState.chapters.length === 0) {
+        if (emptyEl) emptyEl.style.display = "block";
+        if (deleteBtn) deleteBtn.disabled = true;
+        return;
+      }
+
+      if (emptyEl) emptyEl.style.display = "none";
+
+      // Decide current and future based on names and seed ids
+      var profile;
+      try {
+        var raw = localStorage.getItem("whyldProfile");
+        profile = raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        profile = null;
+      }
+
+      lifeMapState.chapters.forEach(function (ch) {
+        var item = document.createElement("div");
+        item.className = "lm-chapter-item";
+        item.dataset.id = ch.id;
+
+        // Determine classification
+        var classRole = "";
+        if (ch.id === "now" || (profile && profile.nowChapter && ch.archetype === profile.nowChapter)) {
+          classRole = "current";
+        } else if (ch.id === "next" || (profile && profile.futureChapter && ch.archetype === profile.futureChapter)) {
+          classRole = "future";
+        } else {
+          classRole = "earlier";
+        }
+        item.classList.add(classRole);
+
+        if (currentChapterId && ch.id === currentChapterId) {
+          item.classList.add("selected");
+        }
+
+        // Dot
+        var dotWrap = document.createElement("div");
+        dotWrap.className = "lm-chapter-item-dot-wrap";
+        var dot = document.createElement("div");
+        dot.className = "lm-chapter-dot";
+        dotWrap.appendChild(dot);
+
+        // Text
+        var textWrap = document.createElement("div");
+        var mainLine = document.createElement("div");
+        mainLine.className = "lm-chapter-mainline";
+
+        var labelSpan = document.createElement("span");
+        labelSpan.className = "chapter-label";
+        labelSpan.textContent = ch.title || "Untitled chapter";
+
+        var timeSpan = document.createElement("span");
+        timeSpan.textContent = ch.timeframe ? " · " + ch.timeframe : "";
+
+        mainLine.appendChild(labelSpan);
+        mainLine.appendChild(timeSpan);
+
+        var sub = document.createElement("div");
+        sub.className = "lm-chapter-subline";
+        var pieces = [];
+        if (ch.archetype) pieces.push(ch.archetype);
+        if (ch.themes) pieces.push(ch.themes);
+        sub.textContent = pieces.join(" · ");
+
+        textWrap.appendChild(mainLine);
+        textWrap.appendChild(sub);
+
+        item.appendChild(dotWrap);
+        item.appendChild(textWrap);
+
+        item.addEventListener("click", function () {
+          currentChapterId = ch.id;
+          applyChapterToEditor(ch);
+          renderChapterList();
+        });
+
+        listEl.appendChild(item);
+      });
+
+      if (deleteBtn) {
+        deleteBtn.disabled = !currentChapterId;
+      }
+    }
+
+    function applyChapterToEditor(ch) {
+      document.getElementById("chapter-title").value = ch.title || "";
+      document.getElementById("chapter-timeframe").value = ch.timeframe || "";
+      document.getElementById("chapter-archetype").value = ch.archetype || "";
+      document.getElementById("chapter-themes").value = ch.themes || "";
+      document.getElementById("chapter-notes").value = ch.notes || "";
+    }
+
+    function readChapterFromEditor() {
+      if (!currentChapterId) return;
+
+      var idx = lifeMapState.chapters.findIndex(function (c) { return c.id === currentChapterId; });
+      if (idx < 0) return;
+
+      var ch = lifeMapState.chapters[idx];
+      ch.title = document.getElementById("chapter-title").value.trim();
+      ch.timeframe = document.getElementById("chapter-timeframe").value.trim();
+      ch.archetype = document.getElementById("chapter-archetype").value || "";
+      ch.themes = document.getElementById("chapter-themes").value.trim();
+      ch.notes = document.getElementById("chapter-notes").value.trim();
+
+      lifeMapState.chapters[idx] = ch;
+      renderChapterList();
+    }
+
+    function addNewChapter() {
+      var newId = "ch_" + Date.now();
+      var newChapter = {
+        id: newId,
+        title: "New chapter",
+        timeframe: "",
+        archetype: "",
+        themes: "",
+        notes: ""
+      };
+      lifeMapState.chapters.push(newChapter);
+      currentChapterId = newId;
+      applyChapterToEditor(newChapter);
+      renderChapterList();
+      setStatus("New chapter added.", true);
+    }
+
+    function deleteCurrentChapter() {
+      if (!currentChapterId) return;
+      lifeMapState.chapters = lifeMapState.chapters.filter(function (c) {
+        return c.id !== currentChapterId;
+      });
+      currentChapterId = lifeMapState.chapters.length ? lifeMapState.chapters[0].id : null;
+
+      if (currentChapterId) {
+        applyChapterToEditor(lifeMapState.chapters[0]);
+      } else {
+        // Clear editor
+        document.getElementById("chapter-title").value = "";
+        document.getElementById("chapter-timeframe").value = "";
+        document.getElementById("chapter-archetype").value = "";
+        document.getElementById("chapter-themes").value = "";
+        document.getElementById("chapter-notes").value = "";
+      }
+
+      renderChapterList();
+      setStatus("Chapter removed.", true);
+    }
+
+    // -----------------------------
+    // Turning points
+    // -----------------------------
+    function addTurningPoint() {
+      var titleEl = document.getElementById("tp-title");
+      var whenEl = document.getElementById("tp-when");
+      var whatEl = document.getElementById("tp-what");
+      var shiftEl = document.getElementById("tp-shift");
+      if (!titleEl || !whatEl) return;
+
+      var title = titleEl.value.trim();
+      var what = whatEl.value.trim();
+      if (!title && !what) {
+        setStatus("Add at least a name or a short description before saving a turning point.", false);
+        return;
+      }
+
+      var tp = {
+        id: "tp_" + Date.now(),
+        title: title || "Turning point",
+        when: (whenEl.value || "").trim(),
+        what: what,
+        shift: (shiftEl.value || "").trim()
+      };
+
+      lifeMapState.turningPoints.push(tp);
+
+      titleEl.value = "";
+      whenEl.value = "";
+      whatEl.value = "";
+      shiftEl.value = "";
+
+      renderTurningPoints();
+      setStatus("Turning point added.", true);
+    }
+
+    function renderTurningPoints() {
+      var listEl = document.getElementById("tp-list");
+      if (!listEl) return;
+      listEl.innerHTML = "";
+
+      if (!lifeMapState.turningPoints || lifeMapState.turningPoints.length === 0) return;
+
+      lifeMapState.turningPoints.forEach(function (tp) {
+        var item = document.createElement("div");
+        item.className = "lm-turning-item";
+
+        var title = document.createElement("div");
+        title.className = "lm-turning-title";
+        title.textContent = tp.title || "Turning point";
+
+        var meta = document.createElement("div");
+        meta.className = "lm-turning-meta";
+        meta.textContent = tp.when ? tp.when : "";
+
+        var body = document.createElement("div");
+        body.style.marginTop = "3px";
+        body.innerHTML = "";
+
+        if (tp.what) {
+          var p1 = document.createElement("div");
+          p1.textContent = tp.what;
+          body.appendChild(p1);
+        }
+        if (tp.shift) {
+          var p2 = document.createElement("div");
+          p2.style.marginTop = "2px";
+          p2.style.color = "#9ca3af";
+          p2.textContent = "What shifted: " + tp.shift;
+          body.appendChild(p2);
+        }
+
+        item.appendChild(title);
+        if (tp.when) item.appendChild(meta);
+        item.appendChild(body);
+
+        listEl.appendChild(item);
+      });
+    }
+
+    // -----------------------------
+    // Goals
+    // -----------------------------
+    function renderGoalTiles() {
+      var grid = document.getElementById("goal-grid");
+      if (!grid) return;
+
+      grid.innerHTML = "";
+      GOAL_AREAS.forEach(function (area) {
+        var tile = document.createElement("div");
+        tile.className = "lm-goal-tile";
+
+        var title = document.createElement("div");
+        title.className = "lm-goal-title";
+        title.innerHTML = "<span>" + area.label + "</span>" +
+          "<span class='tagline'>" + area.tagline + "</span>";
+
+        var ta = document.createElement("textarea");
+        ta.className = "lm-goal-input";
+        ta.dataset.areaKey = area.key;
+        ta.placeholder = "A couple of lines about what “better” looks like here.";
+        if (lifeMapState.goals && lifeMapState.goals[area.key]) {
+          ta.value = lifeMapState.goals[area.key].note || "";
+        }
+
+        ta.addEventListener("input", function () {
+          if (!lifeMapState.goals) lifeMapState.goals = {};
+          lifeMapState.goals[area.key] = {
+            label: area.label,
+            note: ta.value
+          };
+          setStatus("Goal updated (not yet saved).", true);
+        });
+
+        tile.appendChild(title);
+        tile.appendChild(ta);
+        grid.appendChild(tile);
+      });
+    }
+
+    // -----------------------------
+    // Purpose
+    // -----------------------------
+    function bindPurposeDraft() {
+      var el = document.getElementById("purpose-draft");
+      if (!el) return;
+      if (lifeMapState.purposeDraft) {
+        el.value = lifeMapState.purposeDraft;
+      }
+      el.addEventListener("input", function () {
+        lifeMapState.purposeDraft = el.value;
+        setStatus("Purpose draft updated (not yet saved).", true);
+      });
+    }
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+    document.addEventListener("DOMContentLoaded", function () {
+      lmStatusEl = document.getElementById("lm-status");
+
+      loadProfileAndLifeMap();
+      renderGoalTiles();
+      bindPurposeDraft();
+
+      // Chapters
+      renderChapterList();
+      if (currentChapterId && lifeMapState.chapters.length > 0) {
+        var active = lifeMapState.chapters.find(function (c) { return c.id === currentChapterId; });
+        if (active) applyChapterToEditor(active);
+      } else if (lifeMapState.chapters.length > 0) {
+        currentChapterId = lifeMapState.chapters[0].id;
+        applyChapterToEditor(lifeMapState.chapters[0]);
+      }
+
+      document.getElementById("add-chapter-btn").addEventListener("click", function () {
+        addNewChapter();
+      });
+
+      document.getElementById("delete-chapter-btn").addEventListener("click", function () {
+        deleteCurrentChapter();
+      });
+
+      // Chapter editor inputs -> live state
+      ["chapter-title", "chapter-timeframe", "chapter-archetype", "chapter-themes", "chapter-notes"]
+        .forEach(function (id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener("input", function () {
+            readChapterFromEditor();
+            setStatus("Chapter updated (not yet saved).", true);
+          });
+        });
+
+      // Turning points
+      document.getElementById("add-tp-btn").addEventListener("click", function () {
+        addTurningPoint();
+      });
+      renderTurningPoints();
+
+      // Save button
+      document.getElementById("save-all-btn").addEventListener("click", function () {
+        // Make sure the current chapter editor is flushed
+        readChapterFromEditor();
+        saveLifeMapState();
+      });
+
+      if (!lifeMapState.chapters.length &&
+          !lifeMapState.turningPoints.length &&
+          (!lifeMapState.goals || Object.keys(lifeMapState.goals).length === 0)) {
+        setStatus("Start by adding a chapter or a turning point.", true);
+      } else {
+        setStatus("Loaded saved Life Map.", true);
+      }
+    });
+  </script>
+</body>
+</html>
