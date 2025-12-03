@@ -978,6 +978,14 @@
                   Gentle, balanced, or bold — your call.
                 </div>
               </div>
+
+              <div class="ww-life-map-row">
+                <div class="ww-life-map-row-label">Deep map</div>
+                <div class="ww-life-map-row-value" id="life-map-deep">
+                  When you sketch your full Life Map in Life Map Mode, highlights will appear here.
+                </div>
+              </div>
+              
             </div>
           </div>
         
@@ -1550,6 +1558,27 @@
     });
   }
 
+  // --- Optional deeper Life Map (from life-map.html) ---
+
+  function getDeepLifeMap() {
+    // We expect Life Map Mode to store something like:
+    // {
+    //   earliestLabel: "Wandering student",
+    //   horizonLabel: "Builder / mentor",
+    //   keyTheme: "Exploration and service",
+    //   turningPointsCount: 3,
+    //   updatedAt: "2025-12-03T10:30:00.000Z"
+    // }
+    try {
+      var raw = localStorage.getItem("whyldLifeMapDeep");
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      console.warn("Could not parse whyldLifeMapDeep:", e);
+      return null;
+    }
+  }
+  
   // --- Main visual updater: Life Map Snapshot ---
 
   function updateLifeMap() {
@@ -1660,6 +1689,65 @@
         " toward " + futureChapter.toLowerCase() +
         " while honoring what matters most.";
     }
+
+    // --- Deep Life Map row (if present) ---
+
+    var deepRow = document.getElementById("life-map-deep");
+    if (deepRow) {
+      var deep = getDeepLifeMap();
+
+      if (!deep) {
+        deepRow.textContent =
+          "When you sketch your full Life Map in Life Map Mode, highlights will appear here.";
+      } else {
+        var parts = [];
+
+        if (deep.earliestLabel && deep.horizonLabel) {
+          parts.push(
+            "Arc from " +
+            deep.earliestLabel.toLowerCase() +
+            " → " +
+            deep.horizonLabel.toLowerCase()
+          );
+        } else if (deep.earliestLabel) {
+          parts.push("Early focus: " + deep.earliestLabel.toLowerCase());
+        } else if (deep.horizonLabel) {
+          parts.push("Leaning toward: " + deep.horizonLabel.toLowerCase());
+        }
+
+        if (deep.keyTheme) {
+          parts.push("Thread: " + deep.keyTheme);
+        }
+
+        if (typeof deep.turningPointsCount === "number" && deep.turningPointsCount > 0) {
+          parts.push(deep.turningPointsCount + " turning point" +
+            (deep.turningPointsCount > 1 ? "s" : ""));
+        }
+
+        // Optional "updated at" tail
+        if (deep.updatedAt) {
+          try {
+            var d = new Date(deep.updatedAt);
+            if (!isNaN(d.getTime())) {
+              var humanDate = d.toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric"
+              });
+              parts.push("updated " + humanDate);
+            }
+          } catch (e) {
+            // ignore date parse errors
+          }
+        }
+
+        deepRow.textContent =
+          parts.length > 0
+            ? parts.join(" · ")
+            : "Your deeper Life Map is saved; open Life Map Mode to edit.";
+      }
+    }
+
+    
   }
 
   // --- Init on DOM ready ---
