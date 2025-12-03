@@ -527,6 +527,45 @@
       text-align: right;
       margin-top: 4px;
     }
+
+    <!-- Earlier chapter label -->
+    <input
+      type="text"
+      id="lm-earliest-label"
+      placeholder="e.g. Wandering student, survival mode, builder-in-training"
+    />
+    
+    <!-- Horizon / future chapter label -->
+    <input
+      type="text"
+      id="lm-horizon-label"
+      placeholder="e.g. Builder-mentor, grounded explorer, community steward"
+    />
+    
+    <!-- Key theme for the overall arc -->
+    <input
+      type="text"
+      id="lm-key-theme"
+      placeholder="e.g. Exploration and service, curiosity into contribution"
+    />
+    
+    <!-- Turning points (you can use checkboxes, list, etc.) -->
+    <!-- For now we'll just use a number input for count: -->
+    <input
+      type="number"
+      id="lm-turning-points-count"
+      min="0"
+      step="1"
+      placeholder="How many turning points did you map?"
+    />
+    
+    <!-- Save button -->
+    <button id="lm-save-button" type="button">
+      Save Life Map
+    </button>
+
+
+    
   </style>
 </head>
 <body>
@@ -1181,6 +1220,94 @@
       });
     }
 
+    <script>
+      // Helper: safe trimmed value
+      function lmValue(id) {
+        var el = document.getElementById(id);
+        if (!el) return "";
+        return (el.value || "").trim();
+      }
+    
+      // Load existing deep Life Map (if any) and prefill the form
+      function loadDeepLifeMapIntoForm() {
+        try {
+          var raw = localStorage.getItem("whyldLifeMapDeep");
+          if (!raw) return;
+    
+          var deep = JSON.parse(raw);
+    
+          if (deep.earliestLabel && document.getElementById("lm-earliest-label")) {
+            document.getElementById("lm-earliest-label").value = deep.earliestLabel;
+          }
+          if (deep.horizonLabel && document.getElementById("lm-horizon-label")) {
+            document.getElementById("lm-horizon-label").value = deep.horizonLabel;
+          }
+          if (deep.keyTheme && document.getElementById("lm-key-theme")) {
+            document.getElementById("lm-key-theme").value = deep.keyTheme;
+          }
+          if (
+            typeof deep.turningPointsCount === "number" &&
+            document.getElementById("lm-turning-points-count")
+          ) {
+            document.getElementById("lm-turning-points-count").value =
+              deep.turningPointsCount;
+          }
+        } catch (e) {
+          console.warn("Could not parse whyldLifeMapDeep on Life Map page:", e);
+        }
+      }
+    
+      // Save handler: builds the deep map object and stores it
+      function saveDeepLifeMap() {
+        var earliestLabel = lmValue("lm-earliest-label");
+        var horizonLabel = lmValue("lm-horizon-label");
+        var keyTheme = lmValue("lm-key-theme");
+    
+        // Turning points count: either from the field or 0
+        var tpCountRaw = lmValue("lm-turning-points-count");
+        var turningPointsCount = parseInt(tpCountRaw, 10);
+        if (isNaN(turningPointsCount) || turningPointsCount < 0) {
+          turningPointsCount = 0;
+        }
+    
+        var deepMap = {
+          earliestLabel: earliestLabel || null,
+          horizonLabel: horizonLabel || null,
+          keyTheme: keyTheme || "",
+          turningPointsCount: turningPointsCount,
+          updatedAt: new Date().toISOString()
+        };
+    
+        try {
+          localStorage.setItem("whyldLifeMapDeep", JSON.stringify(deepMap));
+          // Optional: give a small confirmation
+          alert("Life Map saved. The landing page snapshot will now reflect this.");
+        } catch (e) {
+          console.warn("Failed to save whyldLifeMapDeep:", e);
+          alert("Sorry, something went wrong while saving your Life Map.");
+        }
+      }
+    
+      // Wire up on DOM ready
+      document.addEventListener("DOMContentLoaded", function () {
+        // Prefill form if we have a saved deep map
+        loadDeepLifeMapIntoForm();
+    
+        // Attach click handler to save button
+        var saveBtn = document.getElementById("lm-save-button");
+        if (saveBtn) {
+          saveBtn.addEventListener("click", function () {
+            saveDeepLifeMap();
+          });
+        }
+      });
+    </script>
+
+
+
+
+
+    
     // -----------------------------
     // Init
     // -----------------------------
