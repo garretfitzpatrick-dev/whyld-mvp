@@ -1325,15 +1325,19 @@
       });
 
       // Chapter editor inputs -> live state
-      ["chapter-title", "chapter-timeframe", "chapter-archetype", "chapter-themes", "chapter-notes"]
+      ["chapter-title", "chapter-timeframe", "chapter-archetype", "chapter-themes", "chapter-notes", "chapter-mood"]
         .forEach(function (id) {
           var el = document.getElementById(id);
           if (!el) return;
-          el.addEventListener("input", function () {
+      
+          var eventName = (id === "chapter-mood") ? "change" : "input";
+      
+          el.addEventListener(eventName, function () {
             readChapterFromEditor();
             setStatus("Chapter updated (not yet saved).", true);
           });
         });
+
 
       // Turning points
       document.getElementById("add-tp-btn").addEventListener("click", function () {
