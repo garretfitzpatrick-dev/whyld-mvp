@@ -143,8 +143,6 @@
       color: #555;
     }
 
-
-    
     /* ====== Active lens button ====== */
     
     .lens-btn.active-lens {
@@ -402,19 +400,32 @@
   margin: 2px 0;
 }
 
-/* Map toggle button near top-left */
-.map-toggle-btn {
+/* Map + navigation buttons near top-left */
+.top-left-nav {
   position: fixed;
   top: 4px;
   left: 12px;
   z-index: 66;
-  padding: 4px 10px;
-  font-size: 11px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.nav-mini-btn {
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.6);
   background: rgba(0,0,0,0.45);
   color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  text-decoration: none;
   cursor: pointer;
+  line-height: 1.2;
+}
+
+/* Slight emphasis for the Map button */
+.map-toggle-btn {
+  border-color: rgba(255,255,255,0.9);
 }
 
 /* Zone map overlay */
@@ -593,48 +604,48 @@
 
   </div>
 
-<div id="location-label" class="location-label"></div>
+  <div id="location-label" class="location-label"></div>
 
-  <!-- Map toggle button -->
-<button class="map-toggle-btn" type="button" onclick="openZoneMap()">
-  Map
-</button>
+  <!-- Top-left nav: back to home + explainer + map -->
+  <div class="top-left-nav">
+    <a href="index.html" class="nav-mini-btn">← Home</a>
+    <a href="explainer.html" class="nav-mini-btn">?</a>
+    <button class="nav-mini-btn map-toggle-btn" type="button" onclick="openZoneMap()">Map</button>
+  </div>
   
   <!-- Bottom UI: lens buttons -->
- <div class="ui">
-  <div class="ui-row main">
-    <button class="btn lens-btn lens-explore-btn" onclick="setLens('Explore')">Explore</button>
-    <button class="btn lens-btn lens-serve-btn" onclick="setLens('Serve')">Serve</button>
-    <button class="btn lens-btn lens-create-btn" onclick="setLens('Create')">Create</button>
-    <button class="btn lens-btn lens-inspire-btn" onclick="setLens('Inspire')">Inspire</button>
-    <button class="btn lens-btn lens-reflect-btn" onclick="setLens('Reflect')">Reflect</button>
-  </div>
-
-  <div class="ui-row dev">
-    <button class="btn dev-btn" onclick="debugSetLocation('hiro_marker', 'marker')">
-      Dev: Marker
-    </button>
-    <button class="btn dev-btn" onclick="debugSetLocation('harvard_square_demo', 'zone')">
-      Dev: Harvard Sq
-    </button>
-  </div>
-</div>
-
-<!-- Zone Map Overlay -->
-<div id="zone-map-overlay" class="zone-map-overlay" style="display:none;">
-  <div class="zone-map-backdrop" onclick="closeZoneMap()"></div>
-  <div class="zone-map-panel">
-    <div class="zone-map-header">
-      <span>Harvard Square Zones</span>
-      <button type="button" class="zone-map-close-btn" onclick="closeZoneMap()">✕</button>
+  <div class="ui">
+    <div class="ui-row main">
+      <button class="btn lens-btn lens-explore-btn" onclick="setLens('Explore')">Explore</button>
+      <button class="btn lens-btn lens-serve-btn" onclick="setLens('Serve')">Serve</button>
+      <button class="btn lens-btn lens-create-btn" onclick="setLens('Create')">Create</button>
+      <button class="btn lens-btn lens-inspire-btn" onclick="setLens('Inspire')">Inspire</button>
+      <button class="btn lens-btn lens-reflect-btn" onclick="setLens('Reflect')">Reflect</button>
     </div>
-    <div class="zone-map-body" id="zone-map-body">
-      <!-- Zone list will be filled by JS -->
+
+    <div class="ui-row dev">
+      <button class="btn dev-btn" onclick="debugSetLocation('hiro_marker', 'marker')">
+        Dev: Marker
+      </button>
+      <button class="btn dev-btn" onclick="debugSetLocation('harvard_square_demo', 'zone')">
+        Dev: Harvard Sq
+      </button>
     </div>
   </div>
-</div>
 
-  
+  <!-- Zone Map Overlay -->
+  <div id="zone-map-overlay" class="zone-map-overlay" style="display:none;">
+    <div class="zone-map-backdrop" onclick="closeZoneMap()"></div>
+    <div class="zone-map-panel">
+      <div class="zone-map-header">
+        <span>Harvard Square Zones</span>
+        <button type="button" class="zone-map-close-btn" onclick="closeZoneMap()">✕</button>
+      </div>
+      <div class="zone-map-body" id="zone-map-body">
+        <!-- Zone list will be filled by JS -->
+      </div>
+    </div>
+  </div>
 
 <script>
   // =============================
@@ -735,9 +746,6 @@
   }
 
   // =============================
-  // LENS / AURA
-  // =============================
-    // =============================
   // LENS / AURA
   // =============================
   function setLens(lensLabel) {
@@ -1011,77 +1019,74 @@
     updateLocationLabelFromCurrentLocation();
   }
 
-function updateLocationLabelFromCurrentLocation() {
-  var el = document.getElementById("location-label");
-  if (!el) return;
+  function updateLocationLabelFromCurrentLocation() {
+    var el = document.getElementById("location-label");
+    if (!el) return;
 
-  if (!currentLocation) {
-    el.innerText = "";
-    return;
-  }
+    if (!currentLocation) {
+      el.innerText = "";
+      return;
+    }
 
-  var baseLabel = "";
-  
-  if (currentLocation.type === "marker") {
-    // You can change this label text later if you add more markers
-    baseLabel = "Marker: hiro_marker";
-  } else if (currentLocation.type === "zone") {
-    var zoneId = currentLocation.id;
-    var label = zoneId;
-    if (Array.isArray(ZONES)) {
-      var z = ZONES.find(function (zone) { return zone.id === zoneId; });
-      if (z && z.label) {label = z.label;
-    }
-    }
-    baseLabel = label;
-  }
-  el.innerText = baseLabel;
-}
-  
-  // =============================
-  // GEOLOCATION / ZONES
-  // =============================
-    // =============================
-  // GEOLOCATION / ZONES
-  // =============================
-    var ZONES = [
-      {
-        id: "harvard_square_demo",     // keep or replace this one if you like
-        label: "Harvard Square",
-        lat: 42.3733,
-        lon: -71.1190,
-        radiusM: 50,
-        mapX: 50,   // center-ish
-        mapY: 50
-      },
-      {
-        id: "hsq_kiosk",
-        label: "Harvard Square Kiosk",
-        lat: 42.37352,
-        lon: -71.11919,
-        radiusM: 35,
-        mapX: 45,
-        mapY: 35
-      },
-      {
-        id: "harvard_coop_corner",
-        label: "Harvard Coop Corner",
-        lat: 42.37365,
-        lon: -71.11936,
-        radiusM: 40,
-        mapX: 40,
-        mapY: 45
-      },
-      {
-        id: "st_pauls_steps",
-        label: "St. Paul's Steps",
-        lat: 42.3712,
-        lon: -71.1156,
-        radiusM: 35,
-        mapX: 78,
-        mapY: 84
+    var baseLabel = "";
+    
+    if (currentLocation.type === "marker") {
+      // You can change this label text later if you add more markers
+      baseLabel = "Marker: hiro_marker";
+    } else if (currentLocation.type === "zone") {
+      var zoneId = currentLocation.id;
+      var label = zoneId;
+      if (Array.isArray(ZONES)) {
+        var z = ZONES.find(function (zone) { return zone.id === zoneId; });
+        if (z && z.label) {label = z.label;
       }
-    ];
+      }
+      baseLabel = label;
+    }
+    el.innerText = baseLabel;
+  }
+  
+  // =============================
+  // GEOLOCATION / ZONES
+  // =============================
+  var ZONES = [
+    {
+      id: "harvard_square_demo",     // keep or replace this one if you like
+      label: "Harvard Square",
+      lat: 42.3733,
+      lon: -71.1190,
+      radiusM: 50,
+      mapX: 50,   // center-ish
+      mapY: 50
+    },
+    {
+      id: "hsq_kiosk",
+      label: "Harvard Square Kiosk",
+      lat: 42.37352,
+      lon: -71.11919,
+      radiusM: 35,
+      mapX: 45,
+      mapY: 35
+    },
+    {
+      id: "harvard_coop_corner",
+      label: "Harvard Coop Corner",
+      lat: 42.37365,
+      lon: -71.11936,
+      radiusM: 40,
+      mapX: 40,
+      mapY: 45
+    },
+    {
+      id: "st_pauls_steps",
+      label: "St. Paul's Steps",
+      lat: 42.3712,
+      lon: -71.1156,
+      radiusM: 35,
+      mapX: 78,
+      mapY: 84
+    }
+  ];
 
 
   function startGeoWatch() {
@@ -1119,18 +1124,18 @@ function updateLocationLabelFromCurrentLocation() {
       }
     }
 
-  if (nearestZone) {
-    if (activeZoneId !== nearestZone.id) {
-      activeZoneId = nearestZone.id;
+    if (nearestZone) {
+      if (activeZoneId !== nearestZone.id) {
+        activeZoneId = nearestZone.id;
 
-      if (!markerVisible) {
-        currentLocation = { type: 'zone', id: activeZoneId };
-        updateCardForCurrentLens(true);
-        triggerZoneEnteredAnimation();
-        updateLocationLabelFromCurrentLocation();   // 🔹 label updates here
+        if (!markerVisible) {
+          currentLocation = { type: 'zone', id: activeZoneId };
+          updateCardForCurrentLens(true);
+          triggerZoneEnteredAnimation();
+          updateLocationLabelFromCurrentLocation();   // 🔹 label updates here
+        }
       }
-    }
-    
+      
     } else {
       // Left all zones
       activeZoneId = null;
@@ -1161,21 +1166,21 @@ function updateLocationLabelFromCurrentLocation() {
   }
 
   function toggleStoryExpand() {
-  var textEl = document.getElementById("card-text");
-  var btnEl  = document.getElementById("story-toggle");
+    var textEl = document.getElementById("card-text");
+    var btnEl  = document.getElementById("story-toggle");
 
-  if (!textEl || !btnEl) return;
-    
-  storyExpanded = !storyExpanded;
+    if (!textEl || !btnEl) return;
+      
+    storyExpanded = !storyExpanded;
 
-  if (storyExpanded) {
-    textEl.classList.remove("collapsed");
-    btnEl.innerText = "Less";
-  } else {
-    textEl.classList.add("collapsed");
-    btnEl.innerText = "More";
+    if (storyExpanded) {
+      textEl.classList.remove("collapsed");
+      btnEl.innerText = "Less";
+    } else {
+      textEl.classList.add("collapsed");
+      btnEl.innerText = "More";
+    }
   }
-}
 
   // Convert timestamp into "time ago" string
   function formatTimeAgo(timestamp) {
@@ -1202,46 +1207,46 @@ function updateLocationLabelFromCurrentLocation() {
     });
   }
 
-// =============================
-// REFLECTIONS
-// =============================
+  // =============================
+  // REFLECTIONS
+  // =============================
   function loadReflectionsForCurrentLocationAndLens() {
-  if (!currentLocation || !REFLECTIONS_API_URL) {
-    renderReflections([]);
-    return;
-  }
-
-  var locationId = currentLocation.id;
-  var lens = currentLensLabel;
-  var layer = currentLayer;
-  var key = locationId + "|" + lens + "|" + layer;
-
-  // Use cache if we already loaded these
-  if (reflectionsCache[key]) {
-    renderReflections(reflectionsCache[key]);
-    return;
-  }
-
-  var url = REFLECTIONS_API_URL +
-    "?locationId=" + encodeURIComponent(locationId) +
-    "&lens=" + encodeURIComponent(lens) +
-    "&layer=" + encodeURIComponent(layer);
-
-  fetch(url)
-    .then(function (resp) {
-      if (!resp.ok) throw new Error("Reflections API error: " + resp.status);
-      return resp.json();
-    })
-    .then(function (data) {
-      var refs = (data && data.reflections) || [];
-      reflectionsCache[key] = refs;
-      renderReflections(refs);
-    })
-    .catch(function (err) {
-      console.warn("Failed to load reflections:", err);
+    if (!currentLocation || !REFLECTIONS_API_URL) {
       renderReflections([]);
-    });
-}
+      return;
+    }
+
+    var locationId = currentLocation.id;
+    var lens = currentLensLabel;
+    var layer = currentLayer;
+    var key = locationId + "|" + lens + "|" + layer;
+
+    // Use cache if we already loaded these
+    if (reflectionsCache[key]) {
+      renderReflections(reflectionsCache[key]);
+      return;
+    }
+
+    var url = REFLECTIONS_API_URL +
+      "?locationId=" + encodeURIComponent(locationId) +
+      "&lens=" + encodeURIComponent(lens) +
+      "&layer=" + encodeURIComponent(layer);
+
+    fetch(url)
+      .then(function (resp) {
+        if (!resp.ok) throw new Error("Reflections API error: " + resp.status);
+        return resp.json();
+      })
+      .then(function (data) {
+        var refs = (data && data.reflections) || [];
+        reflectionsCache[key] = refs;
+        renderReflections(refs);
+      })
+      .catch(function (err) {
+        console.warn("Failed to load reflections:", err);
+        renderReflections([]);
+      });
+  }
 
   function renderReflections(refs) {
     var container = document.getElementById("reflections");
@@ -1284,10 +1289,7 @@ function updateLocationLabelFromCurrentLocation() {
     
         html += '<li class="reflection-item">' + prefix + txt + '</li>';
       }
-    }
-
-  
-    else if (currentLayer === "Community") {
+    } else if (currentLayer === "Community") {
       var maxC = Math.min(refs.length, 20);
       for (var j = 0; j < maxC; j++) {
         var r = refs[j];
@@ -1316,31 +1318,31 @@ function updateLocationLabelFromCurrentLocation() {
       .replace(/>/g, "&gt;");
   }
   
-// =============================
-// ANIMATIONS
-// =============================
+  // =============================
+  // ANIMATIONS
+  // =============================
   function triggerZoneEnteredAnimation() {
-  var cardEl = document.getElementById("card");
-  var auraEl = document.getElementById("lens-aura");
-  if (!cardEl) return;
+    var cardEl = document.getElementById("card");
+    var auraEl = document.getElementById("lens-aura");
+    if (!cardEl) return;
 
-  // Restart the card animation
-  cardEl.classList.remove("zone-entered");
-  // Force reflow so animation can replay
-  void cardEl.offsetWidth;
-  cardEl.classList.add("zone-entered");
+    // Restart the card animation
+    cardEl.classList.remove("zone-entered");
+    // Force reflow so animation can replay
+    void cardEl.offsetWidth;
+    cardEl.classList.add("zone-entered");
 
-  // Optional: small aura flash
-  if (auraEl) {
-    auraEl.classList.remove("zone-flash");
-    void auraEl.offsetWidth;
-    auraEl.classList.add("zone-flash");
+    // Optional: small aura flash
+    if (auraEl) {
+      auraEl.classList.remove("zone-flash");
+      void auraEl.offsetWidth;
+      auraEl.classList.add("zone-flash");
+    }
   }
-}
 
-// =============================
-// ZONE MAP OVERLAY
-// =============================
+  // =============================
+  // ZONE MAP OVERLAY
+  // =============================
   function openZoneMap() {
     var overlay = document.getElementById("zone-map-overlay");
     if (!overlay) return;
@@ -1354,7 +1356,7 @@ function updateLocationLabelFromCurrentLocation() {
     overlay.style.display = "none";
   }
   
-    // Build mini-map in the overlay
+  // Build mini-map in the overlay
   function renderZoneMapList() {
     var bodyEl = document.getElementById("zone-map-body");
     if (!bodyEl || !Array.isArray(ZONES)) return;
