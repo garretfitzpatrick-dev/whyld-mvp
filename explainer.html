@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Whyld World · How It Works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --ww-bg: #050816;
+      --ww-bg-soft: #0b1020;
+      --ww-accent: #ffb347;
+      --ww-card: #0f172a;
+      --ww-border: rgba(148, 163, 184, 0.4);
+      --ww-text: #e5e7eb;
+      --ww-text-soft: #9ca3af;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0%, #020617 52%, #020617 100%);
+      color: var(--ww-text);
+    }
+
+    body {
+      font-size: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .ex-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Top bar */
+    .ex-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .ex-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ex-logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #ffffff 0, #f97316 12%, #7c3aed 46%, #0ea5e9 100%);
+      box-shadow: 0 0 28px rgba(96, 165, 250, 0.5);
+      position: relative;
+    }
+
+    .ex-logo-mark::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: inherit;
+      border: 1px solid rgba(15, 23, 42, 0.4);
+    }
+
+    .ex-logo-text-main {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .ex-logo-text-sub {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .ex-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ex-nav-link {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 6px 12px;
+      font-size: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--ww-text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ex-nav-link span.icon {
+      font-size: 14px;
+    }
+
+    .ex-nav-link.active {
+      border-color: #f97316;
+      background: rgba(249, 115, 22, 0.12);
+      color: #fed7aa;
+      box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35);
+    }
+
+    /* Main layout */
+    .ex-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .ex-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ex-card {
+      border-radius: 16px;
+      border: 1px solid var(--ww-border);
+      background: rgba(15, 23, 42, 0.96);
+      padding: 14px 14px 12px;
+    }
+
+    .ex-card + .ex-card {
+      margin-top: 10px;
+    }
+
+    .ex-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ww-text-soft);
+      margin-bottom: 6px;
+    }
+
+    .ex-lead {
+      font-size: 15px;
+      color: var(--ww-text-soft);
+      line-height: 1.7;
+    }
+
+    .ex-lead strong {
+      color: #e5e7eb;
+    }
+
+    .ex-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .ex-pill {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--ww-text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ex-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ww-text-soft);
+      margin-bottom: 4px;
+    }
+
+    .ex-section-body {
+      font-size: 13px;
+      color: var(--ww-text-soft);
+      line-height: 1.6;
+    }
+
+    .ex-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .ex-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .ex-grid-item {
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.98);
+      padding: 8px 9px;
+      font-size: 13px;
+    }
+
+    .ex-grid-item h3 {
+      font-size: 13px;
+      margin: 0 0 4px;
+      color: #e5e7eb;
+    }
+
+    .ex-tagline {
+      font-size: 12px;
+      color: var(--ww-text-soft);
+      margin-top: 4px;
+    }
+
+    .ex-example {
+      font-size: 13px;
+      margin-top: 6px;
+      color: var(--ww-text-soft);
+    }
+
+    .ex-highlight {
+      border-radius: 12px;
+      border: 1px solid rgba(250, 204, 21, 0.6);
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.12), rgba(15, 23, 42, 0.98));
+      padding: 10px 11px;
+      font-size: 13px;
+      color: var(--ww-text-soft);
+      line-height: 1.6;
+    }
+
+    .ex-highlight strong {
+      color: #facc15;
+    }
+
+    .ex-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--ww-text-soft);
+    }
+
+    .ex-list li + li {
+      margin-top: 3px;
+    }
+
+    .ex-faq-item + .ex-faq-item {
+      margin-top: 10px;
+    }
+
+    .ex-faq-q {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 3px;
+    }
+
+    .ex-faq-a {
+      font-size: 13px;
+      color: var(--ww-text-soft);
+      line-height: 1.6;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="ex-shell">
+    <!-- Top bar -->
+    <header class="ex-top-bar">
+      <div class="ex-logo">
+        <div class="ex-logo-mark"></div>
+        <div>
+          <div class="ex-logo-text-main">Whyld World</div>
+          <div class="ex-logo-text-sub">How it works</div>
+        </div>
+      </div>
+      <nav class="ex-nav">
+        <a href="index.html" class="ex-nav-link">
+          <span class="icon">🌱</span><span>Meaning Mode</span>
+        </a>
+        <a href="life-map.html" class="ex-nav-link">
+          <span class="icon">🗺️</span><span>Life Map Mode</span>
+        </a>
+        <a href="ar.html" class="ex-nav-link">
+          <span class="icon">📍</span><span>Discovery Mode</span>
+        </a>
+        <a href="explainer.html" class="ex-nav-link active">
+          <span class="icon">❓</span><span>How Whyld World Works</span>
+        </a>
+      </nav>
+    </header>
+
+    <main class="ex-main">
+      <!-- LEFT: Main explanation -->
+      <section>
+        <div class="ex-card">
+          <div class="ex-card-title">Big picture</div>
+          <div class="ex-lead">
+            Whyld World is a quiet layer on top of your life that helps you see your days as a
+            <strong>coherent story</strong>, not a blur of unrelated moments.
+            <br /><br />
+            It does that by combining five ideas:
+            <div class="ex-pill-row">
+              <div class="ex-pill">📖 <strong>Chapters</strong>: phases of your life</div>
+              <div class="ex-pill">🎯 <strong>Goals</strong>: what you are moving toward</div>
+              <div class="ex-pill">⛰️ <strong>Frontiers</strong>: edges those goals sit on</div>
+              <div class="ex-pill">🎨 <strong>Lenses</strong>: how you choose to look at things</div>
+              <div class="ex-pill">🗺️ <strong>Life Map</strong>: the big picture over time</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-section-title">Chapters</div>
+          <div class="ex-section-body">
+            Chapters are short names for the phases of your life. For example:
+            <ul class="ex-list">
+              <li><strong>Exploring</strong> – trying things, learning, wandering</li>
+              <li><strong>Building</strong> – creating something solid, investing effort</li>
+              <li><strong>Healing</strong> – recovering, rebuilding capacity</li>
+              <li><strong>Transforming</strong> – changing patterns or identity</li>
+              <li><strong>Mastering</strong> – deepening a craft or domain</li>
+              <li><strong>Leading</strong> – carrying responsibility for others</li>
+              <li><strong>Living</strong> – integrating and enjoying what you have built</li>
+            </ul>
+            You choose:
+            <ul class="ex-list">
+              <li>One <strong>primary chapter</strong> you feel you are in right now</li>
+              <li>Up to a few <strong>sub-chapters</strong> that are active in parallel</li>
+            </ul>
+            Over time, these chapters form the spine of your Life Map.
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-section-title">Goals</div>
+          <div class="ex-section-body">
+            Goals are concrete things you care about. They can be small or large:
+            <ul class="ex-list">
+              <li><strong>Micro</strong> – this week or this month</li>
+              <li><strong>Meso</strong> – this year or this current season of life</li>
+              <li><strong>Macro</strong> – multi-year or life-direction goals</li>
+            </ul>
+            Each goal is connected to your story:
+            <ul class="ex-list">
+              <li><strong>Which chapter</strong> is this goal most a part of?</li>
+              <li><strong>Does it point toward a future chapter</strong> you want to grow into?</li>
+            </ul>
+            This is what lets Clara say “this action matters for the chapter you are living,” instead of treating goals as a separate to-do list.
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-section-title">Frontiers</div>
+          <div class="ex-section-body">
+            Frontiers describe the kind of edge a goal sits on. They do not replace chapters. They sit
+            <strong>on top of goals</strong> as dimensions.
+            <br /><br />
+            For each frontier there is:
+            <ul class="ex-list">
+              <li>a <strong>barrier</strong> – the wall you feel</li>
+              <li>an <strong>opportunity</strong> – what becomes possible beyond it</li>
+            </ul>
+            Examples:
+            <ul class="ex-list">
+              <li><strong>Impossibility Frontier</strong> – from “this is too big for me” to “I am growing into it.”</li>
+              <li><strong>Distractibility Frontier</strong> – from scattered effort to depth and flow.</li>
+              <li><strong>Isolation Frontier</strong> – from carrying things alone to shared work and support.</li>
+              <li><strong>Conformity Frontier</strong> – from playing it safe to honest expression.</li>
+            </ul>
+            For a given goal, you can tag which frontiers feel relevant and, later, how far along that edge you feel.
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-section-title">Lenses</div>
+          <div class="ex-section-body">
+            Lenses are ways of looking at the same moment:
+            <ul class="ex-list">
+              <li>🧭 <strong>Explore</strong> – learning, curiosity, discovery</li>
+              <li>🤝 <strong>Serve</strong> – contribution and care</li>
+              <li>🎨 <strong>Create</strong> – making and expression</li>
+              <li>✨ <strong>Inspire</strong> – energizing yourself or others</li>
+              <li>🪞 <strong>Reflect</strong> – noticing and integrating</li>
+            </ul>
+            You choose a starting lens in Meaning Mode. Later, Clara can suggest prompts in different lenses for the same goal so you can experience it from more than one angle.
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: How it fits together + quick FAQ -->
+      <section>
+        <div class="ex-card">
+          <div class="ex-card-title">How it all fits together</div>
+          <div class="ex-highlight">
+            A rough mental model:
+            <br /><br />
+            <strong>Chapters</strong> describe the phase of life you are in.<br />
+            <strong>Goals</strong> are the moves you care about in this phase.<br />
+            <strong>Frontiers</strong> describe the edge each goal sits on.<br />
+            <strong>Lenses</strong> are how you choose to look at those goals.<br />
+            <strong>Life Map</strong> is the long view that ties it all into a story.
+          </div>
+          <div class="ex-example">
+            Example:
+            <br />
+            You might be in a <strong>Building</strong> chapter with sub-chapters of <strong>Transforming</strong>
+            and <strong>Leading</strong>. One goal is “Launch my next project.”
+            <br /><br />
+            That goal might:
+            <ul class="ex-list">
+              <li>Belong to your <strong>Building</strong> chapter</li>
+              <li>Point toward a future <strong>Leading</strong> chapter</li>
+              <li>Sit on the <strong>Impossibility</strong> and <strong>Fragmentation</strong> frontiers</li>
+              <li>Be approached through a <strong>Create</strong> or <strong>Explore</strong> lens</li>
+            </ul>
+            When you open Discovery Mode in a place that matters for that goal, Clara can surface prompts,
+            stories, or “quests” that make that connection feel visible.
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-section-title">Where each mode fits</div>
+          <div class="ex-grid">
+            <div class="ex-grid-item">
+              <h3>Meaning Mode (Landing page)</h3>
+              <div class="ex-tagline">“Set the dials on your inner map.”</div>
+              <div class="ex-example">
+                You choose your chapter, sub-chapters, key themes, and a first guess at your purpose. This seeds your Life Map.
+              </div>
+            </div>
+            <div class="ex-grid-item">
+              <h3>Life Map Mode</h3>
+              <div class="ex-tagline">“Draw the longer arc.”</div>
+              <div class="ex-example">
+                You sketch past, present, and emerging chapters, turning points, and a simple constellation of goals across life areas.
+              </div>
+            </div>
+            <div class="ex-grid-item">
+              <h3>Discovery Mode (AR)</h3>
+              <div class="ex-tagline">“Let the world talk back.”</div>
+              <div class="ex-example">
+                As you move through places, Clara overlays prompts and stories linked to your chapters, goals, and frontiers.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ex-card">
+          <div class="ex-section-title">Quick questions</div>
+          <div class="ex-faq-item">
+            <div class="ex-faq-q">Can I be in more than one chapter at once?</div>
+            <div class="ex-faq-a">
+              Yes. You pick one chapter that feels primary, then add a few sub-chapters for other active roles or shifts.
+            </div>
+          </div>
+          <div class="ex-faq-item">
+            <div class="ex-faq-q">Do I have to use frontiers?</div>
+            <div class="ex-faq-a">
+              No. Frontiers are optional layers you can turn on once you want a more detailed view of how your goals sit at different edges in your life.
+            </div>
+          </div>
+          <div class="ex-faq-item">
+            <div class="ex-faq-q">Is this only about physical location?</div>
+            <div class="ex-faq-a">
+              Place is one important signal. Over time, Clara can also respond to patterns in your reflections, goals, and check-ins,
+              so prompts feel relevant even when there is nothing special about the GPS coordinates.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
